@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="ToolbarTheme" parent="ThemeOverlay.AppCompat.Light">
+
+    </style>
+
+    <style name="ToolbarColoredBackArrow" parent="ToolbarTheme">
+        <item name="android:textColorSecondary">@color/white</item>
+    </style>
+
+    <style name="ToolbarColoredBackArrow2" parent="ToolbarTheme">
+        <item name="android:textColorSecondary">@color/orange</item>
+    </style>
+    <style name="error_appearance" parent="@android:style/TextAppearance">
+        <item name="android:textSize">9sp</item>
+        <item name="android:fontFamily">@font/hai</item>
+    </style>
+</resources>

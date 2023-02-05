@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">BlockBuddy</string>
+
+    <!-- Content Descriptions -->
+    <string name="cd_shape">shape</string>
+    <string name="cd_logo">logo</string>
+
+    <!-- LOGIN / REGISTER -->
+    <string name="lr_bienvenidoTexto">BIENVENIDO!</string>
+    <string name="lr_textoWelcome">BlockBuddy, la solución para una comunidad de vecinos unida y organizada.</string>
+    <string name="lr_btn_registro">REGISTRARSE</string>
+    <string name="lr_btn_iniciosesion">INICIAR SESIÓN</string>
+
+    <!-- LOGIN-->
+    <string name="l_textoIniciarSesion">INICIAR SESIÓN</string>
+    <string name="l_textoBlup">Inicia sesión en BlockBuddy para unirte a tu comunidad de vecinos</string>
+    <string name="l_correo">CORREO</string>
+    <string name="l_correoHint">Correo electrónico</string>
+    <string name="l_passwordForgot">He olvidado la contraseña</string>
+    <string name="l_password">CONTRASEÑA</string>
+    <string name="l_passwordHint">Contraseña</string>
+
+    <!-- REGISTRO-->
+    <string name="r_textoRegistro">REGISTRO</string>
+    <string name="r_textoNombre">NOMBRE</string>
+    <string name="r_textoCorreo">CORREO</string>
+    <string name="r_textoTelefono">TELEFONO</string>
+    <string name="r_textoCodigoComunidad">CODIGO</string>
+    <string name="r_textoPiso">Nº PISO</string>
+    <string name="r_textoPuerta">PUERTA</string>
+    <string name="r_textoContraseña">CONTRASEÑA</string>
+
+</resources>
