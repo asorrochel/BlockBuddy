@@ -1,5 +1,6 @@
 package com.example.blockbuddytfg;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -12,13 +13,18 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.blockbuddytfg.entities.Usuario;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -32,12 +38,14 @@ public class RegisterActivity extends AppCompatActivity {
     TextInputLayout tilNombre, tilCorreo, tilTelefono, tilPuerta, tilPiso, tilCodCom, tilContraseña;
 
     private DatabaseReference mDatabase;
+    FirebaseAuth firebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_register);
+        final ProgressDialog progressDialog = new ProgressDialog(this);
 
         inicializarHooks();
         setToolbar(toolbar);
@@ -53,16 +61,38 @@ public class RegisterActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
         //Boton de registro donde escribimos el usuario en la base de datos
         btnRegistrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //creamos el usuario con los datos introducidos en el registro
-                Usuario usuario = new Usuario(etNombre.getText().toString(), etCorreo.getText().toString(), etTelefono.getText().toString(), etPuerta.getText().toString(), etCodCom.getText().toString(), etContraseña.getText().toString(), etPiso.getText().toString());
-                //escribimos el usuario en la base de datos
-                mDatabase.child("Usuarios").child(etTelefono.getText().toString()).setValue(usuario);
-                Intent intent = new Intent(RegisterActivity.this, LoginRegisterActivity.class);
-                startActivity(intent);
+                progressDialog.show();
+                String correo = etCorreo.getText().toString();
+                String contraseña = etContraseña.getText().toString();
+
+              firebaseAuth.createUserWithEmailAndPassword(correo,contraseña).addOnCompleteListener((task -> {
+                  progressDialog.hide();
+                  if(task.isSuccessful()){
+                      firebaseAuth.getCurrentUser().sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                          @Override
+                          public void onComplete(@NonNull Task<Void> task) {
+                              if(task.isSuccessful()){
+                                  Toast.makeText(RegisterActivity.this, "Registro Completado, Verifique su Correo", Toast.LENGTH_LONG).show();
+                                  //creamos el usuario con los datos introducidos en el registro
+                                  Usuario usuario = new Usuario(etNombre.getText().toString(), etCorreo.getText().toString(), etTelefono.getText().toString(), etPuerta.getText().toString(), etCodCom.getText().toString(), etContraseña.getText().toString(), etPiso.getText().toString());
+                                  //escribimos el usuario en la base de datos
+                                  mDatabase.child("Usuarios").child(etCodCom.getText().toString()+etNombre.getText().toString()+etPiso.getText().toString()+etPuerta.getText().toString()).setValue(usuario);
+                              } else {
+                                  Toast.makeText(RegisterActivity.this, "Error al realizar el registro", Toast.LENGTH_SHORT).show();
+                              }
+                          }
+                      });
+                      Intent intent = new Intent(RegisterActivity.this, LoginRegisterActivity.class);
+                      startActivity(intent);
+                  } else {
+                      Toast.makeText(RegisterActivity.this, "Error al realizar el registro", Toast.LENGTH_SHORT).show();
+                  }
+              }));
             }
         });
     }
@@ -247,6 +277,7 @@ public class RegisterActivity extends AppCompatActivity {
         etContraseña = findViewById(R.id.login_prompt_contraseña_EditText);
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
+        firebaseAuth=FirebaseAuth.getInstance();
     }
 
     // Método para validar los campos del registro.

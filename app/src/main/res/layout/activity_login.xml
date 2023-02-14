@@ -246,6 +246,7 @@
             android:textColor="@color/orange"
             android:textSize="12sp"
             app:layout_constraintStart_toEndOf="@+id/login_contraseña"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="TouchTargetSizeCheck" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
