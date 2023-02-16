@@ -128,7 +128,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/login_const_nombre"
+        android:id="@+id/Llogin_const_correo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="100dp"
@@ -136,7 +136,7 @@
         app:layout_constraintTop_toTopOf="@+id/imageView4">
         <!-- TextInputEditText Correo -->
         <TextView
-            android:id="@+id/login_nombre"
+            android:id="@+id/Llogin_correo"
             android:layout_width="297dp"
             android:layout_height="21dp"
             android:layout_marginStart="37dp"
@@ -149,7 +149,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="TextContrastCheck" />
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/login_prompt_nombre"
+            android:id="@+id/Llogin_prompt_correo"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="347dp"
             android:layout_height="wrap_content"
@@ -160,37 +160,37 @@
             app:boxBackgroundMode="outline"
             app:endIconMode="clear_text"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/login_nombre"
+            app:layout_constraintTop_toBottomOf="@+id/Llogin_correo"
             app:boxCornerRadiusBottomEnd="10dp"
             app:boxCornerRadiusTopEnd="10dp"
             app:boxCornerRadiusBottomStart="10dp"
             app:boxCornerRadiusTopStart="10dp"
             app:hintEnabled="false"
-
             >
+
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/login_prompt_nombre_EditText"
+                android:id="@+id/Llogin_prompt_correo_EditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/shadow1"
+                android:fontFamily="@font/hai"
                 android:hint="@string/l_correoHint"
                 android:textColor="@color/orange3"
-                android:fontFamily="@font/hai"
                 android:textSize="11sp"
                 tools:ignore="TextContrastCheck" />
         </com.google.android.material.textfield.TextInputLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
     <!-- Login CONTRASEÑA-->
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/login_const_contraseña"
+        android:id="@+id/Llogin_const_contraseña"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/login_const_nombre">
+        app:layout_constraintTop_toBottomOf="@+id/Llogin_const_correo">
         <!-- Texto Contraseña -->
         <TextView
-            android:id="@+id/login_contraseña"
+            android:id="@+id/Llogin_contraseña"
             android:layout_width="296dp"
             android:layout_height="24dp"
             android:layout_marginStart="37dp"
@@ -199,12 +199,12 @@
             android:text="@string/l_password"
             android:textColor="@color/orange"
             android:textSize="14sp"
-            app:layout_constraintBottom_toTopOf="@+id/login_prompt_contraseña"
+            app:layout_constraintBottom_toTopOf="@+id/Llogin_prompt_contraseña"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
         <!-- InputEditText Contraseña -->
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/login_prompt_contraseña"
+            android:id="@+id/Llogin_prompt_contraseña"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="347dp"
             android:layout_height="wrap_content"
@@ -217,11 +217,11 @@
             app:helperTextEnabled="true"
             app:hintEnabled="false"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/login_contraseña"
+            app:layout_constraintTop_toBottomOf="@+id/Llogin_contraseña"
             app:passwordToggleEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/login_prompt_contraseña_EditText"
+                android:id="@+id/Llogin_prompt_contraseña_EditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/shadow1"
@@ -234,7 +234,7 @@
         </com.google.android.material.textfield.TextInputLayout>
         <!-- Texto Contraseña Olvidada-->
         <TextView
-            android:id="@+id/login_contraseña_olvidada"
+            android:id="@+id/Llogin_contraseña_olvidada"
             android:layout_width="219dp"
             android:layout_height="23dp"
             android:layout_marginStart="-100dp"
@@ -245,7 +245,7 @@
             android:text="@string/l_passwordForgot"
             android:textColor="@color/orange"
             android:textSize="12sp"
-            app:layout_constraintStart_toEndOf="@+id/login_contraseña"
+            app:layout_constraintStart_toEndOf="@+id/Llogin_contraseña"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="TouchTargetSizeCheck" />
     </androidx.constraintlayout.widget.ConstraintLayout>
