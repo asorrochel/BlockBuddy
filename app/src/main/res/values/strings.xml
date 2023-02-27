@@ -30,4 +30,7 @@
     <string name="r_textoPuerta">PUERTA</string>
     <string name="r_textoContraseña">CONTRASEÑA</string>
 
+    <!-- AJUSTES-->
+    <string name="ajustes_btnupdate">ACTUALIZAR</string>
+
 </resources>

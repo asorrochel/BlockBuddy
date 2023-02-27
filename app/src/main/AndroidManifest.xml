@@ -16,6 +16,9 @@
         android:theme="@style/Theme.BlockBuddy"
         tools:targetApi="31">
         <activity
+            android:name=".SplashActivity"
+            android:exported="false" />
+        <activity
             android:name=".RecordarPassword"
             android:exported="false" />
         <activity
@@ -31,7 +34,7 @@
             android:name=".LoginRegisterActivity"
             android:exported="false" />
         <activity
-            android:name=".SplashActivity"
+            android:name=".AjustesPerfil"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:exported="true"
             android:label="@string/app_name"
