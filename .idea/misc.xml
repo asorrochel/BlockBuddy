@@ -3,10 +3,13 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Datos/Estudios/dev/TFG_BLOCKBUDDY/app/src/main/res/drawable-v24/message_sent.xml" value="0.4065" />
+        <entry key="..\:/Datos/Estudios/dev/TFG_BLOCKBUDDY/app/src/main/res/drawable/ic_message_sent.xml" value="0.204" />
+        <entry key="..\:/Datos/Estudios/dev/TFG_BLOCKBUDDY/app/src/main/res/drawable/ic_messagesent.xml" value="0.4065" />
         <entry key="..\:/Datos/Estudios/dev/TFG_BLOCKBUDDY/app/src/main/res/layout/activity_ajustes_perfil.xml" value="0.5322916666666667" />
         <entry key="..\:/Datos/Estudios/dev/TFG_BLOCKBUDDY/app/src/main/res/layout/activity_login.xml" value="0.5" />
         <entry key="..\:/Datos/Estudios/dev/TFG_BLOCKBUDDY/app/src/main/res/layout/activity_login_register.xml" value="0.2" />
-        <entry key="..\:/Datos/Estudios/dev/TFG_BLOCKBUDDY/app/src/main/res/layout/activity_main.xml" value="0.25277777777777777" />
+        <entry key="..\:/Datos/Estudios/dev/TFG_BLOCKBUDDY/app/src/main/res/layout/activity_main.xml" value="0.5" />
         <entry key="..\:/Datos/Estudios/dev/TFG_BLOCKBUDDY/app/src/main/res/layout/activity_recordar_password.xml" value="0.2564814814814815" />
         <entry key="..\:/Datos/Estudios/dev/TFG_BLOCKBUDDY/app/src/main/res/layout/activity_register.xml" value="0.33" />
         <entry key="..\:/Datos/Estudios/dev/TFG_BLOCKBUDDY/app/src/main/res/layout/activity_splash.xml" value="0.29322916666666665" />
