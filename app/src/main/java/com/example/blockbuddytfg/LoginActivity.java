@@ -2,11 +2,13 @@ package com.example.blockbuddytfg;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -19,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -59,6 +62,50 @@ public class LoginActivity extends AppCompatActivity {
         textContraseñaOlvidada.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // Mostramos co Inflate la actvidad de Recordar Password.
+                View v = LayoutInflater.from(LoginActivity.this).inflate(R.layout.activity_recordar_password, null);
+
+                // Creamos un AlertDialog, con título, los botones de enviar y cancelar y la vista de la activity recordar password.
+                new MaterialAlertDialogBuilder(LoginActivity.this, R.style.MyThemeOverlay_MaterialComponents_MaterialAlertDialog)
+                        .setTitle("Recuperar Contraseña")
+                        .setView(v)
+                        .setPositiveButton("Enviar", new DialogInterface.OnClickListener() {
+                            // Le añadimos la funcionalidad OnClick al botón de enviar.
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                progressDialog.show();
+
+                                EditText correoRecovery = v.findViewById(R.id.alert_rp_prompt_correo_EditText);
+                                String correoRecuperacion = correoRecovery.getText().toString();
+
+                                // Si cumple alguna de las condicione, cierra el Alert muestra un mensaje de error, si no las cumple, envía el correo de recuperación.
+                                if (correoRecuperacion.isEmpty() || !correoRecuperacion.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")) {
+                                    progressDialog.hide();
+                                    Toast.makeText(LoginActivity.this, "El correo no es valido", Toast.LENGTH_LONG).show();
+                                } /*else if () {
+                                progressDialog.hide();
+                                Toast.makeText(login.this, "Correo no validado", Toast.LENGTH_SHORT).show();
+                            }*/ else {
+                                    // Enviamos el correo de recuperación a través de firebase.
+                                    firebaseAuth.sendPasswordResetEmail(correoRecuperacion).addOnCompleteListener((task) -> {
+                                        progressDialog.hide();
+                                        if (task.isSuccessful()) {
+                                            Toast.makeText(LoginActivity.this, "Correo de recuperación enviado", Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            Toast.makeText(LoginActivity.this, "Cuenta no registrada", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                }
+                            }
+                        })
+                        .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                            // Le añadimos la funcionalidad OnClick al botón de cancelar, que nos cerrará el Alert.
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                            }
+                        })
+                        .show();
             }
         });
 
