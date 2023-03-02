@@ -81,7 +81,7 @@ public class RegisterActivity extends AppCompatActivity {
                                   //creamos el usuario con los datos introducidos en el registro
                                   Usuario usuario = new Usuario(etNombre.getText().toString(), etCorreo.getText().toString(), etTelefono.getText().toString(), etPuerta.getText().toString(), etCodCom.getText().toString(), etContraseña.getText().toString(), etPiso.getText().toString());
                                   //escribimos el usuario en la base de datos
-                                  mDatabase.child("Usuarios").child(etCodCom.getText().toString()+etNombre.getText().toString()+etPiso.getText().toString()+etPuerta.getText().toString()).setValue(usuario);
+                                  mDatabase.child("Usuarios").child(firebaseAuth.getUid()).setValue(usuario);
                               } else {
                                   Toast.makeText(RegisterActivity.this, "Error al realizar el registro", Toast.LENGTH_SHORT).show();
                               }
