@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
         String telefono = getIntent().getStringExtra("telefono");
 
         inicializarHooks();
-        mainUsuario_Welcome.setText("Bienvenido "+nombre+"!");
+        mainUsuario_Welcome.setText(nombre);
         mainUsuario_textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

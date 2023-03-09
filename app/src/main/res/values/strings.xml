@@ -35,5 +35,6 @@
 
     <!-- MAIN USUARIO -->
     <string name="mainUsuario_btnComunidad">COMUNIDAD</string>
+    <string name="mainUsuario_WelcomeMsg">BIENVENID@!</string>
 
 </resources>
