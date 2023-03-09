@@ -17,13 +17,20 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.example.blockbuddytfg.entities.Usuario;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -125,9 +132,38 @@ public class LoginActivity extends AppCompatActivity {
                     progressDialog.hide();
                     if(task.isSuccessful()){
                         if(firebaseAuth.getCurrentUser().isEmailVerified()){
-                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                            startActivity(intent);
-                            finish();
+                            //Obtenemos el uid del usuario autenticado
+                            String uid = firebaseAuth.getCurrentUser().getUid();
+                            //Obtenemos la referencia de la base de datos
+                            DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Usuarios").child(uid);
+                            //Obtenemos los datos del usuario
+                            reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    //Obtenemos los datos del usuario
+                                    Usuario usuario = snapshot.getValue(Usuario.class);
+                                    //Guardamos los datos del usuario en el SharedPreferences
+                                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                    intent.putExtra("uid", uid);
+                                    intent.putExtra("codCom", usuario.getCodComunidad());
+                                    intent.putExtra("nombre", usuario.getNombre());
+                                    intent.putExtra("correo", usuario.getCorreo());
+                                    intent.putExtra("contraseña", usuario.getContraseña());
+                                    intent.putExtra("telefono", usuario.getTelefono());
+                                    intent.putExtra("piso", usuario.getPiso());
+                                    intent.putExtra("puerta", usuario.getPuerta());
+                                    intent.putExtra(("categoria"), usuario.getCategoria());
+                                    intent.putExtra("imagen", usuario.getImagen());
+
+                                    startActivity(intent);
+                                    finish();
+                                }
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+                                    Toast.makeText(LoginActivity.this, "Error al obtener los datos del usuario", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                           //aqi
                         } else {
                             Toast.makeText(LoginActivity.this, "Correo no verificado", Toast.LENGTH_SHORT).show();
                         }

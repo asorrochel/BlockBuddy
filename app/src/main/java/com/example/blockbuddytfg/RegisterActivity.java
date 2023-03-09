@@ -79,7 +79,16 @@ public class RegisterActivity extends AppCompatActivity {
                               if(task.isSuccessful()){
                                   Toast.makeText(RegisterActivity.this, "Registro Completado, Verifique su Correo", Toast.LENGTH_LONG).show();
                                   //creamos el usuario con los datos introducidos en el registro
-                                  Usuario usuario = new Usuario(etNombre.getText().toString(), etCorreo.getText().toString(), etTelefono.getText().toString(), etPuerta.getText().toString(), etCodCom.getText().toString(), etContraseña.getText().toString(), etPiso.getText().toString());
+                                  Usuario usuario = new Usuario(
+                                          etNombre.getText().toString(),
+                                          etCorreo.getText().toString(),
+                                          etTelefono.getText().toString(),
+                                          etPuerta.getText().toString(),
+                                          etCodCom.getText().toString(),
+                                          etContraseña.getText().toString(),
+                                          etPiso.getText().toString(),
+                                          "usuario",
+                                          null);
                                   //escribimos el usuario en la base de datos
                                   mDatabase.child("Usuarios").child(firebaseAuth.getUid()).setValue(usuario);
                               } else {

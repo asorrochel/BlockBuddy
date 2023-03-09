@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
-    TextView mainUsuario_textView;
+    TextView mainUsuario_textView, mainUsuario_Welcome;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,8 +22,12 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
 
-        inicializarHooks();
+        String uid = getIntent().getStringExtra("uid");
+        String nombre = getIntent().getStringExtra("nombre");
+        String telefono = getIntent().getStringExtra("telefono");
 
+        inicializarHooks();
+        mainUsuario_Welcome.setText("Bienvenido "+nombre+"!");
         mainUsuario_textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -57,5 +61,6 @@ public class MainActivity extends AppCompatActivity {
     // Método para inicializar los hooks.
     private void inicializarHooks() {
         mainUsuario_textView = findViewById(R.id.mainUsuario_textView);
+        mainUsuario_Welcome = findViewById(R.id.mainUsuario_textView_Welcome);
     }
 }

@@ -33,4 +33,7 @@
     <!-- AJUSTES-->
     <string name="ajustes_btnupdate">ACTUALIZAR</string>
 
+    <!-- MAIN USUARIO -->
+    <string name="mainUsuario_btnComunidad">COMUNIDAD</string>
+
 </resources>

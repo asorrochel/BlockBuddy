@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
+
     <TextView
         android:id="@+id/mainUsuario_textView"
         android:layout_width="wrap_content"
@@ -17,6 +18,7 @@
         android:textColor="@color/orange"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -224,5 +226,33 @@
 
         </androidx.cardview.widget.CardView>
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/mainUsuario_btnComunidad"
+            android:layout_width="150dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="128dp"
+            android:layout_marginTop="620dp"
+            android:backgroundTint="@color/white"
+            android:clickable="true"
+            android:fontFamily="@font/hai"
+            android:text="@string/mainUsuario_btnComunidad"
+            android:textColor="@color/orange"
+            android:textSize="14sp"
+            app:cornerRadius="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/mainUsuario_textView_Welcome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="20dp"
+            android:clickable="true"
+            android:fontFamily="@font/hai"
+            android:text="BIENVENIDO"
+            android:textColor="@color/orange"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
