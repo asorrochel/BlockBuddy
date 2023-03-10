@@ -26,6 +26,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -132,6 +133,8 @@ public class LoginActivity extends AppCompatActivity {
                     progressDialog.hide();
                     if(task.isSuccessful()){
                         if(firebaseAuth.getCurrentUser().isEmailVerified()){
+                            //Obtenemos el usuario autenticado de firebase authenticacion
+                            FirebaseUser user = firebaseAuth.getCurrentUser();
                             //Obtenemos el uid del usuario autenticado
                             String uid = firebaseAuth.getCurrentUser().getUid();
                             //Obtenemos la referencia de la base de datos
@@ -142,8 +145,9 @@ public class LoginActivity extends AppCompatActivity {
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     //Obtenemos los datos del usuario
                                     Usuario usuario = snapshot.getValue(Usuario.class);
-                                    //Guardamos los datos del usuario en el SharedPreferences
-                                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                    //Pasar los datos del usuario a la siguiente activity
+                                    Intent intent = new Intent(LoginActivity.this, MainUserActivity.class);
+                                    intent.putExtra("user", user);
                                     intent.putExtra("uid", uid);
                                     intent.putExtra("codCom", usuario.getCodComunidad());
                                     intent.putExtra("nombre", usuario.getNombre());
