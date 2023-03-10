@@ -13,7 +13,7 @@
 
     <!-- LOGIN-->
     <string name="l_textoIniciarSesion">INICIAR SESIÓN</string>
-    <string name="l_textoBlup">Inicia sesión en BlockBuddy para unirte a tu comunidad de vecinos</string>
+    <string name="l_textoBlup">INICIA SESIÓN EN BLOCKBUDDY PARA UNIRTE A TU COMUNIDAD DE VECINOS</string>
     <string name="l_correo">CORREO</string>
     <string name="l_correoHint">Correo electrónico</string>
     <string name="l_passwordForgot">He olvidado la contraseña</string>

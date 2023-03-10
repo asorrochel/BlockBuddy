@@ -257,7 +257,7 @@ public class RegisterActivity extends AppCompatActivity {
     private void cambiarEstadoBoton(MaterialButton b,boolean estado) {
         b.setEnabled(estado);
         if(b.isEnabled() == false) {
-            btnRegistrar.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.orange3)));
+            btnRegistrar.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.orange)));
             btnRegistrar.setTextColor(ColorStateList.valueOf(getResources().getColor(R.color.white)));
         } else {
             btnRegistrar.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.white)));
