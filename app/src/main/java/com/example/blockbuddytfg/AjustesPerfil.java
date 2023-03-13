@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -21,6 +22,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.blockbuddytfg.entities.Usuario;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -41,9 +43,12 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class AjustesPerfil extends AppCompatActivity {
     Toolbar toolbar;
     TextView ajustes_nombre_titulo , ajustes_apellido_titulo, cambiarContraseña;
+    CircleImageView ajustes_imagen;
     MaterialButton r_btnupdate;
     EditText etNombre, etTelefono, etEmail;
     TextInputLayout  tilNombre, tilTelefono, tilEmail;
@@ -196,6 +201,10 @@ public class AjustesPerfil extends AppCompatActivity {
 
                     ajustes_nombre_titulo.setText(nombre.substring(0, nombre.indexOf(" ")).toUpperCase());
                     ajustes_apellido_titulo.setText(nombre.substring(nombre.indexOf(" ")+1).toUpperCase());
+                    Glide.with(AjustesPerfil.this)
+                            .load(imagen)
+                            .into(ajustes_imagen);
+
                     etNombre.setText(nombre);
                     etTelefono.setText(telefono);
                     etEmail.setText(correo);
@@ -342,6 +351,7 @@ public class AjustesPerfil extends AppCompatActivity {
         cambiarContraseña = findViewById(R.id.ajustes_contraseña_olvidada);
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Cargando...");
+        ajustes_imagen = findViewById(R.id.ajustes_foto_perfil);
 
         correoActual =getIntent().getStringExtra("correo").toLowerCase();
         user = getIntent().getParcelableExtra("user");

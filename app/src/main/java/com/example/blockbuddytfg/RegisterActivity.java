@@ -87,7 +87,7 @@ public class RegisterActivity extends AppCompatActivity {
                                           etCodCom.getText().toString(),
                                           etPiso.getText().toString(),
                                           "usuario",
-                                          null);
+                                          "https://www.seekpng.com/png/full/110-1100707_person-avatar-placeholder.png");
                                   //escribimos el usuario en la base de datos
                                   mDatabase.child("Usuarios").child(firebaseAuth.getUid()).setValue(usuario);
                               } else {
