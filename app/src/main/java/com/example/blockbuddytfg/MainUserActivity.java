@@ -3,8 +3,10 @@ package com.example.blockbuddytfg;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -14,6 +16,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 import com.example.blockbuddytfg.entities.Usuario;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -24,6 +28,7 @@ import com.google.firebase.database.ValueEventListener;
 public class MainUserActivity extends AppCompatActivity {
     Toolbar toolbar;
     TextView mainUsuario_textView, mainUsuario_Welcome;
+    ConstraintLayout btn_CerrarSesion;
     FirebaseUser user;
     DatabaseReference ref;
     String uid, correoActual;
@@ -37,6 +42,8 @@ public class MainUserActivity extends AppCompatActivity {
         inicializarHooks();
         recogerDatosFirebase(ref);
 
+        cerrarSesion();
+
         //ir a ajustes
         mainUsuario_textView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,6 +56,29 @@ public class MainUserActivity extends AppCompatActivity {
         });
     }
 
+    private void cerrarSesion(){
+        btn_CerrarSesion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new MaterialAlertDialogBuilder(MainUserActivity.this,  R.style.MyThemeOverlay_MaterialComponents_MaterialAlertDialog)
+                        .setTitle("Cerrar sesión")
+                        .setMessage("¿Estás seguro de que deseas cerrar sesión?")
+                        .setPositiveButton("Cerrar sesión", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                FirebaseAuth.getInstance().signOut();
+                                Intent intent = new Intent(MainUserActivity.this, LoginRegisterActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
+                                finish();
+                            }
+                        })
+                        .setNegativeButton("Cancelar", null)
+                        .show();
+            }
+        });
+
+    }
     /**
      * Método que cierra el teclado cuando se pulsa fuera de un EditText.
      * @param event - Evento que se produce al pulsar fuera de un EditText.
@@ -95,5 +125,6 @@ public class MainUserActivity extends AppCompatActivity {
         correoActual = getIntent().getStringExtra("correo");
         user = getIntent().getParcelableExtra("user");
         ref = FirebaseDatabase.getInstance().getReference("Usuarios").child(uid);
+        btn_CerrarSesion = findViewById(R.id.mainUsuario_Welcome);
     }
 }

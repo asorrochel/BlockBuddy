@@ -50,6 +50,7 @@ public class LoginActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_login);
         final ProgressDialog progressDialog = new ProgressDialog(this);
+        firebaseAuth.persistenceEnabled();
 
         inicializarHooks();
 
@@ -122,7 +123,6 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                progressDialog.show();
                 String correo = etCorreoL.getText().toString();
                 String contraseña = etContraseñaL.getText().toString();
                 if (correo.length() == 0 || contraseña.length() == 0) {
@@ -130,7 +130,7 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
                 firebaseAuth.signInWithEmailAndPassword(correo,contraseña).addOnCompleteListener((task) ->{
-                    progressDialog.hide();
+                    progressDialog.show();
                     if(task.isSuccessful()){
                         if(firebaseAuth.getCurrentUser().isEmailVerified()){
                             //Obtenemos el usuario autenticado de firebase authenticacion
@@ -143,6 +143,7 @@ public class LoginActivity extends AppCompatActivity {
                             reference.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    progressDialog.dismiss();
                                     //Obtenemos los datos del usuario
                                     Usuario usuario = snapshot.getValue(Usuario.class);
                                     //Pasar los datos del usuario a la siguiente activity
@@ -163,14 +164,17 @@ public class LoginActivity extends AppCompatActivity {
                                 }
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError error) {
+                                    progressDialog.dismiss();
                                     Toast.makeText(LoginActivity.this, "Error al obtener los datos del usuario", Toast.LENGTH_SHORT).show();
                                 }
                             });
                            //aqi
                         } else {
+                            progressDialog.dismiss();
                             Toast.makeText(LoginActivity.this, "Correo no verificado", Toast.LENGTH_SHORT).show();
                         }
                     } else {
+                        progressDialog.dismiss();
                         Toast.makeText(LoginActivity.this, "Correo o contraseña no válidos", Toast.LENGTH_SHORT).show();
                     }
                 });
