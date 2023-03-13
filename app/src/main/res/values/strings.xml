@@ -32,6 +32,8 @@
 
     <!-- AJUSTES-->
     <string name="ajustes_btnupdate">ACTUALIZAR</string>
+    <string name="ajustes_cambiarContraseña">Cambiar Contraseña</string>
+
 
     <!-- MAIN USUARIO -->
     <string name="mainUsuario_btnComunidad">COMUNIDAD</string>

@@ -26,7 +26,7 @@ public class MainUserActivity extends AppCompatActivity {
     TextView mainUsuario_textView, mainUsuario_Welcome;
     FirebaseUser user;
     DatabaseReference ref;
-    String nombre, uid;
+    String uid, correoActual;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +43,7 @@ public class MainUserActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(MainUserActivity.this, AjustesPerfil.class);
                 intent.putExtra("user", user);
+                intent.putExtra("correo", correoActual);
                 startActivity(intent);
             }
         });
@@ -91,6 +92,7 @@ public class MainUserActivity extends AppCompatActivity {
         mainUsuario_textView = findViewById(R.id.mainUsuario_textView);
         mainUsuario_Welcome = findViewById(R.id.mainUsuario_textView_Welcome);
         uid = getIntent().getStringExtra("uid");
+        correoActual = getIntent().getStringExtra("correo");
         user = getIntent().getParcelableExtra("user");
         ref = FirebaseDatabase.getInstance().getReference("Usuarios").child(uid);
     }

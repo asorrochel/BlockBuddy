@@ -152,7 +152,6 @@ public class LoginActivity extends AppCompatActivity {
                                     intent.putExtra("codCom", usuario.getCodComunidad());
                                     intent.putExtra("nombre", usuario.getNombre());
                                     intent.putExtra("correo", usuario.getCorreo());
-                                    intent.putExtra("contraseña", usuario.getContraseña());
                                     intent.putExtra("telefono", usuario.getTelefono());
                                     intent.putExtra("piso", usuario.getPiso());
                                     intent.putExtra("puerta", usuario.getPuerta());

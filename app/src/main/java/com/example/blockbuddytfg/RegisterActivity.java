@@ -85,7 +85,6 @@ public class RegisterActivity extends AppCompatActivity {
                                           etTelefono.getText().toString(),
                                           etPuerta.getText().toString(),
                                           etCodCom.getText().toString(),
-                                          etContraseña.getText().toString(),
                                           etPiso.getText().toString(),
                                           "usuario",
                                           null);

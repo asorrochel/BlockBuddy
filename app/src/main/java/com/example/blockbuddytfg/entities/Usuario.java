@@ -1,13 +1,12 @@
 package com.example.blockbuddytfg.entities;
 
 public class Usuario {
-    private String nombre, correo, contraseña,puerta,codComunidad, telefono, piso, categoria, imagen;
+    private String nombre, correo,puerta,codComunidad, telefono, piso, categoria, imagen;
 
     public Usuario(){}
-    public Usuario(String nombre, String correo, String telefono , String puerta, String codComunidad, String contraseña, String piso, String categoria, String imagen) {
+    public Usuario(String nombre, String correo, String telefono , String puerta, String codComunidad, String piso, String categoria, String imagen) {
         this.nombre = nombre;
         this.correo = correo;
-        this.contraseña = contraseña;
         this.puerta = puerta;
         this.codComunidad = codComunidad;
         this.telefono = telefono;
@@ -28,13 +27,6 @@ public class Usuario {
     }
     public void setCorreo(String correo) {
         this.correo = correo;
-    }
-
-    public String getContraseña() {
-        return contraseña;
-    }
-    public void setContraseña(String contraseña) {
-        this.contraseña = contraseña;
     }
 
     public String getPuerta() {

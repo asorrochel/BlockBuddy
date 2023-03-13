@@ -174,67 +174,12 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/ajustes_const_contraseña"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="-5dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ajustes_const_correo">
-        <!-- Texto Contraseña -->
-        <TextView
-            android:id="@+id/ajustes_contraseña"
-            android:layout_width="296dp"
-            android:layout_height="24dp"
-            android:layout_marginStart="37dp"
-            android:layout_marginTop="16dp"
-            android:fontFamily="@font/hai"
-            android:text="@string/l_password"
-            android:textColor="@color/white"
-            android:textSize="14sp"
-            app:layout_constraintBottom_toTopOf="@+id/ajustes_prompt_contraseña"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-        <!-- InputEditText Contraseña -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/ajustes_prompt_contraseña"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="347dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="32dp"
-            android:alpha="1"
-            android:fontFamily="@font/hai"
-            android:textSize="14sp"
-            app:boxBackgroundMode="outline"
-            app:errorEnabled="true"
-            app:errorTextAppearance="@style/error_appearance"
-            app:errorTextColor="@color/white"
-            app:helperTextEnabled="true"
-            app:hintEnabled="false"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ajustes_contraseña"
-            app:passwordToggleEnabled="true">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/ajustes_prompt_contraseña_EditText"
-                android:layout_width="match_parent"
-                android:layout_height="53dp"
-                android:background="@drawable/shadow1"
-                android:fontFamily="@font/hai"
-                android:hint="@string/l_passwordHint"
-                android:inputType="textPassword"
-                android:textColor="@color/orange2"
-                android:textSize="11sp" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/ajustes_const_telefono"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="-10dp"
+        android:layout_marginTop="15dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ajustes_const_contraseña">
+        app:layout_constraintTop_toBottomOf="@+id/ajustes_const_correo">
         <!-- TextInputEditText Correo -->
 
         <TextView
@@ -340,5 +285,22 @@
                 android:textSize="11sp"
                 tools:ignore="TextContrastCheck" />
         </com.google.android.material.textfield.TextInputLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/ajustes_contraseña_olvidada"
+        android:layout_width="219dp"
+        android:layout_height="23dp"
+        android:layout_marginStart="37dp"
+        android:layout_marginTop="15dp"
+        android:alpha="1"
+        android:clickable="true"
+        android:fontFamily="@font/hai"
+        android:text="@string/ajustes_cambiarContraseña"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ajustes_const_telefono"
+        tools:ignore="TouchTargetSizeCheck" />
 </androidx.constraintlayout.widget.ConstraintLayout>
