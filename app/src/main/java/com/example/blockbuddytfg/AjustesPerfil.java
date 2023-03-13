@@ -3,14 +3,18 @@ package com.example.blockbuddytfg;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -38,10 +42,18 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -57,6 +69,11 @@ public class AjustesPerfil extends AppCompatActivity {
     DatabaseReference ref;
     ProgressDialog progressDialog;
     FirebaseAuth mAuth;
+    StorageReference mStorageRef;
+
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
+    private static final int REQUEST_IMAGE_PICK = 2;
+    private Uri mImageUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +87,165 @@ public class AjustesPerfil extends AppCompatActivity {
         recogerDatosFirebase(ref);
         actualizarDatos(ref);
         cambiarContraseña();
+        cambiarImagenPerfil();
+    }
+
+    private void cambiarImagenPerfil(){
+        ajustes_imagen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showImageSourceSelection();
+            }
+        });
+    }
+
+    private void showImageSourceSelection() {
+        String[] opciones = {"Tomar foto", "Seleccionar de la galería"};
+
+        new MaterialAlertDialogBuilder(this)
+                .setTitle("Seleccionar imagen")
+                .setItems(opciones, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case 0:
+                                openCamera();
+                                break;
+                            case 1:
+                                openGallery();
+                                break;
+                        }
+                    }
+                })
+                .show();
+    }
+
+    private void openGallery() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Seleccionar imagen"), REQUEST_IMAGE_PICK);
+    }
+
+    private void openCamera() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
+        } else {
+            Toast.makeText(this, "No se encontró una aplicación de cámara", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case REQUEST_IMAGE_CAPTURE:
+                    // La foto fue tomada con la cámara
+                    Bundle extras = data.getExtras();
+                    Bitmap bitmap = (Bitmap) extras.get("data");
+                    mImageUri = getImageUri(this, bitmap);
+                    Glide.with(this)
+                            .load(mImageUri)
+                            .into(ajustes_imagen);
+                    subirImagen();
+                    break;
+                case REQUEST_IMAGE_PICK:
+                    // La imagen fue seleccionada de la galería
+                    if (data != null && data.getData() != null) {
+                        mImageUri = data.getData();
+                        Glide.with(this)
+                                .load(mImageUri)
+                                .into(ajustes_imagen);
+                        subirImagen();
+                    }
+                    break;
+            }
+        }
+    }
+
+    private Uri getImageUri(Context context, Bitmap bitmap) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), bitmap, "Title", null);
+        return Uri.parse(path);
+    }
+
+
+    // Subir imagen a Firebase Storage y actualizar la URL en la base de datos
+    private void subirImagen() {
+        if (mImageUri != null) {
+            // crear una referencia a la carpeta de imagenes
+            StorageReference fileReference = mStorageRef.child(System.currentTimeMillis()
+                    + ".jpg");
+
+            // subir la imagen a Firebase Storage
+            try {
+                File imageFile = createImageFile();
+                InputStream inputStream = getContentResolver().openInputStream(mImageUri);
+                OutputStream outputStream = new FileOutputStream(imageFile);
+                byte[] buffer = new byte[1024];
+                int length;
+                while ((length = inputStream.read(buffer)) > 0) {
+                    outputStream.write(buffer, 0, length);
+                }
+                inputStream.close();
+                outputStream.close();
+                Uri file = Uri.fromFile(imageFile);
+                fileReference.putFile(file)
+                        .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                // Get the URL of the uploaded file
+                                Task<Uri> downloadUrlTask = taskSnapshot.getStorage().getDownloadUrl();
+                                downloadUrlTask.addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        String imageUrl = uri.toString();
+                                        // Update the URL in Realtime Database
+                                        ref.child("imagen").setValue(imageUrl)
+                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
+                                                        Toast.makeText(AjustesPerfil.this, "Imagen subida correctamente", Toast.LENGTH_LONG).show();
+                                                    }
+                                                })
+                                                .addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        Toast.makeText(AjustesPerfil.this, "Error al subir la imagen", Toast.LENGTH_LONG).show();
+                                                    }
+                                                });
+                                    }
+                                });
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(AjustesPerfil.this, "Error al subirla imagen", Toast.LENGTH_LONG).show();
+                            }
+                        });
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            Toast.makeText(this, "No se ha seleccionado ninguna imagen", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    // Crear un archivo temporal para almacenar la imagen
+    private File createImageFile() throws IOException {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,
+                ".jpg",
+                storageDir
+        );
+        return image;
     }
 
     /**
@@ -213,6 +389,7 @@ public class AjustesPerfil extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(AjustesPerfil.this, "Error al recuperar los datos", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -358,5 +535,8 @@ public class AjustesPerfil extends AppCompatActivity {
         uid = user.getUid();
         ref = FirebaseDatabase.getInstance().getReference("Usuarios").child(uid);
         mAuth = FirebaseAuth.getInstance();
+        mStorageRef = FirebaseStorage.getInstance().getReference("uploads");
+
     }
+
 }
