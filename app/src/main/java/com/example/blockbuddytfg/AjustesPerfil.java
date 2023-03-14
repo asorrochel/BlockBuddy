@@ -37,6 +37,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.SignInMethodQueryResult;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -64,7 +65,7 @@ public class AjustesPerfil extends AppCompatActivity {
     MaterialButton r_btnupdate;
     EditText etNombre, etTelefono, etEmail;
     TextInputLayout  tilNombre, tilTelefono, tilEmail;
-    String puerta, codComunidad, piso, categoria, imagen, uid, correoActual;
+    String puerta, codComunidad, piso, categoria, imagen, uid;
     FirebaseUser user;
     DatabaseReference ref;
     ProgressDialog progressDialog;
@@ -172,7 +173,6 @@ public class AjustesPerfil extends AppCompatActivity {
         String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), bitmap, "Title", null);
         return Uri.parse(path);
     }
-
 
     // Subir imagen a Firebase Storage y actualizar la URL en la base de datos
     private void subirImagen() {
@@ -368,7 +368,7 @@ public class AjustesPerfil extends AppCompatActivity {
                 if(usuario != null) {
                     String nombre = usuario.getNombre();
                     String telefono = usuario.getTelefono();
-                    String correo = usuario.getCorreo();
+                    String correo = user.getEmail();
                     puerta = usuario.getPuerta();
                     codComunidad = usuario.getCodComunidad();
                     piso = usuario.getPiso();
@@ -463,49 +463,67 @@ public class AjustesPerfil extends AppCompatActivity {
                 String correo = etEmail.getText().toString().trim();
 
                 // Actualiza los valores en la base de datos
-                Usuario usuario = new Usuario(nombre, correo, telefono,puerta,codComunidad, piso, categoria, imagen);
+                Usuario usuario = new Usuario(nombre,telefono,puerta,codComunidad, piso, categoria, imagen);
                 ref.setValue(usuario);
 
                 if (user != null) {
                     String email = user.getEmail();
                     //Correo electronico Update
-                    if (email != null && !email.equals(correoActual)) {
-                        user.updateEmail(correo).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    if (email != null && !email.equals(correo)) {
+                        mAuth.fetchSignInMethodsForEmail(correo).addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
                             @Override
-                            public void onSuccess(Void aVoid) {
-                                // Si se actualizó correctamente, obtén el usuario actualizado y envía la verificación al nuevo correo electrónico
-                                FirebaseUser updatedUser = mAuth.getCurrentUser();
-                                if (updatedUser != null) {
-                                    updatedUser.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if (task.isSuccessful()) {
-                                                // Notifica al usuario que se ha enviado un correo electrónico de verificación a la nueva dirección de correo electrónico
-                                                Toast.makeText(AjustesPerfil.this, "Correo de verificación enviado", Toast.LENGTH_SHORT).show();
-                                                // Cierra la sesión del usuario
-                                                mAuth.signOut();
-                                                // Redirige al usuario a la pantalla de inicio de sesión solo si el correo ha sido actualizado
-                                                Intent intent = new Intent(AjustesPerfil.this, LoginRegisterActivity.class);
-                                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                                startActivity(intent);
-                                            } else {
-                                                // Muestra un mensaje de error al usuario
-                                                String error = task.getException().getMessage();
-                                                Toast.makeText(AjustesPerfil.this, error, Toast.LENGTH_SHORT).show();
+                            public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
+                                if (task.isSuccessful()) {
+                                    SignInMethodQueryResult result = task.getResult();
+                                    if (result != null && result.getSignInMethods() != null && result.getSignInMethods().size() > 0) {
+                                        // If the new email is already in use, show an error message to the user
+                                        Toast.makeText(AjustesPerfil.this, "El correo electrónico ya está en uso", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        // If the new email is not in use, update the email in the Firebase Auth and send verification email
+                                        user.updateEmail(correo).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                // If the email was updated successfully, get the updated user and send verification email to the new email
+                                                FirebaseUser updatedUser = mAuth.getCurrentUser();
+                                                if (updatedUser != null) {
+                                                    updatedUser.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                            if (task.isSuccessful()) {
+                                                                // Notify the user that a verification email has been sent to the new email address
+                                                                Toast.makeText(AjustesPerfil.this, "Correo de verificación enviado", Toast.LENGTH_SHORT).show();
+                                                                // Sign out the user
+                                                                mAuth.signOut();
+                                                                // Redirect the user to the login screen only if the email was updated
+                                                                Intent intent = new Intent(AjustesPerfil.this, LoginRegisterActivity.class);
+                                                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                                startActivity(intent);
+                                                            } else {
+                                                                // Show an error message to the user
+                                                                String error = task.getException().getMessage();
+                                                                Toast.makeText(AjustesPerfil.this, error, Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        }
+                                                    });
+                                                }
                                             }
-                                        }
-                                    });
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                // Show an error message to the user
+                                                Toast.makeText(AjustesPerfil.this, "No se pudo actualizar el correo electrónico", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                    }
+                                } else {
+                                    // Show an error message to the user
+                                    String error = task.getException().getMessage();
+                                    Toast.makeText(AjustesPerfil.this, error, Toast.LENGTH_SHORT).show();
                                 }
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                // Muestra un mensaje de error al usuario
-                                Toast.makeText(AjustesPerfil.this, "No se pudo actualizar el correo electrónico", Toast.LENGTH_SHORT).show();
                             }
                         });
                     } else {
-                        // Si el correo electrónico no ha cambiado, muestra un mensaje de éxito y no redirige a la nueva actividad
+                        // If the email has not changed, show a success message and do not redirect to the new activity
                         Toast.makeText(AjustesPerfil.this, "Perfil actualizado", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -530,7 +548,6 @@ public class AjustesPerfil extends AppCompatActivity {
         progressDialog.setMessage("Cargando...");
         ajustes_imagen = findViewById(R.id.ajustes_foto_perfil);
 
-        correoActual =getIntent().getStringExtra("correo").toLowerCase();
         user = getIntent().getParcelableExtra("user");
         uid = user.getUid();
         ref = FirebaseDatabase.getInstance().getReference("Usuarios").child(uid);
