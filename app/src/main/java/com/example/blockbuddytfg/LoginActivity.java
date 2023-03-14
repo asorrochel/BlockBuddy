@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.text.Editable;
@@ -159,6 +160,12 @@ public class LoginActivity extends AppCompatActivity {
                                     intent.putExtra("puerta", usuario.getPuerta());
                                     intent.putExtra(("categoria"), usuario.getCategoria());
                                     intent.putExtra("imagen", usuario.getImagen());
+
+                                    SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+                                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                                    editor.putString("correo", correo);
+                                    editor.putString("contraseña", contraseña);
+                                    editor.apply();
 
                                     startActivity(intent);
                                     finish();

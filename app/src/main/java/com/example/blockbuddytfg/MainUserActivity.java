@@ -66,6 +66,7 @@ public class MainUserActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 FirebaseAuth.getInstance().signOut();
+                                getSharedPreferences("MyPrefs", MODE_PRIVATE).edit().clear().apply();
                                 Intent intent = new Intent(MainUserActivity.this, LoginRegisterActivity.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);
