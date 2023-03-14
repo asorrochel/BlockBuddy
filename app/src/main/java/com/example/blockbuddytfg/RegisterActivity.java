@@ -67,6 +67,8 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 progressDialog.show();
+
+                progressDialog.setMessage("Registrando usuario...");
                 String correo = etCorreo.getText().toString();
                 String contraseña = etContraseña.getText().toString();
 

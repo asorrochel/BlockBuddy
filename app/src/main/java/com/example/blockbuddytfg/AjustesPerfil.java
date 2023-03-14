@@ -469,7 +469,7 @@ public class AjustesPerfil extends AppCompatActivity {
                 if (user != null) {
                     String email = user.getEmail();
                     //Correo electronico Update
-                    if (email != null && email.equals(correoActual)) {
+                    if (email != null && !email.equals(correoActual)) {
                         user.updateEmail(correo).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {

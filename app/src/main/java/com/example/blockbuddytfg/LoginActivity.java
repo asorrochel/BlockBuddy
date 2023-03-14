@@ -50,7 +50,6 @@ public class LoginActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_login);
         final ProgressDialog progressDialog = new ProgressDialog(this);
-        firebaseAuth.persistenceEnabled();
 
         inicializarHooks();
 
@@ -83,7 +82,7 @@ public class LoginActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 progressDialog.show();
-
+                                progressDialog.setMessage("Enviando correo ...");
                                 EditText correoRecovery = v.findViewById(R.id.alert_rp_prompt_correo_EditText);
                                 String correoRecuperacion = correoRecovery.getText().toString();
 
@@ -123,6 +122,8 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                progressDialog.show();
+                progressDialog.setMessage("Iniciando sesión...");
                 String correo = etCorreoL.getText().toString();
                 String contraseña = etContraseñaL.getText().toString();
                 if (correo.length() == 0 || contraseña.length() == 0) {
@@ -131,6 +132,7 @@ public class LoginActivity extends AppCompatActivity {
                 }
                 firebaseAuth.signInWithEmailAndPassword(correo,contraseña).addOnCompleteListener((task) ->{
                     progressDialog.show();
+                    progressDialog.setMessage("Iniciando sesión...");
                     if(task.isSuccessful()){
                         if(firebaseAuth.getCurrentUser().isEmailVerified()){
                             //Obtenemos el usuario autenticado de firebase authenticacion
