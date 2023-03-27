@@ -22,6 +22,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.example.blockbuddytfg.entities.Administrador;
 import com.example.blockbuddytfg.entities.Usuario;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -131,6 +132,14 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(LoginActivity.this, "Correo o contraseña no válidos", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
+                // Verificar si es un administrador
+                if (correo.equals("admin") && contraseña.equals("admin")) {
+                    Intent intent = new Intent(LoginActivity.this, MainAdminActivity.class);
+                    startActivity(intent);
+                    progressDialog.dismiss();
+                    return;
+                }
                 firebaseAuth.signInWithEmailAndPassword(correo,contraseña).addOnCompleteListener((task) ->{
                     progressDialog.show();
                     progressDialog.setMessage("Iniciando sesión...");
@@ -141,42 +150,71 @@ public class LoginActivity extends AppCompatActivity {
                             //Obtenemos el uid del usuario autenticado
                             String uid = firebaseAuth.getCurrentUser().getUid();
                             //Obtenemos la referencia de la base de datos
-                            DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Usuarios").child(uid);
-                            //Obtenemos los datos del usuario
-                            reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                            //usuario
+                            DatabaseReference usuariosRef = FirebaseDatabase.getInstance().getReference("Usuarios").child(uid);
+                            DatabaseReference adminsRef = FirebaseDatabase.getInstance().getReference("Administradores").child(uid);
+
+                            //Comprobamos si el usuario es administrador
+                            adminsRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    progressDialog.dismiss();
-                                    //Obtenemos los datos del usuario
-                                    Usuario usuario = snapshot.getValue(Usuario.class);
-                                    //Pasar los datos del usuario a la siguiente activity
-                                    Intent intent = new Intent(LoginActivity.this, MainUserActivity.class);
-                                    intent.putExtra("user", user);
-                                    intent.putExtra("uid", uid);
-                                    intent.putExtra("codCom", usuario.getCodComunidad());
-                                    intent.putExtra("nombre", usuario.getNombre());
-                                    intent.putExtra("telefono", usuario.getTelefono());
-                                    intent.putExtra("piso", usuario.getPiso());
-                                    intent.putExtra("puerta", usuario.getPuerta());
-                                    intent.putExtra(("categoria"), usuario.getCategoria());
-                                    intent.putExtra("imagen", usuario.getImagen());
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    if(dataSnapshot.exists()){
+                                        //Obtenemos los datos del usuario
+                                        Administrador administrador = dataSnapshot.getValue(Administrador.class);
+                                       Intent intent = new Intent(LoginActivity.this, MainAdministradorActivity.class);
+                                        intent.putExtra("user", user);
+                                        intent.putExtra("uid", uid);
 
-                                    SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
-                                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                                    editor.putString("correo", correo);
-                                    editor.putString("contraseña", contraseña);
-                                    editor.apply();
+                                       startActivity(intent);
+                                       progressDialog.dismiss();
+                                       finish();
+                                    } else {
+                                        //Obtenemos los datos del usuario
+                                        usuariosRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                progressDialog.dismiss();
+                                                if (snapshot.exists()) {
+                                                    //Obtenemos los datos del usuario
+                                                    Usuario usuario = snapshot.getValue(Usuario.class);
+                                                    //Pasar los datos del usuario a la siguiente activity
+                                                    Intent intent = new Intent(LoginActivity.this, MainUserActivity.class);
+                                                    intent.putExtra("user", user);
+                                                    intent.putExtra("uid", uid);
+                                                    intent.putExtra("codCom", usuario.getCodComunidad());
+                                                    intent.putExtra("nombre", usuario.getNombre());
+                                                    intent.putExtra("telefono", usuario.getTelefono());
+                                                    intent.putExtra("piso", usuario.getPiso());
+                                                    intent.putExtra("puerta", usuario.getPuerta());
+                                                    intent.putExtra(("categoria"), usuario.getCategoria());
+                                                    intent.putExtra("imagen", usuario.getImagen());
 
-                                    startActivity(intent);
-                                    finish();
+                                                    SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+                                                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                                                    editor.putString("correo", correo);
+                                                    editor.putString("contraseña", contraseña);
+                                                    editor.apply();
+
+                                                    startActivity(intent);
+                                                    finish();
+                                                } else {
+                                                    Toast.makeText(LoginActivity.this, "Error al obtener los datos del usuario", Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError error) {
+                                                progressDialog.dismiss();
+                                                Toast.makeText(LoginActivity.this, "Error al obtener los datos del usuario", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                    }
                                 }
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError error) {
                                     progressDialog.dismiss();
-                                    Toast.makeText(LoginActivity.this, "Error al obtener los datos del usuario", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(LoginActivity.this, "Error al verificar si el usuario es administrador", Toast.LENGTH_SHORT).show();
                                 }
                             });
-                           //aqi
                         } else {
                             progressDialog.dismiss();
                             Toast.makeText(LoginActivity.this, "Correo no verificado", Toast.LENGTH_SHORT).show();
@@ -273,7 +311,7 @@ public class LoginActivity extends AppCompatActivity {
                  * - Si el campo no está vacío y cumple con la expersión regular, comprobamos el estado de los otros campos,
                  * si no cumple la condición, mostramos el error y desactivamos el botón.
                  */
-                if(!editable.toString().isEmpty() && editable.toString().matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,15}$")) {
+                if(!editable.toString().isEmpty() && editable.toString().matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,15}$") || editable.toString().equals("admin")) {
                     if(etContraseñaL.getText().toString().isEmpty()){
                         tilContraseñaL.setError("Contraseña no válida");
                         cambiarEstadoBoton(btnLogin,false);
@@ -321,7 +359,7 @@ public class LoginActivity extends AppCompatActivity {
                  * - Si el campo no está vacío y cumple con la expersión regular (Sólo caracteres alfanuméricos), comprobamos el estado de los otros campos,
                  * si no cumple la condición, mostramos el error y desactivamos el botón.
                  */
-                if(!editable.toString().isEmpty() && editable.toString().matches(regex)) {
+                if(!editable.toString().isEmpty() && editable.toString().matches(regex) || editable.toString().equals("admin")) {
                     if(etCampo.getText().toString().isEmpty() || etContraseñaL.getText().toString().isEmpty()){
                         tilCampo.setError(null);
                         cambiarEstadoBoton(btnLogin,false);

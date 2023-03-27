@@ -39,4 +39,8 @@
     <string name="mainUsuario_btnComunidad">COMUNIDAD</string>
     <string name="mainUsuario_WelcomeMsg">BIENVENID@!</string>
 
+    <!-- MAIN ADMIN -->
+    <!-- ADMIN REGISTRO -->
+    <string name="adminRegistro_title">REGISTRO ADMIN</string>
+
 </resources>

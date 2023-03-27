@@ -14,6 +14,12 @@ public class Usuario {
         this.imagen = imagen;
     }
 
+    public Usuario(String nombre, String telefono , String imagen) {
+        this.nombre = nombre;
+        this.telefono = telefono;
+        this.imagen = imagen;
+    }
+
     public String getNombre() {
         return nombre;
     }

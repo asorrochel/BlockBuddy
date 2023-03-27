@@ -17,6 +17,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.blockbuddytfg.entities.Administrador;
 import com.example.blockbuddytfg.entities.Usuario;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -55,34 +56,59 @@ public class SplashActivity extends AppCompatActivity {
                             //Obtenemos el uid del usuario autenticado
                             String uid = firebaseAuth.getCurrentUser().getUid();
                             //Obtenemos la referencia de la base de datos
-                            DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Usuarios").child(uid);
-                            //Obtenemos los datos del usuario
-                            reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                            DatabaseReference userRefe = FirebaseDatabase.getInstance().getReference("Usuarios").child(uid);
+                            DatabaseReference adminsRef = FirebaseDatabase.getInstance().getReference("Administradores").child(uid);
+
+                            //Comprobamos si el usuario es administrador
+                            adminsRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    //Obtenemos los datos del usuario
-                                    Usuario usuario = snapshot.getValue(Usuario.class);
-                                    //Pasar los datos del usuario a la siguiente activity
-                                    Intent intent = new Intent(SplashActivity.this, MainUserActivity.class);
-                                    intent.putExtra("user", user);
-                                    intent.putExtra("uid", uid);
-                                    intent.putExtra("codCom", usuario.getCodComunidad());
-                                    intent.putExtra("nombre", usuario.getNombre());
-                                    intent.putExtra("telefono", usuario.getTelefono());
-                                    intent.putExtra("piso", usuario.getPiso());
-                                    intent.putExtra("puerta", usuario.getPuerta());
-                                    intent.putExtra(("categoria"), usuario.getCategoria());
-                                    intent.putExtra("imagen", usuario.getImagen());
+                                    if (snapshot.exists()) {
+                                        //El usuario es administrador
+                                        //Obtenemos los datos del usuario
+                                        Administrador usuario = snapshot.getValue(Administrador.class);
+                                        //Pasar los datos del usuario a la siguiente activity
+                                        Intent intent = new Intent(SplashActivity.this, MainAdministradorActivity.class);
+                                        intent.putExtra("user", user);
+                                        intent.putExtra("uid", uid);
+                                        intent.putExtra("telefono", usuario.getTelefono());
+                                        intent.putExtra("imagen", usuario.getImagen());
 
-                                    startActivity(intent);
+                                        startActivity(intent);
+                                    } else {
+                                        //El usuario no es administrador
+                                        //Obtenemos los datos del usuario
+                                        userRefe.addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                //Obtenemos los datos del usuario
+                                                Usuario usuario = snapshot.getValue(Usuario.class);
+                                                //Pasar los datos del usuario a la siguiente activity
+                                                Intent intent = new Intent(SplashActivity.this, MainUserActivity.class);
+                                                intent.putExtra("user", user);
+                                                intent.putExtra("uid", uid);
+                                                intent.putExtra("codCom", usuario.getCodComunidad());
+                                                intent.putExtra("nombre", usuario.getNombre());
+                                                intent.putExtra("telefono", usuario.getTelefono());
+                                                intent.putExtra("piso", usuario.getPiso());
+                                                intent.putExtra("puerta", usuario.getPuerta());
+                                                intent.putExtra(("categoria"), usuario.getCategoria());
+                                                intent.putExtra("imagen", usuario.getImagen());
 
+                                                startActivity(intent);
+                                            }
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError error) {
+                                                Toast.makeText(SplashActivity.this, "Error al obtener los datos del usuario", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                    }
                                 }
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError error) {
                                     Toast.makeText(SplashActivity.this, "Error al obtener los datos del usuario", Toast.LENGTH_SHORT).show();
                                 }
                             });
-
                         } else {
                             // El inicio de sesión automático falló.
                             // Abre la actividad de inicio de sesión y finaliza la SplashScreen.
@@ -91,6 +117,10 @@ public class SplashActivity extends AppCompatActivity {
 
                         }
                     });
+
+
+
+
         } else {
             // No se encontraron credenciales de inicio de sesión automático.
             // Abre la actividad de inicio de sesión y finaliza la SplashScreen.
