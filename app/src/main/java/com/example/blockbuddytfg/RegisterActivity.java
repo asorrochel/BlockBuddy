@@ -28,8 +28,11 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.SignInMethodQueryResult;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
@@ -66,7 +69,6 @@ public class RegisterActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
         //Boton de registro donde escribimos el usuario en la base de datos
         btnRegistrar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,62 +78,79 @@ public class RegisterActivity extends AppCompatActivity {
                 progressDialog.setMessage("Registrando usuario...");
                 String correo = etCorreo.getText().toString();
                 String contraseña = etContraseña.getText().toString();
-
-                FirebaseAuth.getInstance().fetchSignInMethodsForEmail(correo).addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
+                String codigoComunidad = etCodCom.getText().toString();
+                mDatabase.child("Comunidades").orderByChild("codigoComunidad").equalTo(codigoComunidad).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
-                    public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
-                        if (task.isSuccessful()) {
-                            SignInMethodQueryResult result = task.getResult();
-                            List<String> signInMethods = result.getSignInMethods();
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            // El código de comunidad existe
+                            FirebaseAuth.getInstance().fetchSignInMethodsForEmail(correo).addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
+                                    if (task.isSuccessful()) {
+                                        SignInMethodQueryResult result = task.getResult();
+                                        List<String> signInMethods = result.getSignInMethods();
 
-                            if (signInMethods != null && signInMethods.contains(EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD)) {
-                                // El correo ya está registrado
-                                progressDialog.hide();
-                                Toast.makeText(RegisterActivity.this, "El correo ya está registrado", Toast.LENGTH_SHORT).show();
-                            } else {
-                                // El correo no está registrado, se puede crear el usuario
-                                firebaseAuth.createUserWithEmailAndPassword(correo, contraseña).addOnCompleteListener((createUserTask -> {
-                                    progressDialog.hide();
-                                    if (createUserTask.isSuccessful()) {
-                                        firebaseAuth.getCurrentUser().sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                if (createUserTask.isSuccessful()) {
-                                                    Toast.makeText(RegisterActivity.this, "Registro Completado, Verifique su Correo", Toast.LENGTH_LONG).show();
-                                                    //creamos el usuario con los datos introducidos en el registro
-                                                    Usuario usuario = new Usuario(
-                                                            etNombre.getText().toString(),
-                                                            etTelefono.getText().toString(),
-                                                            etPuerta.getText().toString(),
-                                                            etCodCom.getText().toString(),
-                                                            etPiso.getText().toString(),
-                                                            "usuario",
-                                                            "https://www.seekpng.com/png/full/110-1100707_person-avatar-placeholder.png");
-                                                    //escribimos el usuario en la base de datos
-                                                    mDatabase.child("Usuarios").child(firebaseAuth.getUid()).setValue(usuario);
-                                                } else {
-                                                    Toast.makeText(RegisterActivity.this, "Error al realizar el registro", Toast.LENGTH_SHORT).show();
-                                                }
-                                            }
-                                        });
-                                        Intent intent = new Intent(RegisterActivity.this, LoginRegisterActivity.class);
-                                        startActivity(intent);
-                                    } else {
-                                        if (createUserTask.getException() instanceof FirebaseAuthUserCollisionException) {
+                                        if (signInMethods != null && signInMethods.contains(EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD)) {
                                             // El correo ya está registrado
+                                            progressDialog.hide();
                                             Toast.makeText(RegisterActivity.this, "El correo ya está registrado", Toast.LENGTH_SHORT).show();
                                         } else {
-                                            // Otro tipo de error
-                                            Toast.makeText(RegisterActivity.this, "Error al realizar el registro", Toast.LENGTH_SHORT).show();
+                                            // El correo no está registrado, se puede crear el usuario
+                                            firebaseAuth.createUserWithEmailAndPassword(correo, contraseña).addOnCompleteListener((createUserTask -> {
+                                                progressDialog.hide();
+                                                if (createUserTask.isSuccessful()) {
+                                                    firebaseAuth.getCurrentUser().sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                            if (createUserTask.isSuccessful()) {
+                                                                Toast.makeText(RegisterActivity.this, "Registro Completado, Verifique su Correo", Toast.LENGTH_LONG).show();
+                                                                //creamos el usuario con los datos introducidos en el registro
+                                                                Usuario usuario = new Usuario(
+                                                                        etNombre.getText().toString(),
+                                                                        etTelefono.getText().toString(),
+                                                                        etPuerta.getText().toString(),
+                                                                        etCodCom.getText().toString(),
+                                                                        etPiso.getText().toString(),
+                                                                        "usuario",
+                                                                        "https://www.seekpng.com/png/full/110-1100707_person-avatar-placeholder.png");
+                                                                //escribimos el usuario en la base de datos
+                                                                mDatabase.child("Usuarios").child(firebaseAuth.getUid()).setValue(usuario);
+                                                            } else {
+                                                                Toast.makeText(RegisterActivity.this, "Error al realizar el registro", Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        }
+                                                    });
+                                                    Intent intent = new Intent(RegisterActivity.this, LoginRegisterActivity.class);
+                                                    startActivity(intent);
+                                                } else {
+                                                    if (createUserTask.getException() instanceof FirebaseAuthUserCollisionException) {
+                                                        // El correo ya está registrado
+                                                        Toast.makeText(RegisterActivity.this, "El correo ya está registrado", Toast.LENGTH_SHORT).show();
+                                                    } else {
+                                                        // Otro tipo de error
+                                                        Toast.makeText(RegisterActivity.this, "Error al realizar el registro", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                }
+                                            }));
                                         }
+                                    } else {
+                                        // Error al verificar el correo
+                                        progressDialog.hide();
+                                        Toast.makeText(RegisterActivity.this, "Error al verificar el correo", Toast.LENGTH_SHORT).show();
                                     }
-                                }));
-                            }
+                                }
+                            });
                         } else {
-                            // Error al verificar el correo
+                            // El código de comunidad no existe
                             progressDialog.hide();
-                            Toast.makeText(RegisterActivity.this, "Error al verificar el correo", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegisterActivity.this, "El código de comunidad no existe", Toast.LENGTH_SHORT).show();
                         }
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        progressDialog.hide();
+                        Toast.makeText(RegisterActivity.this, "Error al verificar el código de comunidad", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -316,7 +335,6 @@ public class RegisterActivity extends AppCompatActivity {
         etCodCom = findViewById(R.id.login_prompt_codCom_EditText);
         tilContraseña = findViewById(R.id.login_prompt_contraseña);
         etContraseña = findViewById(R.id.login_prompt_contraseña_EditText);
-
         mDatabase = FirebaseDatabase.getInstance().getReference();
         firebaseAuth=FirebaseAuth.getInstance();
     }
