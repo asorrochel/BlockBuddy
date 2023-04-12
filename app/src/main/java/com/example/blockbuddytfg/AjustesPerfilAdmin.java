@@ -27,6 +27,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.blockbuddytfg.entities.Administrador;
+import com.example.blockbuddytfg.entities.Comunidad;
 import com.example.blockbuddytfg.entities.Usuario;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -54,11 +56,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class AjustesPerfil extends AppCompatActivity {
+public class AjustesPerfilAdmin extends AppCompatActivity {
     Toolbar toolbar;
     TextView ajustes_nombre_titulo , ajustes_apellido_titulo, cambiarContraseña;
     CircleImageView ajustes_imagen;
@@ -66,6 +69,7 @@ public class AjustesPerfil extends AppCompatActivity {
     EditText etNombre, etTelefono, etEmail;
     TextInputLayout  tilNombre, tilTelefono, tilEmail;
     String puerta, codComunidad, piso, categoria, imagen, uid;
+    ArrayList<String> comunidades;
     FirebaseUser user;
     DatabaseReference ref;
     ProgressDialog progressDialog;
@@ -80,7 +84,7 @@ public class AjustesPerfil extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.activity_ajustes_perfil);
+        setContentView(R.layout.activity_ajustes_perfil_admin);
         inicializarHooks();
         validarCamposRegistro();
         setToolbar(toolbar);
@@ -209,13 +213,13 @@ public class AjustesPerfil extends AppCompatActivity {
                                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                     @Override
                                                     public void onSuccess(Void aVoid) {
-                                                        Toast.makeText(AjustesPerfil.this, "Imagen subida correctamente", Toast.LENGTH_LONG).show();
+                                                        Toast.makeText(AjustesPerfilAdmin.this, "Imagen subida correctamente", Toast.LENGTH_LONG).show();
                                                     }
                                                 })
                                                 .addOnFailureListener(new OnFailureListener() {
                                                     @Override
                                                     public void onFailure(@NonNull Exception e) {
-                                                        Toast.makeText(AjustesPerfil.this, "Error al subir la imagen", Toast.LENGTH_LONG).show();
+                                                        Toast.makeText(AjustesPerfilAdmin.this, "Error al subir la imagen", Toast.LENGTH_LONG).show();
                                                     }
                                                 });
                                     }
@@ -224,7 +228,7 @@ public class AjustesPerfil extends AppCompatActivity {
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(AjustesPerfil.this, "Error al subirla imagen", Toast.LENGTH_LONG).show();
+                                Toast.makeText(AjustesPerfilAdmin.this, "Error al subirla imagen", Toast.LENGTH_LONG).show();
                             }
                         });
             } catch (IOException e) {
@@ -364,20 +368,17 @@ public class AjustesPerfil extends AppCompatActivity {
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Usuario usuario = snapshot.getValue(Usuario.class);
+                Administrador usuario = snapshot.getValue(Administrador.class);
                 if(usuario != null) {
                     String nombre = usuario.getNombre();
                     String telefono = usuario.getTelefono();
                     String correo = user.getEmail();
-                    puerta = usuario.getPuerta();
-                    codComunidad = usuario.getCodComunidad();
-                    piso = usuario.getPiso();
-                    categoria = usuario.getCategoria();
                     imagen = usuario.getImagen();
+                    comunidades = usuario.getComunidades();
 
                     ajustes_nombre_titulo.setText(nombre.substring(0, nombre.indexOf(" ")).toUpperCase());
                     ajustes_apellido_titulo.setText(nombre.substring(nombre.indexOf(" ")+1).toUpperCase());
-                    Glide.with(AjustesPerfil.this)
+                    Glide.with(AjustesPerfilAdmin.this)
                             .load(imagen)
                             .into(ajustes_imagen);
 
@@ -389,7 +390,7 @@ public class AjustesPerfil extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(AjustesPerfil.this, "Error al recuperar los datos", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AjustesPerfilAdmin.this, "Error al recuperar los datos", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -399,10 +400,10 @@ public class AjustesPerfil extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // Mostramos co Inflate la actvidad de Recordar Password.
-                View v = LayoutInflater.from(AjustesPerfil.this).inflate(R.layout.activity_recordar_password, null);
+                View v = LayoutInflater.from(AjustesPerfilAdmin.this).inflate(R.layout.activity_recordar_password, null);
 
                 // Creamos un AlertDialog, con título, los botones de enviar y cancelar y la vista de la activity recordar password.
-                new MaterialAlertDialogBuilder(AjustesPerfil.this, R.style.MyThemeOverlay_MaterialComponents_MaterialAlertDialog)
+                new MaterialAlertDialogBuilder(AjustesPerfilAdmin.this, R.style.MyThemeOverlay_MaterialComponents_MaterialAlertDialog)
                         .setTitle("Recuperar Contraseña")
                         .setView(v)
                         .setPositiveButton("Enviar", new DialogInterface.OnClickListener() {
@@ -417,7 +418,7 @@ public class AjustesPerfil extends AppCompatActivity {
                                 // Si cumple alguna de las condicione, cierra el Alert muestra un mensaje de error, si no las cumple, envía el correo de recuperación.
                                 if (correoRecuperacion.isEmpty() || !correoRecuperacion.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")) {
                                     progressDialog.hide();
-                                    Toast.makeText(AjustesPerfil.this, "El correo no es valido", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(AjustesPerfilAdmin.this, "El correo no es valido", Toast.LENGTH_LONG).show();
                                 } /*else if () {
                                 progressDialog.hide();
                                 Toast.makeText(login.this, "Correo no validado", Toast.LENGTH_SHORT).show();
@@ -427,15 +428,15 @@ public class AjustesPerfil extends AppCompatActivity {
                                         progressDialog.hide();
                                         if (task.isSuccessful()) {
                                             // Notifica al usuario que se ha enviado un correo electrónico de verificación a la nueva dirección de correo electrónico
-                                            Toast.makeText(AjustesPerfil.this, "Correo de recuperación enviado", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(AjustesPerfilAdmin.this, "Correo de recuperación enviado", Toast.LENGTH_SHORT).show();
                                             // Cierra la sesión del usuario
                                             mAuth.signOut();
                                             // Redirige al usuario a la pantalla de inicio de sesión
-                                            Intent intent = new Intent(AjustesPerfil.this, LoginRegisterActivity.class);
+                                            Intent intent = new Intent(AjustesPerfilAdmin.this, LoginRegisterActivity.class);
                                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                             startActivity(intent);
                                         } else {
-                                            Toast.makeText(AjustesPerfil.this, "Cuenta no registrada", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(AjustesPerfilAdmin.this, "Cuenta no registrada", Toast.LENGTH_SHORT).show();
                                         }
                                     });
                                 }
@@ -463,7 +464,7 @@ public class AjustesPerfil extends AppCompatActivity {
                 String correo = etEmail.getText().toString().trim();
 
                 // Actualiza los valores en la base de datos
-                Usuario usuario = new Usuario(nombre,telefono,puerta,codComunidad, piso, categoria, imagen);
+                Administrador usuario = new Administrador(nombre,telefono,imagen, comunidades);
                 ref.setValue(usuario);
 
                 if (user != null) {
@@ -477,7 +478,7 @@ public class AjustesPerfil extends AppCompatActivity {
                                     SignInMethodQueryResult result = task.getResult();
                                     if (result != null && result.getSignInMethods() != null && result.getSignInMethods().size() > 0) {
                                         // If the new email is already in use, show an error message to the user
-                                        Toast.makeText(AjustesPerfil.this, "El correo electrónico ya está en uso", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(AjustesPerfilAdmin.this, "El correo electrónico ya está en uso", Toast.LENGTH_SHORT).show();
                                     } else {
                                         // If the new email is not in use, update the email in the Firebase Auth and send verification email
                                         user.updateEmail(correo).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -491,17 +492,17 @@ public class AjustesPerfil extends AppCompatActivity {
                                                         public void onComplete(@NonNull Task<Void> task) {
                                                             if (task.isSuccessful()) {
                                                                 // Notify the user that a verification email has been sent to the new email address
-                                                                Toast.makeText(AjustesPerfil.this, "Correo de verificación enviado", Toast.LENGTH_SHORT).show();
+                                                                Toast.makeText(AjustesPerfilAdmin.this, "Correo de verificación enviado", Toast.LENGTH_SHORT).show();
                                                                 // Sign out the user
                                                                 mAuth.signOut();
                                                                 // Redirect the user to the login screen only if the email was updated
-                                                                Intent intent = new Intent(AjustesPerfil.this, LoginRegisterActivity.class);
+                                                                Intent intent = new Intent(AjustesPerfilAdmin.this, LoginRegisterActivity.class);
                                                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                                                 startActivity(intent);
                                                             } else {
                                                                 // Show an error message to the user
                                                                 String error = task.getException().getMessage();
-                                                                Toast.makeText(AjustesPerfil.this, error, Toast.LENGTH_SHORT).show();
+                                                                Toast.makeText(AjustesPerfilAdmin.this, error, Toast.LENGTH_SHORT).show();
                                                             }
                                                         }
                                                     });
@@ -511,20 +512,20 @@ public class AjustesPerfil extends AppCompatActivity {
                                             @Override
                                             public void onFailure(@NonNull Exception e) {
                                                 // Show an error message to the user
-                                                Toast.makeText(AjustesPerfil.this, "No se pudo actualizar el correo electrónico", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(AjustesPerfilAdmin.this, "No se pudo actualizar el correo electrónico", Toast.LENGTH_SHORT).show();
                                             }
                                         });
                                     }
                                 } else {
                                     // Show an error message to the user
                                     String error = task.getException().getMessage();
-                                    Toast.makeText(AjustesPerfil.this, error, Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(AjustesPerfilAdmin.this, error, Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
                     } else {
                         // If the email has not changed, show a success message and do not redirect to the new activity
-                        Toast.makeText(AjustesPerfil.this, "Perfil actualizado", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AjustesPerfilAdmin.this, "Perfil actualizado", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -550,7 +551,7 @@ public class AjustesPerfil extends AppCompatActivity {
 
         user = getIntent().getParcelableExtra("user");
         uid = user.getUid();
-        ref = FirebaseDatabase.getInstance().getReference("Usuarios").child(uid);
+        ref = FirebaseDatabase.getInstance().getReference("Administradores").child(uid);
         mAuth = FirebaseAuth.getInstance();
         mStorageRef = FirebaseStorage.getInstance().getReference("uploads");
 

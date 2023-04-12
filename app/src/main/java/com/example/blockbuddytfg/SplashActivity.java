@@ -114,13 +114,8 @@ public class SplashActivity extends AppCompatActivity {
                             // Abre la actividad de inicio de sesión y finaliza la SplashScreen.
                             Intent intent = new Intent(SplashActivity.this, LoginRegisterActivity.class);
                             startActivity(intent);
-
                         }
                     });
-
-
-
-
         } else {
             // No se encontraron credenciales de inicio de sesión automático.
             // Abre la actividad de inicio de sesión y finaliza la SplashScreen.
@@ -140,10 +135,7 @@ public class SplashActivity extends AppCompatActivity {
                     }
                 }
             },SPLASH_SCREEN);
-
         }
-
-
         //Hooks
         logo = findViewById(R.id.splash_logo);
         squircle1 = findViewById(R.id.squircle1);

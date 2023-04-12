@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.blockbuddytfg.entities.Administrador;
+import com.example.blockbuddytfg.entities.Comunidad;
 import com.example.blockbuddytfg.entities.Usuario;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -32,17 +33,17 @@ import com.google.firebase.auth.SignInMethodQueryResult;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RegistroAdminActivity extends AppCompatActivity {
 
     //Variables
     Toolbar toolbar;
-    TextView textIniciarSesion;
     MaterialButton btnRegistrar;
-    EditText etNombre, etCorreo, etTelefono, etPuerta, etPiso, etCodCom, etContraseña;
+    EditText etNombre, etCorreo, etTelefono, etContraseña;
     TextInputLayout tilNombre, tilCorreo, tilTelefono, tilContraseña;
-
+    ArrayList<String> comunidades = new ArrayList<>();
     private DatabaseReference mDatabase;
     FirebaseAuth firebaseAuth;
 
@@ -94,7 +95,8 @@ public class RegistroAdminActivity extends AppCompatActivity {
                                                     Administrador usuario = new Administrador(
                                                             etNombre.getText().toString(),
                                                             etTelefono.getText().toString(),
-                                                            "https://www.seekpng.com/png/full/110-1100707_person-avatar-placeholder.png");
+                                                            "https://www.seekpng.com/png/full/110-1100707_person-avatar-placeholder.png",
+                                                            comunidades);
                                                     //escribimos el usuario en la base de datos
                                                     mDatabase.child("Administradores").child(firebaseAuth.getUid()).setValue(usuario);
                                                 } else {

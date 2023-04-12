@@ -10,5 +10,6 @@
     <color name="orange">#F35D19</color>
     <color name="orange2">#F15B19</color>
     <color name="orange3">#F58453</color>
+    <color name="orangeClaro">#F7A37D</color>
     <color name="transparent">#00000000</color>
 </resources>

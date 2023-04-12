@@ -18,6 +18,12 @@
         android:theme="@style/Theme.BlockBuddy"
         tools:targetApi="31">
         <activity
+            android:name=".AjustesPerfilAdmin"
+            android:exported="false" />
+        <activity
+            android:name=".RegisterComunidadActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainAdministradorActivity"
             android:exported="false" />
         <activity

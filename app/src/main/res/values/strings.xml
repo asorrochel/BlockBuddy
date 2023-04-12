@@ -43,4 +43,13 @@
     <!-- ADMIN REGISTRO -->
     <string name="adminRegistro_title">REGISTRO ADMIN</string>
 
+    <!-- ADMIN CREAR COMUNIDAD-->
+    <string name="adminCrearComunidad_title">CREAR COMUNIDAD</string>
+    <string name="adminCrearComunidad_textoCodigo">CóDIGO COMUNIDAD</string>
+    <string name="adminCrearComunidad_textoDireccion">DIRECCIÓN</string>
+    <string name="adminCrearComunidad_textoPoblacion">VIVIENDAS</string>
+    <string name="adminCrearComunidad_textoCP">CÓDIGO POSTAL</string>
+    <string name="adminCrearComunidad_crear">CREAR</string>
+
+
 </resources>
