@@ -34,6 +34,7 @@ public class MainAdministradorActivity extends AppCompatActivity {
     private ComunidadAdapter communityAdapter;
     private FirebaseUser user;
     private LinearLayoutManager layoutManager;
+    private DatabaseReference communityRef;
     private RecyclerView recyclerView;
 
     @Override
@@ -46,7 +47,7 @@ public class MainAdministradorActivity extends AppCompatActivity {
         TextView cerrarSesion = findViewById(R.id.mainAdminstrador_textView_Welcome);
         TextView ajustes = findViewById(R.id.mainAdministrador_ajustes);
         recyclerView = findViewById(R.id.admin_recycler_view);
-        DatabaseReference communityRef = FirebaseDatabase.getInstance().getReference().child("Comunidades");
+        communityRef = FirebaseDatabase.getInstance().getReference().child("Comunidades");
         user = FirebaseAuth.getInstance().getCurrentUser();
 
         String uid = user.getUid();
@@ -114,7 +115,7 @@ public class MainAdministradorActivity extends AppCompatActivity {
                 .setQuery(query, Comunidad.class)
                 .build();
 
-        communityAdapter = new ComunidadAdapter(options);
+        communityAdapter = new ComunidadAdapter(options, communityRef, user, this);
         recyclerView.setAdapter(communityAdapter);
         communityAdapter.startListening();
     }

@@ -14,21 +14,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.blockbuddytfg.R;
 import com.example.blockbuddytfg.entities.Administrador;
-import com.example.blockbuddytfg.entities.Comunidad;
-import com.example.blockbuddytfg.entities.Usuario;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 
-public class ComunidadAdapter extends FirebaseRecyclerAdapter<Comunidad, ComunidadAdapter.CommunityViewHolder> {
+public class AdministradorAdapter extends FirebaseRecyclerAdapter<Administrador, AdministradorAdapter.AdministradorViewHolder> {
 
     private DatabaseReference dbRef;
     private FirebaseUser user;
     private Context context;
 
-    public ComunidadAdapter(@NonNull FirebaseRecyclerOptions<Comunidad> options, DatabaseReference dbRef, FirebaseUser user, Context context) {
+    public AdministradorAdapter(@NonNull FirebaseRecyclerOptions<Administrador> options, DatabaseReference dbRef, FirebaseUser user, Context context) {
         super(options);
         this.dbRef = dbRef;
         this.user = user;
@@ -36,19 +34,19 @@ public class ComunidadAdapter extends FirebaseRecyclerAdapter<Comunidad, Comunid
     }
 
     @Override
-    protected void onBindViewHolder(@NonNull CommunityViewHolder holder, int position, @NonNull Comunidad model) {
+    protected void onBindViewHolder(@NonNull AdministradorViewHolder holder, int position, @NonNull Administrador model) {
         holder.bind(model);
         holder.itemView.setOnClickListener(view -> mostrarDialogo(model));
-
     }
+
     @NonNull
     @Override
-    public CommunityViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.comcard, parent, false);
-        return new CommunityViewHolder(view);
+    public AdministradorViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.admincard, parent, false);
+        return new AdministradorViewHolder(view);
     }
 
-    private void mostrarDialogo(Comunidad comunidad) {
+    private void mostrarDialogo(Administrador admin) {
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
         builder.setTitle("Selecciona una opción:");
         builder.setPositiveButton("Editar", new DialogInterface.OnClickListener() {
@@ -60,7 +58,7 @@ public class ComunidadAdapter extends FirebaseRecyclerAdapter<Comunidad, Comunid
         builder.setNegativeButton("Borrar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                eliminarComunidad(comunidad);
+                eliminarAdmin(admin);
             }
         });
         builder.setNeutralButton("Cancelar", new DialogInterface.OnClickListener() {
@@ -72,29 +70,26 @@ public class ComunidadAdapter extends FirebaseRecyclerAdapter<Comunidad, Comunid
         builder.show();
     }
 
-    private void eliminarComunidad(Comunidad com) {
-        dbRef.child(com.getCodigoComunidad()).removeValue();
+    private void eliminarAdmin(Administrador admin) {
+        dbRef.child(user.getUid()).removeValue();
     }
 
-    public static class CommunityViewHolder extends RecyclerView.ViewHolder {
+    public static class AdministradorViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView cmNombre, cmDireccion, cmCP, cmViviendas, cmCodigo;
+        private TextView cmNombre, cmTelefono;
+        private ImageView cmImagen;
 
-        public CommunityViewHolder(@NonNull View itemView) {
+        public AdministradorViewHolder(@NonNull View itemView) {
             super(itemView);
-            cmNombre = itemView.findViewById(R.id.comunidad_nombre);
-            cmDireccion = itemView.findViewById(R.id.comunidad_direccion);
-            cmCP = itemView.findViewById(R.id.comunidad_cp);
-            cmViviendas = itemView.findViewById(R.id.comunidad_viviendas);
-            cmCodigo = itemView.findViewById(R.id.comunidad_codigo);
+            cmNombre = itemView.findViewById(R.id.admin_nombre);
+            cmTelefono = itemView.findViewById(R.id.admin_telefono);
+            cmImagen = itemView.findViewById(R.id.admin_imagen);
         }
 
-        public void bind(Comunidad community) {
-            cmNombre.setText(community.getNombre());
-            cmDireccion.setText(community.getDireccion());
-            cmCP.setText(community.getCodigoPostal());
-            cmViviendas.setText("Viviendas - " + community.getViviendas());
-            cmCodigo.setText("C - " + community.getCodigoComunidad());
+        public void bind(Administrador admin) {
+            cmNombre.setText(admin.getNombre());
+            cmTelefono.setText(admin.getTelefono());
+            Glide.with(itemView.getContext()).load(admin.getImagen()).into(cmImagen);
         }
     }
 }
