@@ -16,6 +16,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 import com.example.blockbuddytfg.entities.Usuario;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -28,6 +29,7 @@ import com.google.firebase.database.ValueEventListener;
 public class MainUserActivity extends AppCompatActivity {
     Toolbar toolbar;
     TextView mainUsuario_textView, mainUsuario_Welcome;
+    MaterialButton btn_tuComunidad;
     ConstraintLayout btn_CerrarSesion;
     FirebaseUser user;
     DatabaseReference ref;
@@ -49,6 +51,16 @@ public class MainUserActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainUserActivity.this, AjustesPerfil.class);
+                intent.putExtra("user", user);
+                startActivity(intent);
+            }
+        });
+
+        //ir a tu comunidad
+        btn_tuComunidad.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainUserActivity.this, TuComunidadActivity.class);
                 intent.putExtra("user", user);
                 startActivity(intent);
             }
@@ -125,5 +137,6 @@ public class MainUserActivity extends AppCompatActivity {
         user = getIntent().getParcelableExtra("user");
         ref = FirebaseDatabase.getInstance().getReference("Usuarios").child(uid);
         btn_CerrarSesion = findViewById(R.id.mainUsuario_Welcome);
+        btn_tuComunidad = findViewById(R.id.mainUsuario_btnComunidad);
     }
 }

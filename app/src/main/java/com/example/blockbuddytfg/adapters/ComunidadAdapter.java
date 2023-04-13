@@ -22,6 +22,8 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 
+import java.util.Locale;
+
 public class ComunidadAdapter extends FirebaseRecyclerAdapter<Comunidad, ComunidadAdapter.CommunityViewHolder> {
 
     private DatabaseReference dbRef;
@@ -90,10 +92,10 @@ public class ComunidadAdapter extends FirebaseRecyclerAdapter<Comunidad, Comunid
         }
 
         public void bind(Comunidad community) {
-            cmNombre.setText(community.getNombre());
-            cmDireccion.setText(community.getDireccion());
+            cmNombre.setText(community.getNombre().toUpperCase(Locale.ROOT));
+            cmDireccion.setText(community.getDireccion().toUpperCase(Locale.ROOT));
             cmCP.setText(community.getCodigoPostal());
-            cmViviendas.setText("Viviendas - " + community.getViviendas());
+            cmViviendas.setText("VIVIENDAS - " + community.getViviendas());
             cmCodigo.setText("C - " + community.getCodigoComunidad());
         }
     }

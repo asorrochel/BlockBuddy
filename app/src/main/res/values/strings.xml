@@ -51,5 +51,8 @@
     <string name="adminCrearComunidad_textoCP">CÓDIGO POSTAL</string>
     <string name="adminCrearComunidad_crear">CREAR</string>
 
+    <!-- TU COMUNIDAD -->
+    <string name="tucomunidad_vecinos">VECINOS</string>
+
 
 </resources>

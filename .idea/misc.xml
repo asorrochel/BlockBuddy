@@ -14,6 +14,9 @@
         <entry key="..\:/Datos/Estudios/dev/TFG_BLOCKBUDDY/app/src/main/res/layout/activity_register.xml" value="0.75" />
         <entry key="..\:/Datos/Estudios/dev/TFG_BLOCKBUDDY/app/src/main/res/layout/activity_splash.xml" value="0.29322916666666665" />
         <entry key="..\:/Datos/Estudios/dev/TFG_BLOCKBUDDY/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.297" />
+        <entry key="..\:/Users/Adrian/Desktop/BlockBuddy/app/src/main/res/drawable/ic_squircle1.xml" value="0.384" />
+        <entry key="..\:/Users/Adrian/Desktop/BlockBuddy/app/src/main/res/drawable/ic_squircle2.xml" value="0.384" />
+        <entry key="..\:/Users/Adrian/Desktop/BlockBuddy/app/src/main/res/drawable/ic_squircle_1.xml" value="0.384" />
         <entry key="..\:/Users/Adrian/Desktop/BlockBuddy/app/src/main/res/layout/activity_add_comunidad.xml" value="0.5322916666666667" />
         <entry key="..\:/Users/Adrian/Desktop/BlockBuddy/app/src/main/res/layout/activity_ajustes_perfil.xml" value="0.5322916666666667" />
         <entry key="..\:/Users/Adrian/Desktop/BlockBuddy/app/src/main/res/layout/activity_ajustes_perfil_Admin.xml" value="0.5322916666666667" />
@@ -26,8 +29,11 @@
         <entry key="..\:/Users/Adrian/Desktop/BlockBuddy/app/src/main/res/layout/activity_register.xml" value="0.42527173913043476" />
         <entry key="..\:/Users/Adrian/Desktop/BlockBuddy/app/src/main/res/layout/activity_register_comunidad.xml" value="0.33695652173913043" />
         <entry key="..\:/Users/Adrian/Desktop/BlockBuddy/app/src/main/res/layout/activity_registro_admin.xml" value="0.42527173913043476" />
+        <entry key="..\:/Users/Adrian/Desktop/BlockBuddy/app/src/main/res/layout/activity_tu_comunidad.xml" value="0.22" />
+        <entry key="..\:/Users/Adrian/Desktop/BlockBuddy/app/src/main/res/layout/activity_tus_vecinos.xml" value="0.33" />
         <entry key="..\:/Users/Adrian/Desktop/BlockBuddy/app/src/main/res/layout/admincard.xml" value="0.5322916666666667" />
         <entry key="..\:/Users/Adrian/Desktop/BlockBuddy/app/src/main/res/layout/comcard.xml" value="0.5" />
+        <entry key="..\:/Users/Adrian/Desktop/BlockBuddy/app/src/main/res/layout/vecinoscard.xml" value="0.5322916666666667" />
       </map>
     </option>
   </component>
