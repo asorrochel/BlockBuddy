@@ -54,6 +54,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -71,6 +72,7 @@ public class AjustesPerfil extends AppCompatActivity {
     ProgressDialog progressDialog;
     FirebaseAuth mAuth;
     StorageReference mStorageRef;
+    ArrayList<String> incidencias;
 
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_IMAGE_PICK = 2;
@@ -369,6 +371,7 @@ public class AjustesPerfil extends AppCompatActivity {
                     String nombre = usuario.getNombre();
                     String telefono = usuario.getTelefono();
                     String correo = user.getEmail();
+                    incidencias = usuario.getIncidencias();
                     puerta = usuario.getPuerta();
                     codComunidad = usuario.getCodComunidad();
                     piso = usuario.getPiso();
@@ -463,7 +466,7 @@ public class AjustesPerfil extends AppCompatActivity {
                 String correo = etEmail.getText().toString().trim();
 
                 // Actualiza los valores en la base de datos
-                Usuario usuario = new Usuario(nombre,telefono,puerta,codComunidad, piso, categoria, imagen);
+                Usuario usuario = new Usuario(nombre,telefono,puerta,codComunidad, piso, categoria, imagen,incidencias);
                 ref.setValue(usuario);
 
                 if (user != null) {

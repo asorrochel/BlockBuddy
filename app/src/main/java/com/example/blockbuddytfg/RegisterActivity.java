@@ -34,6 +34,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RegisterActivity extends AppCompatActivity {
@@ -47,6 +48,9 @@ public class RegisterActivity extends AppCompatActivity {
 
     private DatabaseReference mDatabase;
     FirebaseAuth firebaseAuth;
+
+    ArrayList<String> incidencias = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,7 +117,8 @@ public class RegisterActivity extends AppCompatActivity {
                                                                         etCodCom.getText().toString(),
                                                                         etPiso.getText().toString(),
                                                                         "usuario",
-                                                                        "https://www.seekpng.com/png/full/110-1100707_person-avatar-placeholder.png");
+                                                                        "https://www.seekpng.com/png/full/110-1100707_person-avatar-placeholder.png",
+                                                                        incidencias);
                                                                 //escribimos el usuario en la base de datos
                                                                 mDatabase.child("Usuarios").child(firebaseAuth.getUid()).setValue(usuario);
                                                             } else {

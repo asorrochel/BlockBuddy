@@ -54,5 +54,14 @@
     <!-- TU COMUNIDAD -->
     <string name="tucomunidad_vecinos">VECINOS</string>
 
+    <!-- INCIDENCIAS REGISTRO -->
+    <string name="incidenciasRegistro_title">NUEVA INCIDENCIA</string>
+    <string name="incidenciasRegistro_descripcion">DESCRIPCIÓN</string>
+    <string name="incidenciasRegistro_titulo">TITULO</string>
+    <string name="incidenciasRegistro_addFoto">AGREGAR FOTO</string>
+
+
+
+
 
 </resources>

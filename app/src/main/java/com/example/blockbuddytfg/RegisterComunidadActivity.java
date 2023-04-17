@@ -53,6 +53,8 @@ public class RegisterComunidadActivity extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
     FirebaseUser firebaseUser;
 
+    ArrayList<String> incidencias = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,7 +95,8 @@ public class RegisterComunidadActivity extends AppCompatActivity {
                                     codigoComunidad,
                                     etViviendas.getText().toString(),
                                     etCodPostal.getText().toString(),
-                                    firebaseUser.getUid()
+                                    firebaseUser.getUid(),
+                                    incidencias
                                     );
                             mDatabase.child("Comunidades").child(codigoComunidad).setValue(comunidad).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override

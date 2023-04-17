@@ -3,6 +3,7 @@ package com.example.blockbuddytfg;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Context;
@@ -31,9 +32,10 @@ public class MainUserActivity extends AppCompatActivity {
     TextView mainUsuario_textView, mainUsuario_Welcome;
     MaterialButton btn_tuComunidad;
     ConstraintLayout btn_CerrarSesion;
+    CardView incidencias;
     FirebaseUser user;
     DatabaseReference ref;
-    String uid;
+    String uid,codComunidad;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +54,16 @@ public class MainUserActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(MainUserActivity.this, AjustesPerfil.class);
                 intent.putExtra("user", user);
+                startActivity(intent);
+            }
+        });
+
+        //ir a incidencias
+        incidencias.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainUserActivity.this, IncidenciasActivity.class);
+                intent.putExtra("codCom", codComunidad);
                 startActivity(intent);
             }
         });
@@ -119,6 +131,7 @@ public class MainUserActivity extends AppCompatActivity {
                 Usuario usuario = snapshot.getValue(Usuario.class);
                 if(usuario != null) {
                     String nombre = usuario.getNombre();
+                    codComunidad = usuario.getCodComunidad();
                     mainUsuario_Welcome.setText(nombre);
                 }
             }
@@ -138,5 +151,6 @@ public class MainUserActivity extends AppCompatActivity {
         ref = FirebaseDatabase.getInstance().getReference("Usuarios").child(uid);
         btn_CerrarSesion = findViewById(R.id.mainUsuario_Welcome);
         btn_tuComunidad = findViewById(R.id.mainUsuario_btnComunidad);
+        incidencias = findViewById(R.id.cardView2);
     }
 }

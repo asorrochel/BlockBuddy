@@ -1,17 +1,22 @@
 package com.example.blockbuddytfg.entities;
 
+import java.util.ArrayList;
+
 public class Comunidad {
     private String nombre, direccion, codigoComunidad, viviendas, codigoPostal,administrador;
+    private ArrayList<String> incidencias;
+
 
     public Comunidad(){}
 
-    public Comunidad(String nombre, String direccion, String codigoComunidad, String viviendas, String codigoPostal, String administrador) {
+    public Comunidad(String nombre, String direccion, String codigoComunidad, String viviendas, String codigoPostal, String administrador,ArrayList<String> incidencias) {
         this.nombre = nombre;
         this.direccion = direccion;
         this.codigoComunidad = codigoComunidad;
         this.viviendas = viviendas;
         this.codigoPostal = codigoPostal;
         this.administrador = administrador;
+        this.incidencias = incidencias;
     }
 
     public String getNombre() {
@@ -60,5 +65,13 @@ public class Comunidad {
 
     public void setAdministrador(String administrador) {
         this.administrador = administrador;
+    }
+
+    public ArrayList<String> getIncidencias() {
+        return incidencias;
+    }
+
+    public void setIncidencias(ArrayList<String> incidencias) {
+        this.incidencias = incidencias;
     }
 }
