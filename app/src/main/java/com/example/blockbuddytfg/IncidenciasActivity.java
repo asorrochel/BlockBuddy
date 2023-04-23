@@ -16,6 +16,8 @@ import com.example.blockbuddytfg.entities.Comunidad;
 import com.example.blockbuddytfg.entities.Incidencia;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
@@ -24,6 +26,7 @@ public class IncidenciasActivity extends AppCompatActivity {
     private IncidenciasAdapter incidenciasAdapter;
     private RecyclerView recyclerView;
     private LinearLayoutManager layoutManager;
+    FirebaseUser user;
     ImageButton addIncidencia;
     String codComunidad;
 
@@ -52,12 +55,13 @@ public class IncidenciasActivity extends AppCompatActivity {
     private void InicializarHooks() {
         addIncidencia = findViewById(R.id.incidencias_btn_añadirIncidencia);
         codComunidad = getIntent().getStringExtra("codCom");
+        user = FirebaseAuth.getInstance().getCurrentUser();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        Query query = FirebaseDatabase.getInstance().getReference().child("Incidencias").orderByChild("codCom").equalTo(codComunidad);
+        Query query = FirebaseDatabase.getInstance().getReference().child("Incidencias").orderByChild("codComunidad").equalTo(codComunidad);
         FirebaseRecyclerOptions<Incidencia> options = new FirebaseRecyclerOptions.Builder<Incidencia>()
                 .setQuery(query, Incidencia.class)
                 .build();

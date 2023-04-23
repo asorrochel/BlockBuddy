@@ -1,11 +1,11 @@
 package com.example.blockbuddytfg.entities;
 
 public class Incidencia {
-    private String nombre, descripcion, fecha, imagen,usuario,codComunidad,estado;
+    private String nombre, descripcion, fecha, imagen,usuario,codComunidad,estado, usuarioNombre;
 
     public Incidencia(){}
 
-    public Incidencia(String nombre, String descripcion, String fecha, String imagen, String usuario,String codComunidad,String estado) {
+    public Incidencia(String nombre, String descripcion, String fecha, String imagen, String usuario,String usuarioNombre, String codComunidad,String estado) {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.fecha = fecha;
@@ -13,6 +13,7 @@ public class Incidencia {
         this.usuario = usuario;
         this.codComunidad = codComunidad;
         this.estado = estado;
+        this.usuarioNombre = usuarioNombre;
     }
 
     public String getNombre() {
@@ -68,5 +69,12 @@ public class Incidencia {
 
     public void setEstado(String estado) {
         this.estado = estado;
+    }
+
+    public String getUsuarioNombre() {
+        return usuarioNombre;
+    }
+    public void setUsuarioNombre(String usuarioNombre) {
+        this.usuarioNombre = usuarioNombre;
     }
 }

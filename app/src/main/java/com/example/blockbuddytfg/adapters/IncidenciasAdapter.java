@@ -53,8 +53,8 @@ public class IncidenciasAdapter extends FirebaseRecyclerAdapter<Incidencia, Inci
         public void bind(Incidencia incidencia) {
             in_nombre.setText(incidencia.getNombre().toUpperCase(Locale.ROOT));
             in_descripcion.setText(incidencia.getDescripcion().toUpperCase(Locale.ROOT));
-            in_nomUsuario.setText(incidencia.getUsuario().toUpperCase(Locale.ROOT));
-            in_fecha.setText(incidencia.getFecha());
+            in_nomUsuario.setText(incidencia.getUsuarioNombre().toUpperCase(Locale.ROOT));
+            in_fecha.setText(incidencia.getFecha().substring(0, 10));
             Glide.with(itemView.getContext()).load(incidencia.getImagen()).into(in_imagen);
         }
     }

@@ -56,6 +56,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -68,7 +69,7 @@ public class RegistrarIncidenciaActivity extends AppCompatActivity {
     TextInputLayout tilNombre, tilDescripcion;
     DatabaseReference mDatabase;
     FirebaseUser user;
-    String codComunidad,imageUrl;
+    String codComunidad,imageUrl, usuarioNombre;
     StorageReference mStorageRef;
 
     private static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -89,6 +90,17 @@ public class RegistrarIncidenciaActivity extends AppCompatActivity {
         validarCamposRegistro();
         addImagenIncidencia();
 
+        mDatabase.child("Usuarios").child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Usuario usuario = snapshot.getValue(Usuario.class);
+                usuarioNombre = usuario.getNombre();
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+
         //Boton de registro donde escribimos la comunidad en la base de datos
         btnRegistrar.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
@@ -97,21 +109,22 @@ public class RegistrarIncidenciaActivity extends AppCompatActivity {
                 progressDialog.show();
                 progressDialog.setMessage("Registrando comunidad...");
                 if(imageUrl == null) {
-                    imageUrl = "https://addaalicante.es/wp-content/plugins/ht-mega-for-elementor//assets/images/image-placeholder.png";
+                    imageUrl = "https://www.hogarmania.com/archivos/201303/bombilla-rota-xl-1280x720x80xX.jpg";
                 }
 
                 Incidencia incidencia = new Incidencia(
                         etNombre.getText().toString(),
                         etDescripcion.getText().toString(),
-                        LocalTime.now().toString(),
+                        LocalDateTime.now().toString(),
                         imageUrl,
                         user.getUid(),
+                        usuarioNombre,
                         codComunidad,
                         "activa"
                 );
 
                 //añade la incidencia a la base de datos
-                mDatabase.child("Incidencias").child(LocalTime.now().toString().replaceAll("[:.]", "")).setValue(incidencia).addOnCompleteListener(new OnCompleteListener<Void>() {
+                mDatabase.child("Incidencias").child(LocalDateTime.now().toString().replaceAll("[-:.]", "")).setValue(incidencia).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         progressDialog.hide();
@@ -121,39 +134,18 @@ public class RegistrarIncidenciaActivity extends AppCompatActivity {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     ArrayList<String> incidencias;
+                                    ArrayList<String> incidencias2;
                                     Usuario usuario = snapshot.getValue(Usuario.class);
                                     if(usuario.getIncidencias() == null){
                                         incidencias = new ArrayList<>();
-                                        incidencias.add(incidencia.getFecha().replaceAll("[:.]", ""));
+                                        incidencias.add(incidencia.getFecha().replaceAll("[-:.]", ""));
+                                        usuario.setIncidencias(incidencias);
                                     } else {
-                                        incidencias = usuario.getIncidencias();
-                                        incidencias.add(incidencia.getCodComunidad());
+                                        incidencias2 = usuario.getIncidencias();
+                                        incidencias2.add(incidencia.getFecha().replaceAll("[-:.]", ""));
+                                        usuario.setIncidencias(incidencias2);
                                     }
-                                    usuario.setIncidencias(incidencias);
                                     mDatabase.child("Usuarios").child(user.getUid()).setValue(usuario);
-                                }
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-                                    progressDialog.hide();
-                                    Toast.makeText(RegistrarIncidenciaActivity.this, "Error al realizar el registro", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-
-                            //añade esa incidencia al arrayList de la comunidad
-                            mDatabase.child("Comunidades").child(codComunidad).addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    ArrayList<String> incidencias;
-                                    Comunidad comunidad = snapshot.getValue(Comunidad.class);
-                                    if(comunidad.getIncidencias() == null){
-                                        incidencias = new ArrayList<>();
-                                        incidencias.add(incidencia.getFecha().replaceAll("[:.]", ""));
-                                    } else {
-                                        incidencias = comunidad.getIncidencias();
-                                        incidencias.add(incidencia.getCodComunidad());
-                                    }
-                                    comunidad.setIncidencias(incidencias);
-                                    mDatabase.child("Usuarios").child(user.getUid()).setValue(comunidad);
                                 }
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError error) {
