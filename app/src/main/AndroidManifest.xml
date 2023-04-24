@@ -18,6 +18,12 @@
         android:theme="@style/Theme.BlockBuddy"
         tools:targetApi="31">
         <activity
+            android:name=".RegisterContactoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".TusContactosActivity"
+            android:exported="false" />
+        <activity
             android:name=".RegistrarIncidenciaActivity"
             android:exported="false" />
         <activity

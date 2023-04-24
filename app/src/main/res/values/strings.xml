@@ -60,6 +60,11 @@
     <string name="incidenciasRegistro_titulo">TITULO</string>
     <string name="incidenciasRegistro_addFoto">AGREGAR FOTO</string>
 
+    <!-- REGISTER CONTACTO -->
+    <string name="registerContacto_nombre">NOMBRE</string>
+    <string name="registerContacto_telefono">TELÉFONO</string>
+    <string name="registerContacto_titulo">NUEVO CONTACTO</string>
+
 
 
 

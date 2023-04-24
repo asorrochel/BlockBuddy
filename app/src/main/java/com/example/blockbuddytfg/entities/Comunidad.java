@@ -4,12 +4,12 @@ import java.util.ArrayList;
 
 public class Comunidad {
     private String nombre, direccion, codigoComunidad, viviendas, codigoPostal,administrador;
-    private ArrayList<String> incidencias;
+    private ArrayList<String> incidencias, contactos;
 
 
     public Comunidad(){}
 
-    public Comunidad(String nombre, String direccion, String codigoComunidad, String viviendas, String codigoPostal, String administrador,ArrayList<String> incidencias) {
+    public Comunidad(String nombre, String direccion, String codigoComunidad, String viviendas, String codigoPostal, String administrador,ArrayList<String> incidencias, ArrayList<String> Contactos) {
         this.nombre = nombre;
         this.direccion = direccion;
         this.codigoComunidad = codigoComunidad;
@@ -17,6 +17,7 @@ public class Comunidad {
         this.codigoPostal = codigoPostal;
         this.administrador = administrador;
         this.incidencias = incidencias;
+        this.contactos = Contactos;
     }
 
     public String getNombre() {
@@ -73,5 +74,13 @@ public class Comunidad {
 
     public void setIncidencias(ArrayList<String> incidencias) {
         this.incidencias = incidencias;
+    }
+
+    public ArrayList<String> getContactos() {
+        return contactos;
+    }
+
+    public void setContactos(ArrayList<String> contactos) {
+        this.contactos = contactos;
     }
 }
