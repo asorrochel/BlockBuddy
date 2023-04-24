@@ -2,6 +2,8 @@ package com.example.blockbuddytfg.adapters;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +14,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.blockbuddytfg.MainAdministradorActivity;
+import com.example.blockbuddytfg.MainUserActivity;
 import com.example.blockbuddytfg.R;
 import com.example.blockbuddytfg.entities.Administrador;
 import com.example.blockbuddytfg.entities.Comunidad;
@@ -29,6 +33,7 @@ public class ComunidadAdapter extends FirebaseRecyclerAdapter<Comunidad, Comunid
     private DatabaseReference dbRef;
     private FirebaseUser user;
     private Context context;
+    private static TextView cmNombre, cmDireccion, cmCP, cmViviendas, cmCodigo;
 
     public ComunidadAdapter(@NonNull FirebaseRecyclerOptions<Comunidad> options, DatabaseReference dbRef, FirebaseUser user, Context context) {
         super(options);
@@ -53,10 +58,26 @@ public class ComunidadAdapter extends FirebaseRecyclerAdapter<Comunidad, Comunid
     private void mostrarDialogo(Comunidad comunidad) {
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
         builder.setTitle("Selecciona una opción:");
+        /*
         builder.setPositiveButton("Editar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //Código para editar el administrador
+            }
+        });
+        */
+
+        builder.setPositiveButton("Gestionar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (context != null) {
+                    Intent intent = new Intent(context, MainUserActivity.class);
+                    intent.putExtra("user", user);
+                    intent.putExtra("uid", user.getUid());
+                    intent.putExtra("comunidad", cmCodigo.getText().toString());
+                    context.startActivity(intent);
+                } else {
+                }
             }
         });
         builder.setNegativeButton("Borrar", new DialogInterface.OnClickListener() {
@@ -80,7 +101,7 @@ public class ComunidadAdapter extends FirebaseRecyclerAdapter<Comunidad, Comunid
 
     public static class CommunityViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView cmNombre, cmDireccion, cmCP, cmViviendas, cmCodigo;
+
 
         public CommunityViewHolder(@NonNull View itemView) {
             super(itemView);

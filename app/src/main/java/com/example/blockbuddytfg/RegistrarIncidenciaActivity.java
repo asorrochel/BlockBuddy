@@ -120,7 +120,10 @@ public class RegistrarIncidenciaActivity extends AppCompatActivity {
                         user.getUid(),
                         usuarioNombre,
                         codComunidad,
-                        "activa"
+                        "activa",
+                        false,
+                        codComunidad+"_"+false,
+                        codComunidad+"_"+"activa"
                 );
 
                 //añade la incidencia a la base de datos

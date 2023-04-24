@@ -1,11 +1,12 @@
 package com.example.blockbuddytfg.entities;
 
 public class Incidencia {
-    private String nombre, descripcion, fecha, imagen,usuario,codComunidad,estado, usuarioNombre;
+    private String nombre, descripcion, fecha, imagen,usuario,codComunidad,estado, usuarioNombre, cod_validada, cod_estado;
+    private Boolean validada;
 
     public Incidencia(){}
 
-    public Incidencia(String nombre, String descripcion, String fecha, String imagen, String usuario,String usuarioNombre, String codComunidad,String estado) {
+    public Incidencia(String nombre, String descripcion, String fecha, String imagen, String usuario,String usuarioNombre, String codComunidad,String estado,Boolean validada, String cod_validada, String cod_estado) {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.fecha = fecha;
@@ -14,6 +15,9 @@ public class Incidencia {
         this.codComunidad = codComunidad;
         this.estado = estado;
         this.usuarioNombre = usuarioNombre;
+        this.validada = validada;
+        this.cod_validada = cod_validada;
+        this.cod_estado = cod_estado;
     }
 
     public String getNombre() {
@@ -76,5 +80,29 @@ public class Incidencia {
     }
     public void setUsuarioNombre(String usuarioNombre) {
         this.usuarioNombre = usuarioNombre;
+    }
+
+    public Boolean getValidada() {
+        return validada;
+    }
+
+    public void setValidada(Boolean validada) {
+        this.validada = validada;
+    }
+
+    public String getCod_validada() {
+        return cod_validada;
+    }
+
+    public void setCod_validada(String cod_validada) {
+        this.cod_validada = cod_validada;
+    }
+
+    public String getCod_estado() {
+        return cod_estado;
+    }
+
+    public void setCod_estado(String cod_estado) {
+        this.cod_estado = cod_estado;
     }
 }

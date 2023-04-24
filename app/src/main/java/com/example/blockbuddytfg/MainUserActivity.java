@@ -16,6 +16,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
+import com.example.blockbuddytfg.entities.Administrador;
 import com.example.blockbuddytfg.entities.Usuario;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -29,13 +30,14 @@ import com.google.firebase.database.ValueEventListener;
 
 public class MainUserActivity extends AppCompatActivity {
     Toolbar toolbar;
-    TextView mainUsuario_textView, mainUsuario_Welcome;
+    TextView mainUsuario_textView, mainUsuario_Welcome,mainUsuario_Welcome1;
     MaterialButton btn_tuComunidad;
     ConstraintLayout btn_CerrarSesion;
     CardView incidencias;
     FirebaseUser user;
-    DatabaseReference ref;
-    String uid,codComunidad;
+    DatabaseReference ref,ref2;
+    String uid,codComunidad, codComAdmin;
+    Boolean esAdmin = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,19 +46,7 @@ public class MainUserActivity extends AppCompatActivity {
         setContentView(R.layout.activity_mainuser);
 
         inicializarHooks();
-        recogerDatosFirebase(ref);
-
-        cerrarSesion();
-
-        //ir a ajustes
-        mainUsuario_textView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainUserActivity.this, AjustesPerfil.class);
-                intent.putExtra("user", user);
-                startActivity(intent);
-            }
-        });
+        recogerDatosAdminUsuario(ref);
 
         //ir a incidencias
         incidencias.setOnClickListener(new View.OnClickListener() {
@@ -124,7 +114,7 @@ public class MainUserActivity extends AppCompatActivity {
         }
     }
 
-    private void recogerDatosFirebase(DatabaseReference ref) {
+    private void recogerDatosAdminUsuario(DatabaseReference ref) {
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -133,11 +123,40 @@ public class MainUserActivity extends AppCompatActivity {
                     String nombre = usuario.getNombre();
                     codComunidad = usuario.getCodComunidad();
                     mainUsuario_Welcome.setText(nombre);
+                    mainUsuario_textView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(MainUserActivity.this, AjustesPerfil.class);
+                            intent.putExtra("user", user);
+                            startActivity(intent);
+                        }
+                    });
+                    cerrarSesion();
+                } else {
+                    ref2.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            Administrador administrador = snapshot.getValue(Administrador.class);
+                            if(administrador != null) {
+                                codComunidad = codComAdmin;
+                                esAdmin = true;
+                                if(esAdmin){
+                                    //ocultar elementos
+                                    mainUsuario_textView.setVisibility(View.GONE);
+                                    mainUsuario_Welcome.setVisibility(View.GONE);
+                                    mainUsuario_Welcome1.setVisibility(View.GONE);
+                                }
+                            }
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                        }
+                    });
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+
             }
         });
     }
@@ -145,12 +164,16 @@ public class MainUserActivity extends AppCompatActivity {
     // Método para inicializar los hooks.
     private void inicializarHooks() {
         mainUsuario_textView = findViewById(R.id.mainUsuario_textView);
+        mainUsuario_Welcome1 = findViewById(R.id.mainUsuario_textView_Welcome1);
         mainUsuario_Welcome = findViewById(R.id.mainUsuario_textView_Welcome);
         uid = getIntent().getStringExtra("uid");
+        codComAdmin = getIntent().getStringExtra("comunidad");
         user = getIntent().getParcelableExtra("user");
         ref = FirebaseDatabase.getInstance().getReference("Usuarios").child(uid);
+        ref2 = FirebaseDatabase.getInstance().getReference("Administradores").child(uid);
         btn_CerrarSesion = findViewById(R.id.mainUsuario_Welcome);
         btn_tuComunidad = findViewById(R.id.mainUsuario_btnComunidad);
         incidencias = findViewById(R.id.cardView2);
+
     }
 }
