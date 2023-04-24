@@ -39,13 +39,12 @@ import java.util.ArrayList;
 
 public class RegisterContactoActivity extends AppCompatActivity {
 
-    //Variables
     Toolbar toolbar;
     MaterialButton btnRegistrar;
     EditText etNombre, etTelefono;
     TextInputLayout tilNombre, tilTelefono;
-    String codigoComunidad;
-    private DatabaseReference mDatabase;
+    String codigoComunidad, codComAdmin;
+    private DatabaseReference mDatabase,mUsuarios, mAdmin;
     FirebaseAuth firebaseAuth;
     FirebaseUser firebaseUser;
 
@@ -55,50 +54,35 @@ public class RegisterContactoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_register_contacto);
-        final ProgressDialog progressDialog = new ProgressDialog(this);
 
+        final ProgressDialog progressDialog = new ProgressDialog(this);
         inicializarHooks();
 
-        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         setToolbar(toolbar);
+        recogerDatosAdminoPresidente(mUsuarios);
         //Setter por defecto del botón de registro a desactivado.
         cambiarEstadoBoton(btnRegistrar, false);
         validarCamposRegistro();
 
-        mDatabase.child("Usuarios").child(firebaseUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Usuario usuario = snapshot.getValue(Usuario.class);
-                codigoComunidad = usuario.getCodComunidad();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-
-        //Boton de registro donde escribimos la comunidad en la base de datos
+        //registrar contacto
         btnRegistrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 progressDialog.show();
                 progressDialog.setMessage("Registrando contacto...");
 
-
-                // El código de la comunidad es válido, se puede registrar la comunidad
                 Contacto contacto = new Contacto(
                         etNombre.getText().toString(),
                         etTelefono.getText().toString(),
                         codigoComunidad
                 );
+                //añade ese contacto a la base de datos
                 mDatabase.child("Contactos").child(codigoComunidad + "_" + etNombre.getText().toString()).setValue(contacto).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         progressDialog.hide();
                         if (task.isSuccessful()) {
-                            //añade esa comunidad al arrayList de la comunidad
+                            //añade el contacto a la lista de contactos de la comunidad
                             mDatabase.child("Comunidades").child(codigoComunidad).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -146,7 +130,6 @@ public class RegisterContactoActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
-
     /**
      * Método que añade la funcionalidad de la flecha de retroceso.
      *
@@ -157,7 +140,6 @@ public class RegisterContactoActivity extends AppCompatActivity {
         onBackPressed();
         return true;
     }
-
     /**
      * Método que cierra el teclado cuando se pulsa fuera de un EditText.
      *
@@ -179,7 +161,6 @@ public class RegisterContactoActivity extends AppCompatActivity {
             return false;
         }
     }
-
     /**
      * Metodo que comprueba que los campos de registro cumplen una validación.
      *
@@ -231,7 +212,6 @@ public class RegisterContactoActivity extends AppCompatActivity {
             }
         });
     }
-
     // Método para cambiar el estado del botón de registro.
     private void cambiarEstadoBoton(MaterialButton b, boolean estado) {
         b.setEnabled(estado);
@@ -243,26 +223,53 @@ public class RegisterContactoActivity extends AppCompatActivity {
             b.setTextColor(ColorStateList.valueOf(getResources().getColor(R.color.white)));
         }
     }
-
     // Método para inicializar los hooks.
     private void inicializarHooks() {
         toolbar = findViewById(R.id.register_con_toolbar2);
         btnRegistrar = findViewById(R.id.register_contacto_btn);
-
         tilNombre = findViewById(R.id.register_con_prompt_nombre);
         etNombre = findViewById(R.id.register_con_prompt_nombre_EditText);
-
         tilTelefono = findViewById(R.id.register_con_prompt_telefono);
         etTelefono = findViewById(R.id.register_con_prompt_telefono_EditText);
-
         mDatabase = FirebaseDatabase.getInstance().getReference();
         firebaseAuth = FirebaseAuth.getInstance();
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        mAdmin = FirebaseDatabase.getInstance().getReference("Administradores").child(firebaseUser.getUid());
+        mUsuarios = FirebaseDatabase.getInstance().getReference("Usuarios").child(firebaseUser.getUid());
+        codComAdmin = getIntent().getStringExtra("codCom");
     }
-
     // Método para validar los campos del registro.
     private void validarCamposRegistro() {
         validarCampo(etNombre, "[a-zA-ZáéíóúÁÉÍÓÚS\\s]{1,35}", tilNombre, "Solo caracteres alfabéticos");
         validarCampo(etTelefono, "^[0-9]{9}$", tilTelefono, "Telefono no válido");
         //añadir resto de validaciones
+    }
+
+    private void recogerDatosAdminoPresidente(DatabaseReference mUsuarios) {
+        mUsuarios.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Usuario usuario = snapshot.getValue(Usuario.class);
+                if(usuario != null) {
+                    codigoComunidad = usuario.getCodComunidad();
+                } else {
+                    mAdmin.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            Administrador administrador = snapshot.getValue(Administrador.class);
+                            if(administrador != null) {
+                                codigoComunidad = codComAdmin;
+                            }
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                        }
+                    });
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
     }
 }

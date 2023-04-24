@@ -1,12 +1,12 @@
 package com.example.blockbuddytfg.entities;
 
 public class Incidencia {
-    private String nombre, descripcion, fecha, imagen,usuario,codComunidad,estado, usuarioNombre, cod_validada, cod_estado;
+    private String nombre, descripcion, fecha, imagen,usuario,codComunidad,estado, usuarioNombre, cod_validada, cod_estado, cod_validada_estado;
     private Boolean validada;
 
     public Incidencia(){}
 
-    public Incidencia(String nombre, String descripcion, String fecha, String imagen, String usuario,String usuarioNombre, String codComunidad,String estado,Boolean validada, String cod_validada, String cod_estado) {
+    public Incidencia(String nombre, String descripcion, String fecha, String imagen, String usuario,String usuarioNombre, String codComunidad,String estado,Boolean validada, String cod_validada, String cod_estado, String cod_validada_estado) {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.fecha = fecha;
@@ -18,6 +18,7 @@ public class Incidencia {
         this.validada = validada;
         this.cod_validada = cod_validada;
         this.cod_estado = cod_estado;
+        this.cod_validada_estado = cod_validada_estado;
     }
 
     public String getNombre() {
@@ -104,5 +105,13 @@ public class Incidencia {
 
     public void setCod_estado(String cod_estado) {
         this.cod_estado = cod_estado;
+    }
+
+    public String getCod_validada_estado() {
+        return cod_validada_estado;
+    }
+
+    public void setCod_validada_estado(String cod_validada_estado) {
+        this.cod_validada_estado = cod_validada_estado;
     }
 }

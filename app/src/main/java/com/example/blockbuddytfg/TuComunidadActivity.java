@@ -11,6 +11,7 @@ import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.blockbuddytfg.entities.Administrador;
 import com.example.blockbuddytfg.entities.Comunidad;
 import com.example.blockbuddytfg.entities.Usuario;
 import com.google.android.material.button.MaterialButton;
@@ -27,11 +28,12 @@ import java.util.Locale;
 public class TuComunidadActivity extends AppCompatActivity {
 
     MaterialButton btn_vecinos;
-    DatabaseReference mDatabase, mUsuario, mComunidad;
+    DatabaseReference mDatabase, mUsuario, mComunidad,mAdmin;
     TextView tucom_nombre, tucom_direccion, tucom_cp, tucom_viviendas;
     Comunidad comunidad;
     FirebaseUser user;
     Toolbar toolbar;
+    String codComunidadAdmin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +43,10 @@ public class TuComunidadActivity extends AppCompatActivity {
 
         inicializarHooks();
         recogerDatosFirebase(mUsuario);
+
         setToolbar(toolbar);
+
+        //ir a tus vecinos
         btn_vecinos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -58,7 +63,9 @@ public class TuComunidadActivity extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance().getReference();
         user = FirebaseAuth.getInstance().getCurrentUser();
         mUsuario = mDatabase.child("Usuarios").child(user.getUid());
+        mAdmin = mDatabase.child("Administradores").child(user.getUid());
         mComunidad = mDatabase.child("Comunidades");
+        codComunidadAdmin = getIntent().getStringExtra("codCom");
         tucom_nombre = findViewById(R.id.tucom_nombre);
         tucom_direccion = findViewById(R.id.tucom_direccion);
         tucom_cp = findViewById(R.id.tucom_cp);
@@ -72,6 +79,7 @@ public class TuComunidadActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Usuario usuario = snapshot.getValue(Usuario.class);
                 if(usuario != null) {
+                    //usuario
                     mComunidad.child(usuario.getCodComunidad()).addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -86,7 +94,39 @@ public class TuComunidadActivity extends AppCompatActivity {
                             tucom_cp.setText(cp);
                             tucom_viviendas.setText(viviendas);
                         }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            Toast.makeText(getApplicationContext(), "Error al cargar los datos de la comunidad", Toast.LENGTH_SHORT);
+                        }
+                    });
+                } else {
+                    //administrador
+                    mAdmin.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            Administrador administrador = snapshot.getValue(Administrador.class);
+                            if(administrador != null) {
+                                mComunidad.child(codComunidadAdmin).addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        comunidad = snapshot.getValue(Comunidad.class);
+                                        String nombre = comunidad.getNombre();
+                                        String direccion = comunidad.getDireccion();
+                                        String cp = comunidad.getCodigoPostal();
+                                        String viviendas = "VIVIENDAS: "+ comunidad.getViviendas();
 
+                                        tucom_nombre.setText(nombre.toUpperCase(Locale.ROOT));
+                                        tucom_direccion.setText(direccion);
+                                        tucom_cp.setText(cp);
+                                        tucom_viviendas.setText(viviendas);
+                                    }
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+                                        Toast.makeText(getApplicationContext(), "Error al cargar los datos de la comunidad", Toast.LENGTH_SHORT);
+                                    }
+                                });
+                            }
+                        }
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
                             Toast.makeText(getApplicationContext(), "Error al cargar los datos de la comunidad", Toast.LENGTH_SHORT);

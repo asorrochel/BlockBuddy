@@ -41,9 +41,12 @@
         <entry key="..\:/Users/Adrian/Desktop/BlockBuddy/app/src/main/res/layout/contactocard.xml" value="0.5322916666666667" />
         <entry key="..\:/Users/Adrian/Desktop/BlockBuddy/app/src/main/res/layout/dropdown_menu.xml" value="0.53125" />
         <entry key="..\:/Users/Adrian/Desktop/BlockBuddy/app/src/main/res/layout/incidenciacard.xml" value="0.5322916666666667" />
+        <entry key="..\:/Users/Adrian/Desktop/BlockBuddy/app/src/main/res/layout/separador.xml" value="0.53125" />
         <entry key="..\:/Users/Adrian/Desktop/BlockBuddy/app/src/main/res/layout/vecinoscard.xml" value="0.5322916666666667" />
         <entry key="..\:/Users/Adrian/Desktop/BlockBuddy/app/src/main/res/menu/menu_incidencias.xml" value="0.5322916666666667" />
         <entry key="..\:/Users/Adrian/Desktop/BlockBuddy/app/src/main/res/menu/overflow_menu.xml" value="0.53125" />
+        <entry key="..\:/Users/Adrian/Desktop/BlockBuddy/app/src/main/res/menu/overflow_menu_admin.xml" value="0.75" />
+        <entry key="..\:/Users/Adrian/Desktop/BlockBuddy/app/src/main/res/menu/overflow_menu_usuario.xml" value="0.5322916666666667" />
       </map>
     </option>
   </component>

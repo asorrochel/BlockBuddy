@@ -7,10 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.bumptech.glide.Glide;
 import com.example.blockbuddytfg.R;
 import com.example.blockbuddytfg.entities.Administrador;
@@ -45,35 +43,6 @@ public class AdministradorAdapter extends FirebaseRecyclerAdapter<Administrador,
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.admincard, parent, false);
         return new AdministradorViewHolder(view);
     }
-
-    private void mostrarDialogo(Administrador admin) {
-        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
-        builder.setTitle("Selecciona una opción:");
-        builder.setPositiveButton("Editar", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                //Código para editar el administrador
-            }
-        });
-        builder.setNegativeButton("Borrar", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                eliminarAdmin(admin);
-            }
-        });
-        builder.setNeutralButton("Cancelar", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        builder.show();
-    }
-
-    private void eliminarAdmin(Administrador admin) {
-        dbRef.child(user.getUid()).removeValue();
-    }
-
     public static class AdministradorViewHolder extends RecyclerView.ViewHolder {
 
         private TextView cmNombre, cmTelefono;
@@ -92,4 +61,33 @@ public class AdministradorAdapter extends FirebaseRecyclerAdapter<Administrador,
             Glide.with(itemView.getContext()).load(admin.getImagen()).into(cmImagen);
         }
     }
+
+    private void mostrarDialogo(Administrador admin) {
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
+        builder.setTitle("Selecciona una opción:");
+        builder.setPositiveButton("Editar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //Código para editar el administrador
+            }
+        });
+        builder.setNegativeButton("Borrar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                eliminarAdmin();
+            }
+        });
+        builder.setNeutralButton("Cancelar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.show();
+    }
+
+    private void eliminarAdmin() {
+        dbRef.child(user.getUid()).removeValue();
+    }
+
 }

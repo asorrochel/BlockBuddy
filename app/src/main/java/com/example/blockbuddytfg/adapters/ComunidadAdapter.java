@@ -55,17 +55,38 @@ public class ComunidadAdapter extends FirebaseRecyclerAdapter<Comunidad, Comunid
         return new CommunityViewHolder(view);
     }
 
+    public static class CommunityViewHolder extends RecyclerView.ViewHolder {
+
+
+
+        public CommunityViewHolder(@NonNull View itemView) {
+            super(itemView);
+            cmNombre = itemView.findViewById(R.id.comunidad_nombre);
+            cmDireccion = itemView.findViewById(R.id.comunidad_direccion);
+            cmCP = itemView.findViewById(R.id.comunidad_cp);
+            cmViviendas = itemView.findViewById(R.id.comunidad_viviendas);
+            cmCodigo = itemView.findViewById(R.id.comunidad_codigo);
+        }
+
+        public void bind(Comunidad community) {
+            cmNombre.setText(community.getNombre().toUpperCase(Locale.ROOT));
+            cmDireccion.setText(community.getDireccion().toUpperCase(Locale.ROOT));
+            cmCP.setText(community.getCodigoPostal());
+            cmViviendas.setText("VIVIENDAS - " + community.getViviendas());
+            cmCodigo.setText("C - " + community.getCodigoComunidad());
+        }
+    }
+
     private void mostrarDialogo(Comunidad comunidad) {
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
         builder.setTitle("Selecciona una opción:");
-        /*
+
         builder.setPositiveButton("Editar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                //Código para editar el administrador
+                //Código para editar la comunidad
             }
         });
-        */
 
         builder.setPositiveButton("Gestionar", new DialogInterface.OnClickListener() {
             @Override
@@ -97,27 +118,5 @@ public class ComunidadAdapter extends FirebaseRecyclerAdapter<Comunidad, Comunid
 
     private void eliminarComunidad(Comunidad com) {
         dbRef.child(com.getCodigoComunidad()).removeValue();
-    }
-
-    public static class CommunityViewHolder extends RecyclerView.ViewHolder {
-
-
-
-        public CommunityViewHolder(@NonNull View itemView) {
-            super(itemView);
-            cmNombre = itemView.findViewById(R.id.comunidad_nombre);
-            cmDireccion = itemView.findViewById(R.id.comunidad_direccion);
-            cmCP = itemView.findViewById(R.id.comunidad_cp);
-            cmViviendas = itemView.findViewById(R.id.comunidad_viviendas);
-            cmCodigo = itemView.findViewById(R.id.comunidad_codigo);
-        }
-
-        public void bind(Comunidad community) {
-            cmNombre.setText(community.getNombre().toUpperCase(Locale.ROOT));
-            cmDireccion.setText(community.getDireccion().toUpperCase(Locale.ROOT));
-            cmCP.setText(community.getCodigoPostal());
-            cmViviendas.setText("VIVIENDAS - " + community.getViviendas());
-            cmCodigo.setText("C - " + community.getCodigoComunidad());
-        }
     }
 }

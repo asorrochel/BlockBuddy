@@ -69,7 +69,7 @@ public class RegistrarIncidenciaActivity extends AppCompatActivity {
     TextInputLayout tilNombre, tilDescripcion;
     DatabaseReference mDatabase;
     FirebaseUser user;
-    String codComunidad,imageUrl, usuarioNombre;
+    String codComunidad,imageUrl, usuarioNombre,codComunidadAdmin;
     StorageReference mStorageRef;
 
     private static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -94,7 +94,24 @@ public class RegistrarIncidenciaActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Usuario usuario = snapshot.getValue(Usuario.class);
-                usuarioNombre = usuario.getNombre();
+                if(usuario != null){
+                    usuarioNombre = usuario.getNombre();
+                    codComunidad = usuario.getCodComunidad();
+                } else {
+                    mDatabase.child("Administradores").child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            Administrador administrador = snapshot.getValue(Administrador.class);
+                            if(administrador != null){
+                                usuarioNombre = administrador.getNombre();
+                                codComunidad = codComunidadAdmin;
+                            }
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                        }
+                    });
+                }
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
@@ -123,7 +140,8 @@ public class RegistrarIncidenciaActivity extends AppCompatActivity {
                         "activa",
                         false,
                         codComunidad+"_"+false,
-                        codComunidad+"_"+"activa"
+                        codComunidad+"_"+"activa",
+                        codComunidad+"_"+"activa"+"_"+false
                 );
 
                 //añade la incidencia a la base de datos
@@ -430,7 +448,7 @@ public class RegistrarIncidenciaActivity extends AppCompatActivity {
         etDescripcion = findViewById(R.id.cr_in_prompt_descripcion_EditText);
         tilDescripcion = findViewById(R.id.cr_in_prompt_descripcion);
         tilNombre = findViewById(R.id.cr_in_prompt_nombre);
-        codComunidad = getIntent().getStringExtra("codCom");
+        codComunidadAdmin = getIntent().getStringExtra("codCom");
         user = FirebaseAuth.getInstance().getCurrentUser();
         mDatabase = FirebaseDatabase.getInstance().getReference();
         addFoto = findViewById(R.id.cr_in_addImagen);

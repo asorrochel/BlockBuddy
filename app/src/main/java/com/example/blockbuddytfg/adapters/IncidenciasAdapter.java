@@ -49,7 +49,7 @@ public class IncidenciasAdapter extends FirebaseRecyclerAdapter<Incidencia, Inci
     @Override
     protected void onBindViewHolder(@NonNull IncidenciasAdapter.IncidenciasViewHolder holder, @SuppressLint("RecyclerView") int position, @NonNull Incidencia model) {
         //comprobar si el usuario es administrador
-        DatabaseReference adminsRef = FirebaseDatabase.getInstance().getReference("Usuarios").child(user.getUid());
+        DatabaseReference adminsRef = FirebaseDatabase.getInstance().getReference("Administradores").child(user.getUid());
 
         adminsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -67,7 +67,12 @@ public class IncidenciasAdapter extends FirebaseRecyclerAdapter<Incidencia, Inci
                 }
                 else {
                     //si no es administrador
-                    holder.bind(model);
+                    if (filtro.equals("propias")){
+                        holder.bind(model);
+                        holder.itemView.setOnClickListener(view -> mostrarDialogValidadas(model, position));
+                    } else {
+                        holder.bind(model);
+                    }
                 }
             }
             @Override
@@ -125,6 +130,22 @@ public class IncidenciasAdapter extends FirebaseRecyclerAdapter<Incidencia, Inci
                             }
                         }
                 );
+                FirebaseDatabase.getInstance().getReference()
+                        .child("Incidencias")
+                        .child(getRef(position).getKey())
+                        .child("cod_validada_estado")
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                                                            @Override
+                                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                                String codValidadaEstado = snapshot.getValue(String.class);
+                                                                String newCodValidada = codValidadaEstado.replace("_false", "_true");
+                                                                FirebaseDatabase.getInstance().getReference().child("Incidencias").child(getRef(position).getKey()).child("cod_validada_estado").setValue(newCodValidada);
+                                                            }
+                                                            @Override
+                                                            public void onCancelled(@NonNull DatabaseError error) {
+                                                            }
+                                                        }
+                        );
             }
         });
         builder.setNegativeButton("Rechazar", new DialogInterface.OnClickListener() {

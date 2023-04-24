@@ -26,21 +26,26 @@ public class ContactoAdapter extends FirebaseRecyclerAdapter<Contacto, ContactoA
     private DatabaseReference dbRef;
     private FirebaseUser user;
     private Context context;
-    String codComunidad;
+    String codComunidad, filtro;
     private static TextView cmNombre, cmTelefono;
 
-    public ContactoAdapter(@NonNull FirebaseRecyclerOptions<Contacto> options, DatabaseReference dbRef, FirebaseUser user, Context context, String codComunidad) {
+    public ContactoAdapter(@NonNull FirebaseRecyclerOptions<Contacto> options, DatabaseReference dbRef, FirebaseUser user, Context context, String codComunidad, String filtro) {
         super(options);
         this.dbRef = dbRef;
         this.user = user;
         this.context = context;
         this.codComunidad = codComunidad;
+        this.filtro = filtro;
     }
 
     @Override
     protected void onBindViewHolder(@NonNull ContactoViewHolder holder, int position, @NonNull Contacto model) {
-        holder.bind(model);
-        holder.itemView.setOnClickListener(view -> mostrarDialogo(model));
+        if(filtro.equals("usuario")){
+           holder.bind(model);
+        } else {
+            holder.bind(model);
+            holder.itemView.setOnClickListener(view -> mostrarDialogo(model));
+        }
     }
 
     @NonNull
@@ -48,6 +53,20 @@ public class ContactoAdapter extends FirebaseRecyclerAdapter<Contacto, ContactoA
     public ContactoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.contactocard, parent, false);
         return new ContactoViewHolder(view);
+    }
+
+    public static class ContactoViewHolder extends RecyclerView.ViewHolder {
+
+        public ContactoViewHolder(@NonNull View itemView) {
+            super(itemView);
+            cmNombre = itemView.findViewById(R.id.contacto_nombre);
+            cmTelefono = itemView.findViewById(R.id.contacto_telefono);
+        }
+
+        public void bind(Contacto contacto) {
+            cmNombre.setText(contacto.getNombre());
+            cmTelefono.setText(contacto.getTelefono());
+        }
     }
 
     private void mostrarDialogo(Contacto contacto) {
@@ -76,21 +95,5 @@ public class ContactoAdapter extends FirebaseRecyclerAdapter<Contacto, ContactoA
 
     private void eliminarContacto(Contacto contacto) {
         dbRef.child(codComunidad+"_"+cmNombre.getText().toString()).removeValue();
-    }
-
-    public static class ContactoViewHolder extends RecyclerView.ViewHolder {
-
-
-
-        public ContactoViewHolder(@NonNull View itemView) {
-            super(itemView);
-            cmNombre = itemView.findViewById(R.id.contacto_nombre);
-            cmTelefono = itemView.findViewById(R.id.contacto_telefono);
-        }
-
-        public void bind(Contacto contacto) {
-            cmNombre.setText(contacto.getNombre());
-            cmTelefono.setText(contacto.getTelefono());
-        }
     }
 }
