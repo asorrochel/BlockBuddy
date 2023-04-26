@@ -177,6 +177,7 @@ public class RegistrarIncidenciaActivity extends AppCompatActivity {
                             Toast.makeText(RegistrarIncidenciaActivity.this, "Registro Completado", Toast.LENGTH_LONG).show();
                             Intent intent = new Intent(RegistrarIncidenciaActivity.this, IncidenciasActivity.class);
                             startActivity(intent);
+                            finish();
                         } else {
                             Toast.makeText(RegistrarIncidenciaActivity.this, "Error al realizar el registro", Toast.LENGTH_SHORT).show();
                         }

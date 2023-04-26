@@ -128,6 +128,7 @@ public class RegisterActivity extends AppCompatActivity {
                                                     });
                                                     Intent intent = new Intent(RegisterActivity.this, LoginRegisterActivity.class);
                                                     startActivity(intent);
+                                                    finish();
                                                 } else {
                                                     if (createUserTask.getException() instanceof FirebaseAuthUserCollisionException) {
                                                         // El correo ya está registrado

@@ -108,6 +108,7 @@ public class RegisterContactoActivity extends AppCompatActivity {
                             Toast.makeText(RegisterContactoActivity.this, "Registro Completado", Toast.LENGTH_LONG).show();
                             Intent intent = new Intent(RegisterContactoActivity.this, TusContactosActivity.class);
                             startActivity(intent);
+                            finish();
                         } else {
                             Toast.makeText(RegisterContactoActivity.this, "Error al realizar el registro", Toast.LENGTH_SHORT).show();
                         }

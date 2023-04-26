@@ -106,6 +106,7 @@ public class RegistroAdminActivity extends AppCompatActivity {
                                         });
                                         Intent intent = new Intent(RegistroAdminActivity.this, MainAdminActivity.class);
                                         startActivity(intent);
+                                        finish();
                                     } else {
                                         if (createUserTask.getException() instanceof FirebaseAuthUserCollisionException) {
                                             // El correo ya está registrado
