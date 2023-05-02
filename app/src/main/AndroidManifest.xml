@@ -18,6 +18,12 @@
         android:theme="@style/Theme.BlockBuddy"
         tools:targetApi="31">
         <activity
+            android:name=".RegisterAnunciosActivity"
+            android:exported="false" />
+        <activity
+            android:name=".TusAnunciosActivity"
+            android:exported="false" />
+        <activity
             android:name=".RegisterReunionesActivity"
             android:exported="false" />
         <activity

@@ -33,7 +33,7 @@ public class MainUserActivity extends AppCompatActivity {
     TextView mainUsuario_textView, mainUsuario_Welcome,mainUsuario_Welcome1;
     MaterialButton btn_tuComunidad;
     ConstraintLayout btn_CerrarSesion;
-    CardView incidencias, contactos,reuniones;
+    CardView incidencias, contactos,reuniones,anuncios;
     FirebaseUser user;
     DatabaseReference ref,ref2;
     String uid,codComunidad, codComAdmin;
@@ -86,6 +86,17 @@ public class MainUserActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainUserActivity.this, TusReunionesActivity.class);
+                intent.putExtra("user", user);
+                intent.putExtra("codCom", codComunidad);
+                startActivity(intent);
+            }
+        });
+
+        //ir a tus anuncios
+        anuncios.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainUserActivity.this, TusAnunciosActivity.class);
                 intent.putExtra("user", user);
                 intent.putExtra("codCom", codComunidad);
                 startActivity(intent);
@@ -157,6 +168,7 @@ public class MainUserActivity extends AppCompatActivity {
         incidencias = findViewById(R.id.cardView2);
         contactos = findViewById(R.id.cardView1);
         reuniones = findViewById(R.id.cardView3);
+        anuncios = findViewById(R.id.cardView4);
 
     }
 
