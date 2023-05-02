@@ -69,6 +69,10 @@
     <string name="registerReunion_titulo">NUEVA REUNIÓN</string>
     <string name="registerReunion_descripcion">DESCRIPCIÓN</string>
     <string name="registerReunion_fecha">FECHA</string>
+    <string name="registerAnuncio_titulo">NUEVO ANUNCIO</string>
+    <string name="registerDoc_titulo">NUEVO DOCUMENTO</string>
+    <string name="docReg_addDoc">ADJUNTAR</string>
+
 
 
 </resources>

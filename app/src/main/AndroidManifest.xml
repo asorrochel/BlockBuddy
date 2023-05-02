@@ -18,6 +18,12 @@
         android:theme="@style/Theme.BlockBuddy"
         tools:targetApi="31">
         <activity
+            android:name=".RegisterDocumentosActivity"
+            android:exported="false" />
+        <activity
+            android:name=".TusDocumentosActivity"
+            android:exported="false" />
+        <activity
             android:name=".RegisterAnunciosActivity"
             android:exported="false" />
         <activity

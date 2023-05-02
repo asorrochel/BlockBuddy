@@ -17,7 +17,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/cr_anun_toolbar"
+            android:id="@+id/cr_doc_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:theme="@style/ToolbarColoredBackArrow2"
@@ -28,7 +28,7 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/cr_anun_const_nombre"
+        android:id="@+id/cr_doc_const_nombre"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="45dp"
@@ -36,7 +36,7 @@
         app:layout_constraintTop_toTopOf="@+id/imageView4">
         <!-- TextInputEditText Correo -->
         <TextView
-            android:id="@+id/cr_anun_nombre"
+            android:id="@+id/cr_doc_nombre"
             android:layout_width="297dp"
             android:layout_height="21dp"
             android:layout_marginStart="37dp"
@@ -50,7 +50,7 @@
             tools:ignore="TextContrastCheck" />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/cr_anun_prompt_nombre"
+            android:id="@+id/cr_doc_prompt_nombre"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="347dp"
             android:layout_height="wrap_content"
@@ -68,10 +68,10 @@
             app:errorTextColor="@color/white"
             app:hintEnabled="false"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cr_anun_nombre">
+            app:layout_constraintTop_toBottomOf="@+id/cr_doc_nombre">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/cr_anun_prompt_nombre_EditText"
+                android:id="@+id/cr_doc_prompt_nombre_EditText"
                 android:layout_width="match_parent"
                 android:layout_height="53dp"
                 android:background="@drawable/shadow1"
@@ -84,7 +84,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/cr_anun_const_descricion"
+        android:id="@+id/cr_doc_const_descricion"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="140dp"
@@ -93,7 +93,7 @@
         <!-- TextInputEditText Correo -->
 
         <TextView
-            android:id="@+id/cr_anun_descripcion"
+            android:id="@+id/cr_doc_descripcion"
             android:layout_width="297dp"
             android:layout_height="21dp"
             android:layout_marginStart="37dp"
@@ -107,7 +107,7 @@
             tools:ignore="TextContrastCheck" />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/cr_anun_prompt_descripcion"
+            android:id="@+id/cr_doc_prompt_descripcion"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="347dp"
             android:layout_height="wrap_content"
@@ -125,10 +125,10 @@
             app:errorTextColor="@color/white"
             app:hintEnabled="false"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cr_anun_descripcion">
+            app:layout_constraintTop_toBottomOf="@+id/cr_doc_descripcion">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/cr_anun_prompt_descripcion_EditText"
+                android:id="@+id/cr_doc_prompt_descripcion_EditText"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:gravity="start"
@@ -154,7 +154,7 @@
         app:srcCompat="@drawable/ic_wave1" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/cr_anun_btnregistro"
+        android:id="@+id/cr_doc_btnregistro"
         android:layout_width="150dp"
         android:layout_height="48dp"
         android:layout_marginStart="128dp"
@@ -183,14 +183,31 @@
         app:srcCompat="@drawable/ic_rectangle"
         tools:ignore="ImageContrastCheck" />
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/cr_doc_addIDoc"
+        android:layout_width="150dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="44dp"
+        android:layout_marginTop="20dp"
+
+        android:backgroundTint="@color/white"
+        android:clickable="true"
+        android:fontFamily="@font/hai"
+        android:text="@string/docReg_addDoc"
+        android:textColor="#DD2C00"
+        android:textSize="14sp"
+        app:cornerRadius="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cr_doc_const_descricion" />
+
     <TextView
-        android:id="@+id/cr_anun_titulo"
+        android:id="@+id/cr_doc_titulo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="108dp"
+        android:layout_marginStart="92dp"
         android:layout_marginTop="56dp"
         android:fontFamily="@font/hai"
-        android:text="@string/registerAnuncio_titulo"
+        android:text="@string/registerDoc_titulo"
         android:textColor="@color/orange"
         android:textSize="25sp"
         app:layout_constraintStart_toStartOf="parent"
