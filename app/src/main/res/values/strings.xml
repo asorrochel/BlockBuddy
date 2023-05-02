@@ -65,6 +65,10 @@
     <string name="registerContacto_telefono">TELÉFONO</string>
     <string name="registerContacto_titulo">NUEVO CONTACTO</string>
 
+    <!-- REGISTER REUNION -->
+    <string name="registerReunion_titulo">NUEVA REUNIÓN</string>
+    <string name="registerReunion_descripcion">DESCRIPCIÓN</string>
+    <string name="registerReunion_fecha">FECHA</string>
 
 
 

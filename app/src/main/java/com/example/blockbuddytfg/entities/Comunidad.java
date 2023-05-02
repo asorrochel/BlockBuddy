@@ -4,12 +4,12 @@ import java.util.ArrayList;
 
 public class Comunidad {
     private String nombre, direccion, codigoComunidad, viviendas, codigoPostal,administrador;
-    private ArrayList<String> incidencias, contactos;
+    private ArrayList<String> incidencias, contactos,reuniones,documentos,anuncios;
 
 
     public Comunidad(){}
 
-    public Comunidad(String nombre, String direccion, String codigoComunidad, String viviendas, String codigoPostal, String administrador,ArrayList<String> incidencias, ArrayList<String> Contactos) {
+    public Comunidad(String nombre, String direccion, String codigoComunidad, String viviendas, String codigoPostal, String administrador,ArrayList<String> incidencias, ArrayList<String> Contactos,ArrayList<String> reuniones,ArrayList<String> documentos,ArrayList<String> anuncios) {
         this.nombre = nombre;
         this.direccion = direccion;
         this.codigoComunidad = codigoComunidad;
@@ -18,6 +18,9 @@ public class Comunidad {
         this.administrador = administrador;
         this.incidencias = incidencias;
         this.contactos = Contactos;
+        this.reuniones=reuniones;
+        this.documentos=documentos;
+        this.anuncios=anuncios;
     }
 
     public String getNombre() {
@@ -82,5 +85,29 @@ public class Comunidad {
 
     public void setContactos(ArrayList<String> contactos) {
         this.contactos = contactos;
+    }
+
+    public ArrayList<String> getReuniones() {
+        return reuniones;
+    }
+
+    public void setReuniones(ArrayList<String> reuniones) {
+        this.reuniones = reuniones;
+    }
+
+    public ArrayList<String> getDocumentos() {
+        return documentos;
+    }
+
+    public void setDocumentos(ArrayList<String> documentos) {
+        this.documentos = documentos;
+    }
+
+    public ArrayList<String> getAnuncios() {
+        return anuncios;
+    }
+
+    public void setAnuncios(ArrayList<String> anuncios) {
+        this.anuncios = anuncios;
     }
 }
