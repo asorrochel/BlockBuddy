@@ -20,6 +20,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.blockbuddytfg.entities.Administrador;
@@ -47,12 +48,14 @@ public class RegisterReunionesActivity extends AppCompatActivity {
     Toolbar toolbar;
     MaterialButton btnRegistrar;
     EditText etDescripcion, etFecha;
+    TextView tituloReunion;
     TextInputLayout tilDescripcion, tilFecha;
     String codigoComunidad, codComAdmin;
+    Reunion reunionEditar = new Reunion();
     private DatabaseReference mDatabase,mUsuarios, mAdmin;
+    boolean editar;
     FirebaseAuth firebaseAuth;
     FirebaseUser firebaseUser;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,59 +93,120 @@ public class RegisterReunionesActivity extends AppCompatActivity {
             }
         });
 
-
+        editarReunionOCrear(editar);
         //registrar reunion
-        btnRegistrar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                progressDialog.show();
-                progressDialog.setMessage("Registrando reunión...");
+        if(editar == false) {
+            btnRegistrar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    progressDialog.show();
+                    progressDialog.setMessage("Registrando reunión...");
 
-                Reunion reunion = new Reunion(
-                        etDescripcion.getText().toString(),
-                        etFecha.getText().toString(),
-                        codigoComunidad
-                );
-                //añade esa reunion a la base de datos
-                mDatabase.child("Reuniones").child(codigoComunidad + "_reunion_" + etFecha.getText().toString().replace("/","")).setValue(reunion).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        progressDialog.hide();
-                        if (task.isSuccessful()) {
-                            //añade el contacto a la lista de reuniones de la comunidad
-                            mDatabase.child("Comunidades").child(codigoComunidad).addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    ArrayList<String> reuniones;
-                                    Comunidad comunidad = snapshot.getValue(Comunidad.class);
-                                    if (comunidad.getReuniones() == null) {
-                                        reuniones = new ArrayList<>();
-                                        reuniones.add(codigoComunidad + "_reunion_" + etFecha.getText().toString());
-                                    } else {
-                                        reuniones = comunidad.getReuniones();
-                                        reuniones.add(codigoComunidad + "_reuniones_" + etFecha.getText().toString());
+                    Reunion reunion = new Reunion(
+                            etDescripcion.getText().toString(),
+                            etFecha.getText().toString(),
+                            codigoComunidad
+                    );
+                    //añade esa reunion a la base de datos
+                    mDatabase.child("Reuniones").child(codigoComunidad + "_reunion_" + etFecha.getText().toString().replace("/","")).setValue(reunion).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            progressDialog.hide();
+                            if (task.isSuccessful()) {
+                                //añade el contacto a la lista de reuniones de la comunidad
+                                mDatabase.child("Comunidades").child(codigoComunidad).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        ArrayList<String> reuniones;
+                                        Comunidad comunidad = snapshot.getValue(Comunidad.class);
+                                        if (comunidad.getReuniones() == null) {
+                                            reuniones = new ArrayList<>();
+                                            reuniones.add(codigoComunidad + "_reunion_" + etFecha.getText().toString().replace("/", ""));
+                                        } else {
+                                            reuniones = comunidad.getReuniones();
+                                            reuniones.add(codigoComunidad + "_reunion_" + etFecha.getText().toString().replace("/", ""));
+                                        }
+                                        comunidad.setReuniones(reuniones);
+                                        mDatabase.child("Comunidades").child(codigoComunidad).setValue(comunidad);
                                     }
-                                    comunidad.setReuniones(reuniones);
-                                    mDatabase.child("Comunidades").child(codigoComunidad).setValue(comunidad);
-                                }
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-                                    progressDialog.hide();
-                                    Toast.makeText(RegisterReunionesActivity.this, "Error al realizar el registro", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                            Toast.makeText(RegisterReunionesActivity.this, "Registro Completado", Toast.LENGTH_LONG).show();
-                            Intent intent = new Intent(RegisterReunionesActivity.this, TusReunionesActivity.class);
-                            startActivity(intent);
-                            finish();
-                        } else {
-                            Toast.makeText(RegisterReunionesActivity.this, "Error al realizar el registro", Toast.LENGTH_SHORT).show();
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+                                        progressDialog.hide();
+                                        Toast.makeText(RegisterReunionesActivity.this, "Error al realizar el registro", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                                Toast.makeText(RegisterReunionesActivity.this, "Registro Completado", Toast.LENGTH_LONG).show();
+                                Intent intent = new Intent(RegisterReunionesActivity.this, TusReunionesActivity.class);
+                                startActivity(intent);
+                                finish();
+                            } else {
+                                Toast.makeText(RegisterReunionesActivity.this, "Error al realizar el registro", Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    }
-                });
-            }
-        });
+                    });
+                }
+            });
+        }
+        //editar reunion
+        else {
+            btnRegistrar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    progressDialog.show();
+                    progressDialog.setMessage("Editando reunión...");
+
+                    Reunion reunion = new Reunion(
+                            etDescripcion.getText().toString(),
+                            etFecha.getText().toString(),
+                            reunionEditar.getCodComunidad()
+                    );
+
+                    String existingKey = reunionEditar.getCodComunidad() + "_reunion_" + reunionEditar.getFecha().replace("/", "");
+                    mDatabase.child("Reuniones").child(existingKey).removeValue();
+
+                    //añade esa reunion a la base de datos
+                    mDatabase.child("Reuniones").child(reunionEditar.getCodComunidad() + "_reunion_" + etFecha.getText().toString().replace("/","")).setValue(reunion).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            progressDialog.hide();
+                            if (task.isSuccessful()) {
+                                //añade el contacto a la lista de reuniones de la comunidad
+                                mDatabase.child("Comunidades").child(reunionEditar.getCodComunidad()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        ArrayList<String> reuniones;
+                                        Comunidad comunidad = snapshot.getValue(Comunidad.class);
+                                        if (comunidad.getReuniones() == null) {
+                                            reuniones = new ArrayList<>();
+                                            reuniones.add(reunionEditar.getCodComunidad() + "_reunion_" + etFecha.getText().toString().replace("/", ""));
+                                        } else {
+                                            reuniones = comunidad.getReuniones();
+                                            reuniones.remove(existingKey);
+                                            reuniones.add(reunionEditar.getCodComunidad() + "_reunion_" + etFecha.getText().toString().replace("/", ""));
+                                        }
+                                        comunidad.setReuniones(reuniones);
+                                        mDatabase.child("Comunidades").child(reunionEditar.getCodComunidad()).setValue(comunidad);
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+                                        progressDialog.hide();
+                                        Toast.makeText(RegisterReunionesActivity.this, "Error al realizar la modificación", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                                Toast.makeText(RegisterReunionesActivity.this, "Modificación Completado", Toast.LENGTH_LONG).show();
+                                Intent intent = new Intent(RegisterReunionesActivity.this, TusReunionesActivity.class);
+                                startActivity(intent);
+                                finish();
+                            } else {
+                                Toast.makeText(RegisterReunionesActivity.this, "Error al realizar la modificación", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
+            });
+        }
     }
 
     /**
@@ -265,10 +329,26 @@ public class RegisterReunionesActivity extends AppCompatActivity {
         mAdmin = FirebaseDatabase.getInstance().getReference("Administradores").child(firebaseUser.getUid());
         mUsuarios = FirebaseDatabase.getInstance().getReference("Usuarios").child(firebaseUser.getUid());
         codComAdmin = getIntent().getStringExtra("codCom");
+        editar = getIntent().getBooleanExtra("editar", false);
+        tituloReunion = findViewById(R.id.register_reu_iniciar_sesion);
+        reunionEditar = (Reunion) getIntent().getSerializableExtra("reunion");
     }
     // Método para validar los campos del registro.
     private void validarCamposRegistro() {
         validarCampo(etDescripcion, "[a-zA-ZáéíóúÁÉÍÓÚS\\s]{1,35}", tilDescripcion, "Solo caracteres alfabéticos");
+    }
+
+    private void editarReunionOCrear(boolean editar){
+        if(editar == false) {
+            btnRegistrar.setText("Registrar");
+        }
+        else {
+            btnRegistrar.setText("Editar");
+            tituloReunion.setText("Editar Reunión");
+
+            etDescripcion.setText(reunionEditar.getDescripcion());
+            etFecha.setText(reunionEditar.getFecha());
+        }
     }
 
     private void recogerDatosAdminoPresidente(DatabaseReference mUsuarios) {

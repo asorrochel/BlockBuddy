@@ -1,6 +1,8 @@
 package com.example.blockbuddytfg.entities;
 
-public class Reunion {
+import java.io.Serializable;
+
+public class Reunion implements Serializable {
     private String descripcion, fecha, codComunidad;
 
     public Reunion(){}

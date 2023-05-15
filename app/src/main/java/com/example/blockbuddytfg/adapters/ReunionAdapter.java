@@ -2,6 +2,8 @@ package com.example.blockbuddytfg.adapters;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.blockbuddytfg.R;
+import com.example.blockbuddytfg.RegisterReunionesActivity;
 import com.example.blockbuddytfg.entities.Contacto;
 import com.example.blockbuddytfg.entities.Reunion;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -18,6 +21,8 @@ import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
+
+import java.io.Serializable;
 
 public class ReunionAdapter extends FirebaseRecyclerAdapter<Reunion, ReunionAdapter.ReunionViewHolder> {
 
@@ -75,6 +80,10 @@ public class ReunionAdapter extends FirebaseRecyclerAdapter<Reunion, ReunionAdap
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //Código para editar la reunion
+                Intent intent = new Intent(context, RegisterReunionesActivity.class);
+                intent.putExtra("editar", true);
+                intent.putExtra("reunion", reunion);
+                context.startActivity(intent);
             }
         });
         builder.setNegativeButton("Borrar", new DialogInterface.OnClickListener() {
