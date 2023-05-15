@@ -17,11 +17,13 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.blockbuddytfg.entities.Administrador;
 import com.example.blockbuddytfg.entities.Comunidad;
 import com.example.blockbuddytfg.entities.Contacto;
+import com.example.blockbuddytfg.entities.Reunion;
 import com.example.blockbuddytfg.entities.Usuario;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -47,7 +49,9 @@ public class RegisterContactoActivity extends AppCompatActivity {
     private DatabaseReference mDatabase,mUsuarios, mAdmin;
     FirebaseAuth firebaseAuth;
     FirebaseUser firebaseUser;
-
+    Contacto contactoEditar = new Contacto();
+    boolean editar;
+    TextView tituloContacto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,58 +68,120 @@ public class RegisterContactoActivity extends AppCompatActivity {
         cambiarEstadoBoton(btnRegistrar, false);
         validarCamposRegistro();
 
-        //registrar contacto
-        btnRegistrar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                progressDialog.show();
-                progressDialog.setMessage("Registrando contacto...");
+        editarContactoOCrear(editar);
 
-                Contacto contacto = new Contacto(
-                        etNombre.getText().toString(),
-                        etTelefono.getText().toString(),
-                        codigoComunidad
-                );
-                //añade ese contacto a la base de datos
-                mDatabase.child("Contactos").child(codigoComunidad + "_" + etNombre.getText().toString()).setValue(contacto).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        progressDialog.hide();
-                        if (task.isSuccessful()) {
-                            //añade el contacto a la lista de contactos de la comunidad
-                            mDatabase.child("Comunidades").child(codigoComunidad).addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    ArrayList<String> contactos;
-                                    Comunidad comunidad = snapshot.getValue(Comunidad.class);
-                                    if (comunidad.getContactos() == null) {
-                                        contactos = new ArrayList<>();
-                                        contactos.add(codigoComunidad + "_" + etNombre.getText().toString());
-                                    } else {
-                                        contactos = comunidad.getContactos();
-                                        contactos.add(codigoComunidad + "_" + etNombre.getText().toString());
+        if(editar == false){
+            //registrar contacto
+            btnRegistrar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    progressDialog.show();
+                    progressDialog.setMessage("Registrando contacto...");
+
+                    Contacto contacto = new Contacto(
+                            etNombre.getText().toString(),
+                            etTelefono.getText().toString(),
+                            codigoComunidad
+                    );
+                    //añade ese contacto a la base de datos
+                    mDatabase.child("Contactos").child(codigoComunidad + "_" + etNombre.getText().toString()).setValue(contacto).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            progressDialog.hide();
+                            if (task.isSuccessful()) {
+                                //añade el contacto a la lista de contactos de la comunidad
+                                mDatabase.child("Comunidades").child(codigoComunidad).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        ArrayList<String> contactos;
+                                        Comunidad comunidad = snapshot.getValue(Comunidad.class);
+                                        if (comunidad.getContactos() == null) {
+                                            contactos = new ArrayList<>();
+                                            contactos.add(codigoComunidad + "_" + etNombre.getText().toString());
+                                        } else {
+                                            contactos = comunidad.getContactos();
+                                            contactos.add(codigoComunidad + "_" + etNombre.getText().toString());
+                                        }
+                                        comunidad.setContactos(contactos);
+                                        mDatabase.child("Comunidades").child(codigoComunidad).setValue(comunidad);
                                     }
-                                    comunidad.setContactos(contactos);
-                                    mDatabase.child("Comunidades").child(codigoComunidad).setValue(comunidad);
-                                }
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-                                    progressDialog.hide();
-                                    Toast.makeText(RegisterContactoActivity.this, "Error al realizar el registro", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                            Toast.makeText(RegisterContactoActivity.this, "Registro Completado", Toast.LENGTH_LONG).show();
-                            Intent intent = new Intent(RegisterContactoActivity.this, TusContactosActivity.class);
-                            startActivity(intent);
-                            finish();
-                        } else {
-                            Toast.makeText(RegisterContactoActivity.this, "Error al realizar el registro", Toast.LENGTH_SHORT).show();
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+                                        progressDialog.hide();
+                                        Toast.makeText(RegisterContactoActivity.this, "Error al realizar el registro", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                                Toast.makeText(RegisterContactoActivity.this, "Registro Completado", Toast.LENGTH_LONG).show();
+                                Intent intent = new Intent(RegisterContactoActivity.this, TusContactosActivity.class);
+                                startActivity(intent);
+                                finish();
+                            } else {
+                                Toast.makeText(RegisterContactoActivity.this, "Error al realizar el registro", Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    }
-                });
-            }
-        });
+                    });
+                }
+            });
+        } else {
+            //editar contacto
+            btnRegistrar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    progressDialog.show();
+                    progressDialog.setMessage("Editando contacto...");
+
+                    Contacto contacto = new Contacto(
+                            etNombre.getText().toString(),
+                            etTelefono.getText().toString(),
+                            contactoEditar.getCodComunidad()
+                    );
+
+                    String existingKey = contactoEditar.getCodComunidad() + "_" + contactoEditar.getNombre();
+                    mDatabase.child("Contactos").child(existingKey).removeValue();
+
+                    //añade esa reunion a la base de datos
+                    mDatabase.child("Contactos").child(contactoEditar.getCodComunidad() + "_" + etNombre.getText().toString()).setValue(contacto).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            progressDialog.hide();
+                            if (task.isSuccessful()) {
+                                //añade el contacto a la lista de contactos de la comunidad
+                                mDatabase.child("Comunidades").child(contactoEditar.getCodComunidad()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        ArrayList<String> contactos;
+                                        Comunidad comunidad = snapshot.getValue(Comunidad.class);
+                                        if (comunidad.getContactos() == null) {
+                                            contactos = new ArrayList<>();
+                                            contactos.add(contactoEditar.getCodComunidad() + "_" + etNombre.getText().toString());
+                                        } else {
+                                            contactos = comunidad.getContactos();
+                                            contactos.remove(existingKey);
+                                            contactos.add(contactoEditar.getCodComunidad() + "_" + etNombre.getText().toString());
+                                        }
+                                        comunidad.setContactos(contactos);
+                                        mDatabase.child("Comunidades").child(contactoEditar.getCodComunidad()).setValue(comunidad);
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+                                        progressDialog.hide();
+                                        Toast.makeText(RegisterContactoActivity.this, "Error al realizar el registro", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                                Toast.makeText(RegisterContactoActivity.this, "Registro Completado", Toast.LENGTH_LONG).show();
+                                Intent intent = new Intent(RegisterContactoActivity.this, TusContactosActivity.class);
+                                startActivity(intent);
+                                finish();
+                            } else {
+                                Toast.makeText(RegisterContactoActivity.this, "Error al realizar el registro", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
+            });
+        }
     }
 
     /**
@@ -238,7 +304,24 @@ public class RegisterContactoActivity extends AppCompatActivity {
         mAdmin = FirebaseDatabase.getInstance().getReference("Administradores").child(firebaseUser.getUid());
         mUsuarios = FirebaseDatabase.getInstance().getReference("Usuarios").child(firebaseUser.getUid());
         codComAdmin = getIntent().getStringExtra("codCom");
+        editar = getIntent().getBooleanExtra("editar", false);
+        tituloContacto = findViewById(R.id.register_com_iniciar_sesion);
+        contactoEditar = (Contacto) getIntent().getSerializableExtra("contacto");
     }
+
+    private void editarContactoOCrear(boolean editar){
+        if(editar == false) {
+            btnRegistrar.setText("Registrar");
+        }
+        else {
+            btnRegistrar.setText("Editar");
+            tituloContacto.setText("Editar Contacto");
+
+            etNombre.setText(contactoEditar.getNombre());
+            etTelefono.setText(contactoEditar.getTelefono());
+        }
+    }
+
     // Método para validar los campos del registro.
     private void validarCamposRegistro() {
         validarCampo(etNombre, "[a-zA-ZáéíóúÁÉÍÓÚS\\s]{1,35}", tilNombre, "Solo caracteres alfabéticos");

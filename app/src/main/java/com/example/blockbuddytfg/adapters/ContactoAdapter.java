@@ -2,6 +2,7 @@ package com.example.blockbuddytfg.adapters;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.blockbuddytfg.R;
+import com.example.blockbuddytfg.RegisterContactoActivity;
+import com.example.blockbuddytfg.RegisterReunionesActivity;
 import com.example.blockbuddytfg.entities.Administrador;
 import com.example.blockbuddytfg.entities.Contacto;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -76,6 +79,10 @@ public class ContactoAdapter extends FirebaseRecyclerAdapter<Contacto, ContactoA
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //Código para editar el contactoo
+                Intent intent = new Intent(context, RegisterContactoActivity.class);
+                intent.putExtra("editar", true);
+                intent.putExtra("contacto", contacto);
+                context.startActivity(intent);
             }
         });
         builder.setNegativeButton("Borrar", new DialogInterface.OnClickListener() {
