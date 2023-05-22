@@ -240,7 +240,7 @@ public class RegisterAnunciosActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.cr_anun_toolbar);
         btnRegistrar = findViewById(R.id.cr_anun_btnregistro);
         tilDescripcion = findViewById(R.id.cr_anun_prompt_descripcion);
-        etDescripcion = findViewById(R.id.cr_anun_prompt_nombre_EditText);
+        etDescripcion = findViewById(R.id.cr_anun_prompt_descripcion_EditText);
         tilTitulo = findViewById(R.id.cr_anun_prompt_nombre);
         etTitulo = findViewById(R.id.cr_anun_prompt_nombre_EditText);
         mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -252,7 +252,7 @@ public class RegisterAnunciosActivity extends AppCompatActivity {
     }
     // Método para validar los campos del registro.
     private void validarCamposRegistro() {
-        validarCampo(etDescripcion, "[a-zA-ZáéíóúÁÉÍÓÚS\\s]{1,35}", tilDescripcion, "Solo caracteres alfabéticos");
+        validarCampo(etDescripcion, "[a-zA-ZáéíóúÁÉÍÓÚS\\s]{1,70}", tilDescripcion, "Solo caracteres alfabéticos");
     }
 
     private void recogerDatosAdminoPresidente(DatabaseReference mUsuarios) {

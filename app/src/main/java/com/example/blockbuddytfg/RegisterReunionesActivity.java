@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat;
 
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -21,6 +22,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.blockbuddytfg.entities.Administrador;
@@ -80,12 +82,16 @@ public class RegisterReunionesActivity extends AppCompatActivity {
                 int month = calendar.get(Calendar.MONTH);
                 int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
 
+                // DatePickerDialog
                 DatePickerDialog datePickerDialog = new DatePickerDialog(RegisterReunionesActivity.this,
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                                // Obtener la fecha seleccionada
                                 String fechaSeleccionada = dayOfMonth + "/" + (month + 1) + "/" + year;
-                                etFecha.setText(fechaSeleccionada);
+
+                                // Mostrar el TimePickerDialog para seleccionar la hora
+                                showTimePickerDialog(fechaSeleccionada);
                             }
                         }, year, month, dayOfMonth);
 
@@ -104,11 +110,12 @@ public class RegisterReunionesActivity extends AppCompatActivity {
 
                     Reunion reunion = new Reunion(
                             etDescripcion.getText().toString(),
-                            etFecha.getText().toString(),
+                            etFecha.getText().toString().split(" ")[0],
+                            etFecha.getText().toString().split(" ")[1],
                             codigoComunidad
                     );
                     //añade esa reunion a la base de datos
-                    mDatabase.child("Reuniones").child(codigoComunidad + "_reunion_" + etFecha.getText().toString().replace("/","")).setValue(reunion).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    mDatabase.child("Reuniones").child(codigoComunidad + "_reunion_" + etFecha.getText().toString().replace("/","").split(" ")[0]).setValue(reunion).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             progressDialog.hide();
@@ -121,10 +128,10 @@ public class RegisterReunionesActivity extends AppCompatActivity {
                                         Comunidad comunidad = snapshot.getValue(Comunidad.class);
                                         if (comunidad.getReuniones() == null) {
                                             reuniones = new ArrayList<>();
-                                            reuniones.add(codigoComunidad + "_reunion_" + etFecha.getText().toString().replace("/", ""));
+                                            reuniones.add(codigoComunidad + "_reunion_" + etFecha.getText().toString().replace("/", "").split(" ")[0]);
                                         } else {
                                             reuniones = comunidad.getReuniones();
-                                            reuniones.add(codigoComunidad + "_reunion_" + etFecha.getText().toString().replace("/", ""));
+                                            reuniones.add(codigoComunidad + "_reunion_" + etFecha.getText().toString().replace("/", "").split(" ")[0]);
                                         }
                                         comunidad.setReuniones(reuniones);
                                         mDatabase.child("Comunidades").child(codigoComunidad).setValue(comunidad);
@@ -158,15 +165,16 @@ public class RegisterReunionesActivity extends AppCompatActivity {
 
                     Reunion reunion = new Reunion(
                             etDescripcion.getText().toString(),
-                            etFecha.getText().toString(),
+                            etFecha.getText().toString().split(" ")[0],
+                            etFecha.getText().toString().split(" ")[1],
                             reunionEditar.getCodComunidad()
                     );
 
-                    String existingKey = reunionEditar.getCodComunidad() + "_reunion_" + reunionEditar.getFecha().replace("/", "");
+                    String existingKey = reunionEditar.getCodComunidad() + "_reunion_" + reunionEditar.getFecha().replace("/", "").split(" ")[0];
                     mDatabase.child("Reuniones").child(existingKey).removeValue();
 
                     //añade esa reunion a la base de datos
-                    mDatabase.child("Reuniones").child(reunionEditar.getCodComunidad() + "_reunion_" + etFecha.getText().toString().replace("/","")).setValue(reunion).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    mDatabase.child("Reuniones").child(reunionEditar.getCodComunidad() + "_reunion_" + etFecha.getText().toString().replace("/","").split(" ")[0]).setValue(reunion).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             progressDialog.hide();
@@ -179,11 +187,11 @@ public class RegisterReunionesActivity extends AppCompatActivity {
                                         Comunidad comunidad = snapshot.getValue(Comunidad.class);
                                         if (comunidad.getReuniones() == null) {
                                             reuniones = new ArrayList<>();
-                                            reuniones.add(reunionEditar.getCodComunidad() + "_reunion_" + etFecha.getText().toString().replace("/", ""));
+                                            reuniones.add(reunionEditar.getCodComunidad() + "_reunion_" + etFecha.getText().toString().replace("/", "").split(" ")[0]);
                                         } else {
                                             reuniones = comunidad.getReuniones();
                                             reuniones.remove(existingKey);
-                                            reuniones.add(reunionEditar.getCodComunidad() + "_reunion_" + etFecha.getText().toString().replace("/", ""));
+                                            reuniones.add(reunionEditar.getCodComunidad() + "_reunion_" + etFecha.getText().toString().replace("/", "").split(" ")[0]);
                                         }
                                         comunidad.setReuniones(reuniones);
                                         mDatabase.child("Comunidades").child(reunionEditar.getCodComunidad()).setValue(comunidad);
@@ -377,5 +385,29 @@ public class RegisterReunionesActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
+    }
+
+    private void showTimePickerDialog(final String fechaSeleccionada) {
+        Calendar calendar = Calendar.getInstance();
+        int hourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
+
+        // TimePickerDialog
+        TimePickerDialog timePickerDialog = new TimePickerDialog(RegisterReunionesActivity.this,
+                new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        // Obtener la hora seleccionada
+                        String horaSeleccionada = hourOfDay + ":" + minute;
+
+                        // Concatenar la fecha y hora seleccionadas
+                        String fechaHoraSeleccionada = fechaSeleccionada + " " + horaSeleccionada;
+
+                        // Actualizar el EditText con la fecha y hora seleccionadas
+                        etFecha.setText(fechaHoraSeleccionada);
+                    }
+                }, hourOfDay, minute, false);
+
+        timePickerDialog.show();
     }
 }

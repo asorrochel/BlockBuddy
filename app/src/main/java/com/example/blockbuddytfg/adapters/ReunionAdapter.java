@@ -30,7 +30,7 @@ public class ReunionAdapter extends FirebaseRecyclerAdapter<Reunion, ReunionAdap
     private FirebaseUser user;
     private Context context;
     String codComunidad, filtro;
-    private static TextView cmDescripcion, cmFecha;
+    private static TextView cmDescripcion, cmFecha, cmHora;
 
     public ReunionAdapter(@NonNull FirebaseRecyclerOptions<Reunion> options, DatabaseReference dbRef, FirebaseUser user, Context context, String codComunidad, String filtro) {
         super(options);
@@ -64,12 +64,14 @@ public class ReunionAdapter extends FirebaseRecyclerAdapter<Reunion, ReunionAdap
             super(itemView);
             cmDescripcion = itemView.findViewById(R.id.reunion_descripcion);
             cmFecha = itemView.findViewById(R.id.reunion_fecha);
+            cmHora = itemView.findViewById(R.id.reunion_hora);
 
         }
 
         public void bind(Reunion reunion) {
             cmDescripcion.setText(reunion.getDescripcion());
             cmFecha.setText(reunion.getFecha());
+            cmHora.setText(reunion.getHora());
         }
     }
 

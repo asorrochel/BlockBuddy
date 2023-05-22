@@ -278,7 +278,7 @@ public class RegisterDocumentosActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.cr_doc_toolbar);
         btnRegistrar = findViewById(R.id.cr_doc_btnregistro);
         tilDescripcion = findViewById(R.id.cr_doc_prompt_descripcion);
-        etDescripcion = findViewById(R.id.cr_doc_prompt_nombre_EditText);
+        etDescripcion = findViewById(R.id.cr_doc_prompt_descripcion_EditText);
         tilTitulo = findViewById(R.id.cr_doc_prompt_nombre);
         etTitulo = findViewById(R.id.cr_doc_prompt_nombre_EditText);
         mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -291,7 +291,7 @@ public class RegisterDocumentosActivity extends AppCompatActivity {
     }
     // Método para validar los campos del registro.
     private void validarCamposRegistro() {
-        validarCampo(etDescripcion, "[a-zA-ZáéíóúÁÉÍÓÚS\\s]{1,35}", tilDescripcion, "Solo caracteres alfabéticos");
+        validarCampo(etDescripcion, "[\\w\\s]+$", tilDescripcion, "Solo caracteres alfabéticos");
     }
 
     private void recogerDatosAdminoPresidente(DatabaseReference mUsuarios) {

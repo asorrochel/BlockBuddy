@@ -294,7 +294,7 @@ public class RegistrarIncidenciaActivity extends AppCompatActivity {
     }
 
     private void validarCamposRegistro(){
-        validarCampo(etNombre, "^\\w+$", tilNombre, "Solo caracteres alfanuméricos");
+        validarCampo(etNombre, "[\\w\\s]+$", tilNombre, "Solo caracteres alfanuméricos");
     }
 
     private void addImagenIncidencia(){

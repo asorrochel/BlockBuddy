@@ -16,7 +16,28 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="8dp">
 
+            <ImageView
+                android:id="@+id/reunion_imagen"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@drawable/ic_calendarcheck" />
+
+            <TextView
+                android:id="@+id/reunion_hora"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/hai"
+                android:text="20:12"
+                android:layout_marginLeft="18dp"
+                android:textColor="@color/orangeClaro"
+                android:textSize="10sp" />
+        </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -24,7 +45,7 @@
             android:padding="8dp">
 
             <ImageView
-                android:id="@+id/vecino_imagen"
+                android:id="@+id/reunion_imagen2"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:src="@drawable/ic_calendarcheck" />

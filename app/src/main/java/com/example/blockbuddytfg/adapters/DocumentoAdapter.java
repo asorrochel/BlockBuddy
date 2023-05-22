@@ -47,6 +47,7 @@ public class DocumentoAdapter extends FirebaseRecyclerAdapter<Documento, Documen
     protected void onBindViewHolder(@NonNull DocumentoViewHolder holder, int position, @NonNull Documento model) {
         if(filtro.equals("usuario")){
            holder.bind(model);
+            holder.itemView.setOnClickListener(view -> mostrarDialogoUsuario(model));
         } else {
             holder.bind(model);
             holder.itemView.setOnClickListener(view -> mostrarDialogo(model));
@@ -73,32 +74,39 @@ public class DocumentoAdapter extends FirebaseRecyclerAdapter<Documento, Documen
             cmTitulo.setText(documento.getTitulo());
         }
     }
-/*
-    private void mostrarDialogo(Documento documento) {
-        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
-        builder.setTitle("Selecciona una opción:");
-        builder.setPositiveButton("Descargar", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                //Código para editar el anuncio
-            }
-        });
-        builder.setNegativeButton("Visualizar", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                eliminarDocumento(documento);
-            }
-        });
-        builder.setNeutralButton("Cancelar", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        builder.show();
-    }
 
- */
+private void mostrarDialogoUsuario(Documento documento) {
+    MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
+    builder.setTitle("Selecciona una opción:");
+    builder.setPositiveButton("Descargar", new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            //Download the document
+            StorageReference storageRef = FirebaseStorage.getInstance().getReference("documents").child(documento.getUrl());
+            storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+                    DownloadManager.Request request = new DownloadManager.Request(uri);
+                    request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
+                            .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, documento.getTitulo())
+                            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                            .setAllowedOverRoaming(false)
+                            .setTitle(documento.getTitulo());
+                    downloadManager.enqueue(request);
+                }
+            });
+        }
+    });
+    builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            dialog.dismiss();
+        }
+    });
+    builder.show();
+}
+
 private void mostrarDialogo(Documento documento) {
     MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
     builder.setTitle("Selecciona una opción:");
