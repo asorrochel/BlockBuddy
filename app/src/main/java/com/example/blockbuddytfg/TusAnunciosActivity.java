@@ -31,7 +31,7 @@ public class TusAnunciosActivity extends AppCompatActivity {
     private LinearLayoutManager layoutManager;
     private DatabaseReference anunciosRef, refuser, mAdmin;;
     private RecyclerView recyclerView;
-    private String codComunidad,codComAdmin,filtro;
+    private String codComunidad,codComAdmin,filtro = "admin";
     private ImageButton addAnun;
 
     @Override

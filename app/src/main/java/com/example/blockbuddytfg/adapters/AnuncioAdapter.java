@@ -2,6 +2,7 @@ package com.example.blockbuddytfg.adapters;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.blockbuddytfg.R;
+import com.example.blockbuddytfg.RegisterAnunciosActivity;
+import com.example.blockbuddytfg.RegisterReunionesActivity;
 import com.example.blockbuddytfg.entities.Anuncio;
 import com.example.blockbuddytfg.entities.Reunion;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -74,6 +77,10 @@ public class AnuncioAdapter extends FirebaseRecyclerAdapter<Anuncio, AnuncioAdap
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //Código para editar el anuncio
+                Intent intent = new Intent(context, RegisterAnunciosActivity.class);
+                intent.putExtra("editar", true);
+                intent.putExtra("anuncio", anuncio);
+                context.startActivity(intent);
             }
         });
         builder.setNegativeButton("Borrar", new DialogInterface.OnClickListener() {

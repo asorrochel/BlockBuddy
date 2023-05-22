@@ -22,6 +22,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.blockbuddytfg.entities.Administrador;
@@ -57,7 +58,9 @@ public class RegisterAnunciosActivity extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
     FirebaseUser firebaseUser;
 
-
+    Anuncio anuncioEditar = new Anuncio();
+    boolean editar;
+    TextView tituloAnuncio;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,60 +76,125 @@ public class RegisterAnunciosActivity extends AppCompatActivity {
         cambiarEstadoBoton(btnRegistrar, false);
         validarCamposRegistro();
 
-        //registrar reunion
-        btnRegistrar.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            public void onClick(View v) {
-                progressDialog.show();
-                progressDialog.setMessage("Registrando Anuncio...");
-                fecha = LocalDateTime.now().toString();
-                Anuncio anuncio = new Anuncio(
-                        codigoComunidad,
-                        etTitulo.getText().toString(),
-                        etDescripcion.getText().toString(),
-                        fecha
-                );
-                //añade ese anuncio a la base de datos
-                mDatabase.child("Anuncios").child(codigoComunidad + "_anuncio_" + fecha.replaceAll("[-:.]", "")).setValue(anuncio).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        progressDialog.hide();
-                        if (task.isSuccessful()) {
-                            //añade el anuncio a la lista de anuncios de la comunidad
-                            mDatabase.child("Comunidades").child(codigoComunidad).addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    ArrayList<String> anuncios;
-                                    Comunidad comunidad = snapshot.getValue(Comunidad.class);
-                                    if (comunidad.getAnuncios() == null) {
-                                        anuncios = new ArrayList<>();
-                                        anuncios.add(codigoComunidad + "_anuncio_" + fecha);
-                                    } else {
-                                        anuncios = comunidad.getAnuncios();
-                                        anuncios.add(codigoComunidad + "_anuncio_" + fecha);
-                                    }
-                                    comunidad.setAnuncios(anuncios);
-                                    mDatabase.child("Comunidades").child(codigoComunidad).setValue(comunidad);
-                                }
+        editarAnunciooCrear(editar);
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-                                    progressDialog.hide();
-                                    Toast.makeText(RegisterAnunciosActivity.this, "Error al realizar el registro", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                            Toast.makeText(RegisterAnunciosActivity.this, "Registro Completado", Toast.LENGTH_LONG).show();
-                            Intent intent = new Intent(RegisterAnunciosActivity.this, TusAnunciosActivity.class);
-                            startActivity(intent);
-                            finish();
-                        } else {
-                            Toast.makeText(RegisterAnunciosActivity.this, "Error al realizar el registro", Toast.LENGTH_SHORT).show();
+        if(editar == false) {
+            //registrar anuncio
+            btnRegistrar.setOnClickListener(new View.OnClickListener() {
+                @RequiresApi(api = Build.VERSION_CODES.O)
+                @Override
+                public void onClick(View v) {
+                    progressDialog.show();
+                    progressDialog.setMessage("Registrando Anuncio...");
+                    fecha = LocalDateTime.now().toString();
+                    Anuncio anuncio = new Anuncio(
+                            codigoComunidad,
+                            etTitulo.getText().toString(),
+                            etDescripcion.getText().toString(),
+                            fecha
+                    );
+                    //añade ese anuncio a la base de datos
+                    mDatabase.child("Anuncios").child(codigoComunidad + "_anuncio_" + fecha.replaceAll("[-:.]", "")).setValue(anuncio).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            progressDialog.hide();
+                            if (task.isSuccessful()) {
+                                //añade el anuncio a la lista de anuncios de la comunidad
+                                mDatabase.child("Comunidades").child(codigoComunidad).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        ArrayList<String> anuncios;
+                                        Comunidad comunidad = snapshot.getValue(Comunidad.class);
+                                        if (comunidad.getAnuncios() == null) {
+                                            anuncios = new ArrayList<>();
+                                            anuncios.add(codigoComunidad + "_anuncio_" + fecha.replaceAll("[-:.]", ""));
+                                        } else {
+                                            anuncios = comunidad.getAnuncios();
+                                            anuncios.add(codigoComunidad + "_anuncio_" + fecha.replaceAll("[-:.]", ""));
+                                        }
+                                        comunidad.setAnuncios(anuncios);
+                                        mDatabase.child("Comunidades").child(codigoComunidad).setValue(comunidad);
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+                                        progressDialog.hide();
+                                        Toast.makeText(RegisterAnunciosActivity.this, "Error al realizar el registro", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                                Toast.makeText(RegisterAnunciosActivity.this, "Registro Completado", Toast.LENGTH_LONG).show();
+                                Intent intent = new Intent(RegisterAnunciosActivity.this, TusAnunciosActivity.class);
+                                startActivity(intent);
+                                finish();
+                            } else {
+                                Toast.makeText(RegisterAnunciosActivity.this, "Error al realizar el registro", Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    }
-                });
-            }
-        });
+                    });
+                }
+            });
+        } else {
+            //editar anuncio
+            btnRegistrar.setOnClickListener(new View.OnClickListener() {
+                @RequiresApi(api = Build.VERSION_CODES.O)
+                @Override
+                public void onClick(View v) {
+                    progressDialog.show();
+                    progressDialog.setMessage("Editando Anuncio...");
+                    fecha = LocalDateTime.now().toString();
+                    Anuncio anuncio = new Anuncio(
+                            anuncioEditar.getCodComunidad(),
+                            etTitulo.getText().toString(),
+                            etDescripcion.getText().toString(),
+                            anuncioEditar.getFecha().replace("[-:.]", "")
+                    );
+
+                   // String existingKey = anuncioEditar.getCodComunidad() + "_anuncio_" + anuncioEditar.getFecha().replaceAll("[-:.]", "");
+                    //mDatabase.child("Anuncios").child(existingKey).removeValue();
+
+                    //añade ese anuncio a la base de datos
+                    mDatabase.child("Anuncios").child(anuncioEditar.getCodComunidad() + "_anuncio_" +anuncioEditar.getFecha().replaceAll("[-:.]", "")).setValue(anuncio).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            progressDialog.hide();
+                            if (task.isSuccessful()) {
+                                //añade el anuncio a la lista de anuncios de la comunidad
+                                mDatabase.child("Comunidades").child(anuncioEditar.getCodComunidad()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        ArrayList<String> anuncios;
+                                        Comunidad comunidad = snapshot.getValue(Comunidad.class);
+                                        if (comunidad.getAnuncios() == null) {
+                                            anuncios = new ArrayList<>();
+                                            anuncios.add(anuncioEditar.getCodComunidad() + "_anuncio_" + anuncioEditar.getFecha().replaceAll("[-:.]", ""));
+                                        } else {
+                                            anuncios = comunidad.getAnuncios();
+                                            anuncios.add(anuncioEditar.getCodComunidad() + "_anuncio_" + anuncioEditar.getFecha().replaceAll("[-:.]", ""));
+                                        }
+                                        comunidad.setAnuncios(anuncios);
+                                        mDatabase.child("Comunidades").child(anuncioEditar.getCodComunidad()).setValue(comunidad);
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+                                        progressDialog.hide();
+                                        Toast.makeText(RegisterAnunciosActivity.this, "Error al realizar el registro", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                                Toast.makeText(RegisterAnunciosActivity.this, "Registro Completado", Toast.LENGTH_LONG).show();
+                                Intent intent = new Intent(RegisterAnunciosActivity.this, TusAnunciosActivity.class);
+                                startActivity(intent);
+                                finish();
+                            } else {
+                                Toast.makeText(RegisterAnunciosActivity.this, "Error al realizar el registro", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
+            });
+        }
+
+
     }
 
     /**
@@ -249,7 +317,25 @@ public class RegisterAnunciosActivity extends AppCompatActivity {
         mAdmin = FirebaseDatabase.getInstance().getReference("Administradores").child(firebaseUser.getUid());
         mUsuarios = FirebaseDatabase.getInstance().getReference("Usuarios").child(firebaseUser.getUid());
         codComAdmin = getIntent().getStringExtra("codCom");
+        editar = getIntent().getBooleanExtra("editar", false);
+        tituloAnuncio = findViewById(R.id.cr_anun_titulo);
+        anuncioEditar = (Anuncio) getIntent().getSerializableExtra("anuncio");
     }
+
+    private void editarAnunciooCrear(boolean editar){
+        if(editar == false) {
+            btnRegistrar.setText("Registrar");
+        }
+        else {
+            btnRegistrar.setText("Editar");
+            tituloAnuncio.setText("Editar Contacto");
+
+            etTitulo.setText(anuncioEditar.getTitulo());
+            etDescripcion.setText(anuncioEditar.getDescripcion());
+        }
+    }
+
+
     // Método para validar los campos del registro.
     private void validarCamposRegistro() {
         validarCampo(etDescripcion, "[a-zA-ZáéíóúÁÉÍÓÚS\\s]{1,70}", tilDescripcion, "Solo caracteres alfabéticos");
