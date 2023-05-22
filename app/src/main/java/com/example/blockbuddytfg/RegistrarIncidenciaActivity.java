@@ -24,12 +24,15 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.blockbuddytfg.entities.Administrador;
 import com.example.blockbuddytfg.entities.Comunidad;
+import com.example.blockbuddytfg.entities.Documento;
 import com.example.blockbuddytfg.entities.Incidencia;
+import com.example.blockbuddytfg.entities.Reunion;
 import com.example.blockbuddytfg.entities.Usuario;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -76,6 +79,9 @@ public class RegistrarIncidenciaActivity extends AppCompatActivity {
     private static final int REQUEST_IMAGE_PICK = 2;
     private Uri mImageUri;
 
+    Incidencia incidenciaEditar = new Incidencia();
+    boolean editar;
+    TextView tituloIncidencia;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +95,8 @@ public class RegistrarIncidenciaActivity extends AppCompatActivity {
         cambiarEstadoBoton(btnRegistrar,false);
         validarCamposRegistro();
         addImagenIncidencia();
+
+        editarIncidenciaoCrear(editar);
 
         mDatabase.child("Usuarios").child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -118,73 +126,144 @@ public class RegistrarIncidenciaActivity extends AppCompatActivity {
             }
         });
 
-        //Boton de registro donde escribimos la comunidad en la base de datos
-        btnRegistrar.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            public void onClick(View v) {
-                progressDialog.show();
-                progressDialog.setMessage("Registrando comunidad...");
-                if(imageUrl == null) {
-                    imageUrl = "https://www.hogarmania.com/archivos/201303/bombilla-rota-xl-1280x720x80xX.jpg";
-                }
-
-                Incidencia incidencia = new Incidencia(
-                        etNombre.getText().toString(),
-                        etDescripcion.getText().toString(),
-                        LocalDateTime.now().toString(),
-                        imageUrl,
-                        user.getUid(),
-                        usuarioNombre,
-                        codComunidad,
-                        "activa",
-                        false,
-                        codComunidad+"_"+false,
-                        codComunidad+"_"+"activa",
-                        codComunidad+"_"+"activa"+"_"+false
-                );
-
-                //añade la incidencia a la base de datos
-                mDatabase.child("Incidencias").child(LocalDateTime.now().toString().replaceAll("[-:.]", "")).setValue(incidencia).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        progressDialog.hide();
-                        if (task.isSuccessful()) {
-                            //añade esa incidencia al arrayList del usuario
-                            mDatabase.child("Usuarios").child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    ArrayList<String> incidencias;
-                                    ArrayList<String> incidencias2;
-                                    Usuario usuario = snapshot.getValue(Usuario.class);
-                                    if(usuario.getIncidencias() == null){
-                                        incidencias = new ArrayList<>();
-                                        incidencias.add(incidencia.getFecha().replaceAll("[-:.]", ""));
-                                        usuario.setIncidencias(incidencias);
-                                    } else {
-                                        incidencias2 = usuario.getIncidencias();
-                                        incidencias2.add(incidencia.getFecha().replaceAll("[-:.]", ""));
-                                        usuario.setIncidencias(incidencias2);
-                                    }
-                                    mDatabase.child("Usuarios").child(user.getUid()).setValue(usuario);
-                                }
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-                                    progressDialog.hide();
-                                    Toast.makeText(RegistrarIncidenciaActivity.this, "Error al realizar el registro", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                            Toast.makeText(RegistrarIncidenciaActivity.this, "Registro Completado", Toast.LENGTH_LONG).show();
-                            Intent intent = new Intent(RegistrarIncidenciaActivity.this, IncidenciasActivity.class);
-                            startActivity(intent);
-                            finish();
-                        } else {
-                            Toast.makeText(RegistrarIncidenciaActivity.this, "Error al realizar el registro", Toast.LENGTH_SHORT).show();
-                        }
+        if(editar == false){
+          //registrar incidencia
+            btnRegistrar.setOnClickListener(new View.OnClickListener() {
+                @RequiresApi(api = Build.VERSION_CODES.O)
+                @Override
+                public void onClick(View v) {
+                    progressDialog.show();
+                    progressDialog.setMessage("Registrando comunidad...");
+                    if(imageUrl == null) {
+                        imageUrl = "https://www.hogarmania.com/archivos/201303/bombilla-rota-xl-1280x720x80xX.jpg";
                     }
-                });
-            }
-        });
+
+                    Incidencia incidencia = new Incidencia(
+                            etNombre.getText().toString(),
+                            etDescripcion.getText().toString(),
+                            LocalDateTime.now().toString(),
+                            imageUrl,
+                            user.getUid(),
+                            usuarioNombre,
+                            codComunidad,
+                            "activa",
+                            false,
+                            codComunidad+"_"+false,
+                            codComunidad+"_"+"activa",
+                            codComunidad+"_"+"activa"+"_"+false
+                    );
+
+                    //añade la incidencia a la base de datos
+                    mDatabase.child("Incidencias").child(LocalDateTime.now().toString().replaceAll("[-:.]", "")).setValue(incidencia).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            progressDialog.hide();
+                            if (task.isSuccessful()) {
+                                //añade esa incidencia al arrayList del usuario
+                                mDatabase.child("Usuarios").child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        ArrayList<String> incidencias;
+                                        ArrayList<String> incidencias2;
+                                        Usuario usuario = snapshot.getValue(Usuario.class);
+                                        if(usuario.getIncidencias() == null){
+                                            incidencias = new ArrayList<>();
+                                            incidencias.add(incidencia.getFecha().replaceAll("[-:.]", ""));
+                                            usuario.setIncidencias(incidencias);
+                                        } else {
+                                            incidencias2 = usuario.getIncidencias();
+                                            incidencias2.add(incidencia.getFecha().replaceAll("[-:.]", ""));
+                                            usuario.setIncidencias(incidencias2);
+                                        }
+                                        mDatabase.child("Usuarios").child(user.getUid()).setValue(usuario);
+                                    }
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+                                        progressDialog.hide();
+                                        Toast.makeText(RegistrarIncidenciaActivity.this, "Error al realizar el registro", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                                Toast.makeText(RegistrarIncidenciaActivity.this, "Registro Completado", Toast.LENGTH_LONG).show();
+                                Intent intent = new Intent(RegistrarIncidenciaActivity.this, IncidenciasActivity.class);
+                                startActivity(intent);
+                                finish();
+                            } else {
+                                Toast.makeText(RegistrarIncidenciaActivity.this, "Error al realizar el registro", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
+            });
+        } else {
+            btnRegistrar.setOnClickListener(new View.OnClickListener() {
+                @RequiresApi(api = Build.VERSION_CODES.O)
+                @Override
+                public void onClick(View v) {
+                    progressDialog.show();
+                    progressDialog.setMessage("Registrando comunidad...");
+                    if(imageUrl == null) {
+                        imageUrl = incidenciaEditar.getImagen();
+                    }
+                    String existingKey = incidenciaEditar.getFecha().replaceAll("[-:.]", "");
+                    mDatabase.child("Reuniones").child(existingKey).removeValue();
+
+                    Incidencia incidencia = new Incidencia(
+                            etNombre.getText().toString(),
+                            etDescripcion.getText().toString(),
+                            incidenciaEditar.getFecha().replaceAll("[-:.]", ""),
+                            imageUrl,
+                            incidenciaEditar.getUsuario(),
+                            incidenciaEditar.getUsuarioNombre(),
+                            incidenciaEditar.getCodComunidad(),
+                            incidenciaEditar.getEstado(),
+                            incidenciaEditar.getValidada(),
+                            incidenciaEditar.getCod_validada(),
+                            incidenciaEditar.getCod_estado(),
+                            incidenciaEditar.getCod_validada_estado()
+                    );
+
+                    //añade la incidencia a la base de datos
+                    mDatabase.child("Incidencias").child(incidenciaEditar.getFecha().replaceAll("[-:.]", "")).setValue(incidencia).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            progressDialog.hide();
+                            if (task.isSuccessful()) {
+                                //añade esa incidencia al arrayList del usuario
+                                mDatabase.child("Usuarios").child(incidenciaEditar.getUsuario()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        ArrayList<String> incidencias;
+                                        ArrayList<String> incidencias2;
+                                        Usuario usuario = snapshot.getValue(Usuario.class);
+                                        if(usuario.getIncidencias() == null){
+                                            incidencias = new ArrayList<>();
+                                            incidencias.add(incidenciaEditar.getFecha().replaceAll("[-:.]", ""));
+                                            usuario.setIncidencias(incidencias);
+                                        } else {
+                                            incidencias2 = usuario.getIncidencias();
+                                            incidencias2.add(incidenciaEditar.getFecha().replaceAll("[-:.]", ""));
+                                            usuario.setIncidencias(incidencias2);
+                                        }
+                                        mDatabase.child("Usuarios").child(incidenciaEditar.getUsuario()).setValue(usuario);
+                                    }
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+                                        progressDialog.hide();
+                                        Toast.makeText(RegistrarIncidenciaActivity.this, "Error al realizar el registro", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                                Toast.makeText(RegistrarIncidenciaActivity.this, "Registro Completado", Toast.LENGTH_LONG).show();
+                                Intent intent = new Intent(RegistrarIncidenciaActivity.this, IncidenciasActivity.class);
+                                startActivity(intent);
+                                finish();
+                            } else {
+                                Toast.makeText(RegistrarIncidenciaActivity.this, "Error al realizar el registro", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
+            });
+        }
     }
 
     /**
@@ -454,7 +533,23 @@ public class RegistrarIncidenciaActivity extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance().getReference();
         addFoto = findViewById(R.id.cr_in_addImagen);
         mStorageRef = FirebaseStorage.getInstance().getReference("uploads");
+        editar = getIntent().getBooleanExtra("editar", false);
+        tituloIncidencia = findViewById(R.id.cr_in_titulo);
+        incidenciaEditar = (Incidencia) getIntent().getSerializableExtra("incidencia");
 
     }
+
+    private void editarIncidenciaoCrear(boolean editar){
+        if(editar == false) {
+            btnRegistrar.setText("Registrar");
+        }
+        else {
+            btnRegistrar.setText("Editar");
+            tituloIncidencia.setText("Editar Incidencia");
+
+            etNombre.setText(incidenciaEditar.getNombre());
+            etDescripcion.setText(incidenciaEditar.getDescripcion());
+        }
+    };
 
 }

@@ -1,6 +1,8 @@
 package com.example.blockbuddytfg.entities;
 
-public class Incidencia {
+import java.io.Serializable;
+
+public class Incidencia implements Serializable {
     private String nombre, descripcion, fecha, imagen,usuario,codComunidad,estado, usuarioNombre, cod_validada, cod_estado, cod_validada_estado;
     private Boolean validada;
 

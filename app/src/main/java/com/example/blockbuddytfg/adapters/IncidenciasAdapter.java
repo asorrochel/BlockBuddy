@@ -3,6 +3,7 @@ package com.example.blockbuddytfg.adapters;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.blockbuddytfg.R;
+import com.example.blockbuddytfg.RegisterDocumentosActivity;
+import com.example.blockbuddytfg.RegistrarIncidenciaActivity;
 import com.example.blockbuddytfg.entities.Incidencia;
 import com.example.blockbuddytfg.entities.Usuario;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -135,17 +138,16 @@ public class IncidenciasAdapter extends FirebaseRecyclerAdapter<Incidencia, Inci
                         .child(getRef(position).getKey())
                         .child("cod_validada_estado")
                         .addListenerForSingleValueEvent(new ValueEventListener() {
-                                                            @Override
-                                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                                String codValidadaEstado = snapshot.getValue(String.class);
-                                                                String newCodValidada = codValidadaEstado.replace("_false", "_true");
-                                                                FirebaseDatabase.getInstance().getReference().child("Incidencias").child(getRef(position).getKey()).child("cod_validada_estado").setValue(newCodValidada);
-                                                            }
-                                                            @Override
-                                                            public void onCancelled(@NonNull DatabaseError error) {
-                                                            }
-                                                        }
-                        );
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                String codValidadaEstado = snapshot.getValue(String.class);
+                                String newCodValidada = codValidadaEstado.replace("_false", "_true");
+                                FirebaseDatabase.getInstance().getReference().child("Incidencias").child(getRef(position).getKey()).child("cod_validada_estado").setValue(newCodValidada);
+                            }
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                            }
+                        });
             }
         });
         builder.setNegativeButton("Rechazar", new DialogInterface.OnClickListener() {
@@ -165,6 +167,10 @@ public class IncidenciasAdapter extends FirebaseRecyclerAdapter<Incidencia, Inci
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                // Editar incidencia
+                Intent intent = new Intent(context, RegistrarIncidenciaActivity.class);
+                intent.putExtra("editar", true);
+                intent.putExtra("incidencia", incidencia);
+                context.startActivity(intent);
             }
         });
         builder.setNegativeButton("Borrar", new DialogInterface.OnClickListener() {
