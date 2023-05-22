@@ -23,6 +23,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.blockbuddytfg.entities.Administrador;
@@ -32,6 +33,7 @@ import com.example.blockbuddytfg.entities.Contacto;
 import com.example.blockbuddytfg.entities.Documento;
 import com.example.blockbuddytfg.entities.Reunion;
 import com.example.blockbuddytfg.entities.Usuario;
+import com.google.android.gms.auth.api.signin.internal.Storage;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -65,6 +67,10 @@ public class RegisterDocumentosActivity extends AppCompatActivity {
     private StorageReference mStorageRef;
     private Uri mArchivoUri;
 
+    Documento documentoEditar = new Documento();
+    boolean editar;
+    TextView tituloDocumento;
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -89,6 +95,8 @@ public class RegisterDocumentosActivity extends AppCompatActivity {
         cambiarEstadoBoton(btnRegistrar, false);
         validarCamposRegistro();
 
+        editarDocoCrear(editar);
+
         addDoc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,72 +106,98 @@ public class RegisterDocumentosActivity extends AppCompatActivity {
             }
         });
 
-        //registrar documento
-        btnRegistrar.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            public void onClick(View v) {
-                progressDialog.show();
-                progressDialog.setMessage("Registrando Documento...");
-                fecha = LocalDateTime.now().toString();
-                nombreArchivo = codigoComunidad + "_documento_" + fecha.replaceAll("[-:.]", "");
+        if(editar == false){
+            //registrar documento
+            btnRegistrar.setOnClickListener(new View.OnClickListener() {
+                @RequiresApi(api = Build.VERSION_CODES.O)
+                @Override
+                public void onClick(View v) {
+                    progressDialog.show();
+                    progressDialog.setMessage("Registrando Documento...");
+                    fecha = LocalDateTime.now().toString();
+                    nombreArchivo = codigoComunidad + "_documento_" + fecha.replaceAll("[-:.]", "");
 
-                // Obtiene la referencia del archivo en Firebase Storage
-                StorageReference archivoRef = mStorageRef.child(nombreArchivo);
+                    // Obtiene la referencia del archivo en Firebase Storage
+                    StorageReference archivoRef = mStorageRef.child(nombreArchivo);
 
-                // Carga el archivo en Firebase Storage
-                archivoRef.putFile(mArchivoUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        //añade ese documento a la base de datos
-                        Documento documento = new Documento(
-                            codigoComunidad,
-                            etTitulo.getText().toString(),
-                            etDescripcion.getText().toString(),
-                            fecha,
-                            nombreArchivo
-                        );
-                        //añade ese doc a la base de datos
-                        mDatabase.child("Documentos").child(codigoComunidad + "_documento_" + fecha.replaceAll("[-:.]", "")).setValue(documento).addOnCompleteListener(new OnCompleteListener<Void>() {
-                             @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                            progressDialog.hide();
-                            if (task.isSuccessful()) {
-                                //añade el anuncio a la lista de anuncios de la comunidad
-                                mDatabase.child("Comunidades").child(codigoComunidad).addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                        ArrayList<String> documentos;
-                                        Comunidad comunidad = snapshot.getValue(Comunidad.class);
-                                        if (comunidad.getDocumentos() == null) {
-                                            documentos = new ArrayList<>();
-                                            documentos.add(codigoComunidad + "_documento_" + fecha);
-                                        } else {
-                                            documentos = comunidad.getDocumentos();
-                                            documentos.add(codigoComunidad + "_documento_" + fecha);
-                                        }
-                                        comunidad.setDocumentos(documentos);
-                                        mDatabase.child("Comunidades").child(codigoComunidad).setValue(comunidad);
-                                    }
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError error) {
-                                        progressDialog.hide();
+                    // Carga el archivo en Firebase Storage
+                    archivoRef.putFile(mArchivoUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            //añade ese documento a la base de datos
+                            Documento documento = new Documento(
+                                    codigoComunidad,
+                                    etTitulo.getText().toString(),
+                                    etDescripcion.getText().toString(),
+                                    fecha,
+                                    nombreArchivo
+                            );
+                            //añade ese doc a la base de datos
+                            mDatabase.child("Documentos").child(codigoComunidad + "_documento_" + fecha.replaceAll("[-:.]", "")).setValue(documento).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    progressDialog.hide();
+                                    if (task.isSuccessful()) {
+                                        //añade el anuncio a la lista de anuncios de la comunidad
+                                        mDatabase.child("Comunidades").child(codigoComunidad).addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                ArrayList<String> documentos;
+                                                Comunidad comunidad = snapshot.getValue(Comunidad.class);
+                                                if (comunidad.getDocumentos() == null) {
+                                                    documentos = new ArrayList<>();
+                                                    documentos.add(codigoComunidad + "_documento_" + fecha.replaceAll("[-:.]", ""));
+                                                } else {
+                                                    documentos = comunidad.getDocumentos();
+                                                    documentos.add(codigoComunidad + "_documento_" + fecha.replaceAll("[-:.]", ""));
+                                                }
+                                                comunidad.setDocumentos(documentos);
+                                                mDatabase.child("Comunidades").child(codigoComunidad).setValue(comunidad);
+                                            }
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError error) {
+                                                progressDialog.hide();
+                                                Toast.makeText(RegisterDocumentosActivity.this, "Error al realizar el registro", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                        Toast.makeText(RegisterDocumentosActivity.this, "Registro Completado", Toast.LENGTH_LONG).show();
+                                        Intent intent = new Intent(RegisterDocumentosActivity.this, TusDocumentosActivity.class);
+                                        startActivity(intent);
+                                        finish();
+                                    } else {
                                         Toast.makeText(RegisterDocumentosActivity.this, "Error al realizar el registro", Toast.LENGTH_SHORT).show();
                                     }
-                                });
-                                Toast.makeText(RegisterDocumentosActivity.this, "Registro Completado", Toast.LENGTH_LONG).show();
-                                Intent intent = new Intent(RegisterDocumentosActivity.this, TusDocumentosActivity.class);
-                                startActivity(intent);
-                                finish();
-                            } else {
-                                Toast.makeText(RegisterDocumentosActivity.this, "Error al realizar el registro", Toast.LENGTH_SHORT).show();
-                            }
+                                }
+                            });
                         }
                     });
                 }
             });
+        } else {
+            //editar documento
+            btnRegistrar.setOnClickListener(new View.OnClickListener() {
+                @RequiresApi(api = Build.VERSION_CODES.O)
+                @Override
+                public void onClick(View v) {
+                    progressDialog.show();
+                    progressDialog.setMessage("Editando Documento...");
+                    fecha = LocalDateTime.now().toString();
+
+                    if(mArchivoUri == null) {
+                        guardarDocumento(documentoEditar.getUrl());
+                    } else {
+                        nombreArchivo = documentoEditar.getCodComunidad() + "_documento_" + documentoEditar.getFecha().replaceAll("[-:.]", "");
+                        StorageReference archivoRef = mStorageRef.child(nombreArchivo);
+                        archivoRef.putFile(mArchivoUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                guardarDocumento(nombreArchivo);
+                            }
+                        });
+                    }
+                }
+            });
         }
-    });
 }
 
     /**
@@ -288,11 +322,77 @@ public class RegisterDocumentosActivity extends AppCompatActivity {
         mUsuarios = FirebaseDatabase.getInstance().getReference("Usuarios").child(firebaseUser.getUid());
         codComAdmin = getIntent().getStringExtra("codCom");
         mStorageRef = FirebaseStorage.getInstance().getReference("documents");
+        editar = getIntent().getBooleanExtra("editar", false);
+        tituloDocumento = findViewById(R.id.cr_doc_titulo);
+        documentoEditar = (Documento) getIntent().getSerializableExtra("documento");
     }
+
+    private void editarDocoCrear(boolean editar){
+        if(editar == false) {
+            btnRegistrar.setText("Registrar");
+        }
+        else {
+            btnRegistrar.setText("Editar");
+            tituloDocumento.setText("Editar Documento");
+
+            etTitulo.setText(documentoEditar.getTitulo());
+            etDescripcion.setText(documentoEditar.getDescripcion());
+        }
+    };
+
     // Método para validar los campos del registro.
     private void validarCamposRegistro() {
         validarCampo(etDescripcion, "[\\w\\s]+$", tilDescripcion, "Solo caracteres alfabéticos");
     }
+
+    private void guardarDocumento(final String archivoActual){
+                //añade ese documento a la base de datos
+                Documento documento = new Documento(
+                        documentoEditar.getCodComunidad(),
+                        etTitulo.getText().toString(),
+                        etDescripcion.getText().toString(),
+                        documentoEditar.getFecha().replaceAll("[-:.]", ""),
+                        archivoActual
+                );
+                //añade ese doc a la base de datos
+                mDatabase.child("Documentos").child(documentoEditar.getCodComunidad() + "_documento_" + documentoEditar.getFecha().replaceAll("[-:.]", "")).setValue(documento).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+
+                        if (task.isSuccessful()) {
+                            //añade el anuncio a la lista de anuncios de la comunidad
+                            mDatabase.child("Comunidades").child(documentoEditar.getCodComunidad()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    ArrayList<String> documentos;
+                                    Comunidad comunidad = snapshot.getValue(Comunidad.class);
+                                    if (comunidad.getDocumentos() == null) {
+                                        documentos = new ArrayList<>();
+                                        documentos.add(documentoEditar.getCodComunidad() + "_documento_" + documentoEditar.getFecha().replaceAll("[-:.]", ""));
+                                    } else {
+                                        documentos = comunidad.getDocumentos();
+                                        documentos.remove(documentoEditar.getCodComunidad() + "_documento_" + documentoEditar.getFecha().replaceAll("[-:.]", ""));
+                                        documentos.add(documentoEditar.getCodComunidad() + "_documento_" + documentoEditar.getFecha().replaceAll("[-:.]", ""));
+                                    }
+                                    comunidad.setDocumentos(documentos);
+                                    mDatabase.child("Comunidades").child(documentoEditar.getCodComunidad()).setValue(comunidad);
+                                }
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                    Toast.makeText(RegisterDocumentosActivity.this, "Error al realizar el registro", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                            Toast.makeText(RegisterDocumentosActivity.this, "Registro Completado", Toast.LENGTH_LONG).show();
+                            Intent intent = new Intent(RegisterDocumentosActivity.this, TusDocumentosActivity.class);
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            Toast.makeText(RegisterDocumentosActivity.this, "Error al realizar el registro", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
 
     private void recogerDatosAdminoPresidente(DatabaseReference mUsuarios) {
         mUsuarios.addListenerForSingleValueEvent(new ValueEventListener() {

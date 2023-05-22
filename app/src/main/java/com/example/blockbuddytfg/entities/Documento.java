@@ -1,6 +1,8 @@
 package com.example.blockbuddytfg.entities;
 
-public class Documento {
+import java.io.Serializable;
+
+public class Documento implements Serializable {
 
     private String codComunidad, titulo, descripcion, fecha, url;
 

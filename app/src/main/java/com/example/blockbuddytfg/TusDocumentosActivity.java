@@ -108,6 +108,7 @@ public class TusDocumentosActivity extends AppCompatActivity {
                 Intent intent = new Intent(TusDocumentosActivity.this, RegisterDocumentosActivity.class);
                 intent.putExtra("codCom", codComunidad);
                 startActivity(intent);
+                finish();
             }
         });
     }

@@ -16,6 +16,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.blockbuddytfg.R;
+import com.example.blockbuddytfg.RegisterAnunciosActivity;
+import com.example.blockbuddytfg.RegisterDocumentosActivity;
 import com.example.blockbuddytfg.entities.Documento;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -31,7 +33,7 @@ public class DocumentoAdapter extends FirebaseRecyclerAdapter<Documento, Documen
     private DatabaseReference dbRef;
     private FirebaseUser user;
     private Context context;
-    String codComunidad, filtro;
+    String codComunidad, filtro = "admin";
     private static TextView cmDescripcion, cmTitulo;
 
     public DocumentoAdapter(@NonNull FirebaseRecyclerOptions<Documento> options, DatabaseReference dbRef, FirebaseUser user, Context context, String codComunidad, String filtro) {
@@ -134,6 +136,10 @@ private void mostrarDialogo(Documento documento) {
         @Override
         public void onClick(DialogInterface dialog, int which) {
             //Código para editar el documento
+            Intent intent = new Intent(context, RegisterDocumentosActivity.class);
+            intent.putExtra("editar", true);
+            intent.putExtra("documento", documento);
+            context.startActivity(intent);
         }
     });
 

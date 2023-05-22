@@ -169,6 +169,7 @@ public class RegisterAnunciosActivity extends AppCompatActivity {
                                             anuncios.add(anuncioEditar.getCodComunidad() + "_anuncio_" + anuncioEditar.getFecha().replaceAll("[-:.]", ""));
                                         } else {
                                             anuncios = comunidad.getAnuncios();
+                                            anuncios.remove(anuncioEditar.getCodComunidad() + "_anuncio_" + anuncioEditar.getFecha().replaceAll("[-:.]", ""));
                                             anuncios.add(anuncioEditar.getCodComunidad() + "_anuncio_" + anuncioEditar.getFecha().replaceAll("[-:.]", ""));
                                         }
                                         comunidad.setAnuncios(anuncios);
@@ -328,7 +329,7 @@ public class RegisterAnunciosActivity extends AppCompatActivity {
         }
         else {
             btnRegistrar.setText("Editar");
-            tituloAnuncio.setText("Editar Contacto");
+            tituloAnuncio.setText("Editar Anuncio");
 
             etTitulo.setText(anuncioEditar.getTitulo());
             etDescripcion.setText(anuncioEditar.getDescripcion());
