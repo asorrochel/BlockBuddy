@@ -416,9 +416,8 @@ public class AjustesPerfil extends AppCompatActivity {
 
                                 EditText correoRecovery = v.findViewById(R.id.alert_rp_prompt_correo_EditText);
                                 String correoRecuperacion = correoRecovery.getText().toString();
-
                                 // Si cumple alguna de las condicione, cierra el Alert muestra un mensaje de error, si no las cumple, envía el correo de recuperación.
-                                if (correoRecuperacion.isEmpty() || !correoRecuperacion.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")) {
+                                if (correoRecuperacion.isEmpty() || !correoRecuperacion.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$") || !correoRecuperacion.equals(user.getEmail())) {
                                     progressDialog.hide();
                                     Toast.makeText(AjustesPerfil.this, "El correo no es valido", Toast.LENGTH_LONG).show();
                                 } /*else if () {

@@ -2,6 +2,7 @@ package com.example.blockbuddytfg.adapters;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.blockbuddytfg.R;
+import com.example.blockbuddytfg.RegistrarIncidenciaActivity;
+import com.example.blockbuddytfg.RegistroAdminActivity;
 import com.example.blockbuddytfg.entities.Administrador;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -64,13 +67,7 @@ public class AdministradorAdapter extends FirebaseRecyclerAdapter<Administrador,
 
     private void mostrarDialogo(Administrador admin) {
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
-        builder.setTitle("Selecciona una opción:");
-        builder.setPositiveButton("Editar", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                //Código para editar el administrador
-            }
-        });
+        builder.setTitle("Quieres borrar el administrador:");
         builder.setNegativeButton("Borrar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

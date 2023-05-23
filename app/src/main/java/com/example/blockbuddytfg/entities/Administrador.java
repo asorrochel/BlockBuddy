@@ -1,7 +1,8 @@
 package com.example.blockbuddytfg.entities;
 
+
 import java.util.ArrayList;
-import java.util.List;
+
 
 public class Administrador {
     private String nombre, telefono,imagen;
