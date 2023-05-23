@@ -33,6 +33,7 @@
     <!-- AJUSTES-->
     <string name="ajustes_btnupdate">ACTUALIZAR</string>
     <string name="ajustes_cambiarContraseña">Cambiar Contraseña</string>
+    <string name="ajustes_eliminarCuenta">Eliminar Cuenta</string>
 
 
     <!-- MAIN USUARIO -->

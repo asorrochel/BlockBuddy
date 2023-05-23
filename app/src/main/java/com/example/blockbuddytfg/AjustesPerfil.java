@@ -61,7 +61,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class AjustesPerfil extends AppCompatActivity {
     Toolbar toolbar;
-    TextView ajustes_nombre_titulo , ajustes_apellido_titulo, cambiarContraseña;
+    TextView ajustes_nombre_titulo , ajustes_apellido_titulo, cambiarContraseña, eliminarCuenta;
     CircleImageView ajustes_imagen;
     MaterialButton r_btnupdate;
     EditText etNombre, etTelefono, etEmail;
@@ -90,7 +90,63 @@ public class AjustesPerfil extends AppCompatActivity {
         actualizarDatos(ref);
         cambiarContraseña();
         cambiarImagenPerfil();
+        eliminarCuenta();
 
+    }
+
+    private void eliminarCuenta(){
+        eliminarCuenta.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new MaterialAlertDialogBuilder(AjustesPerfil.this)
+                        .setTitle("Eliminar cuenta")
+                        .setMessage("¿Estás seguro de que quieres eliminar tu cuenta?")
+                        .setPositiveButton("Eliminar", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                String uidUsuario = user.getUid();
+                                // Eliminar cuenta
+                                user.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        // Eliminar datos de la base de datos
+                                        ref.removeValue();
+                                        //actualizar el usuarNombre en las incidencias del usuario
+                                        DatabaseReference refIncidencias = FirebaseDatabase.getInstance().getReference("Incidencias");
+                                        refIncidencias.addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                                    DataSnapshot usuarioNombreSnapshot = snapshot.child("usuarioNombre");
+                                                    String usuarioUid = snapshot.child("usuario").getValue(String.class);
+
+                                                    if (usuarioUid != null && usuarioUid.equals(uidUsuario)) {
+                                                        usuarioNombreSnapshot.getRef().setValue("Usuario eliminado");
+                                                    }
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onCancelled(DatabaseError databaseError) {
+                                                // Manejar el error de cancelación, si es necesario
+                                            }
+                                        });
+
+
+                                        FirebaseAuth.getInstance().signOut();
+                                        getSharedPreferences("MyPrefs", MODE_PRIVATE).edit().clear().apply();
+                                        Intent intent = new Intent(AjustesPerfil.this, LoginRegisterActivity.class);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                });
+                            }
+                        })
+                        .setNegativeButton("Cancelar", null)
+                        .show();
+            }
+        });
     }
 
     private void cambiarImagenPerfil(){
@@ -549,6 +605,7 @@ public class AjustesPerfil extends AppCompatActivity {
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Cargando...");
         ajustes_imagen = findViewById(R.id.ajustes_foto_perfil);
+        eliminarCuenta = findViewById(R.id.ajustes_borrar_usuario);
 
         user = getIntent().getParcelableExtra("user");
         uid = user.getUid();
