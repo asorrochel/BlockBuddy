@@ -83,15 +83,21 @@ private void mostrarDialogoUsuario(Documento documento) {
     builder.setPositiveButton("Descargar", new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
-            //Download the document
+            // Descargar el documento
             StorageReference storageRef = FirebaseStorage.getInstance().getReference("documents").child(documento.getUrl());
             storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                 @Override
                 public void onSuccess(Uri uri) {
                     DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
                     DownloadManager.Request request = new DownloadManager.Request(uri);
+
+                    String fileExtension = getFileExtension(documento.getUrl());
+                    String mimeType = getMimeTypeFromExtension(fileExtension);
+                    String fileName = documento.getTitulo() + fileExtension;
+
                     request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
-                            .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, documento.getTitulo())
+                            .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
+                            .setMimeType(mimeType)
                             .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
                             .setAllowedOverRoaming(false)
                             .setTitle(documento.getTitulo());
@@ -153,13 +159,16 @@ private void mostrarDialogo(Documento documento) {
     builder.show();
 }
 
-    private String getMimeType(String url) {
-        String type = null;
-        String extension = MimeTypeMap.getFileExtensionFromUrl(url);
-        if (extension != null) {
-            type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+    private String getFileExtension(String url) {
+        int lastDotPosition = url.lastIndexOf(".");
+        if (lastDotPosition != -1) {
+            return url.substring(lastDotPosition);
         }
-        return type;
+        return "";
+    }
+
+    private String getMimeTypeFromExtension(String fileExtension) {
+        return MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileExtension.toLowerCase());
     }
 
 

@@ -17,6 +17,8 @@ import com.bumptech.glide.Glide;
 import com.example.blockbuddytfg.MainAdministradorActivity;
 import com.example.blockbuddytfg.MainUserActivity;
 import com.example.blockbuddytfg.R;
+import com.example.blockbuddytfg.RegisterComunidadActivity;
+import com.example.blockbuddytfg.RegisterReunionesActivity;
 import com.example.blockbuddytfg.entities.Administrador;
 import com.example.blockbuddytfg.entities.Comunidad;
 import com.example.blockbuddytfg.entities.Usuario;
@@ -33,7 +35,7 @@ public class ComunidadAdapter extends FirebaseRecyclerAdapter<Comunidad, Comunid
     private DatabaseReference dbRef;
     private FirebaseUser user;
     private Context context;
-    private static TextView cmNombre, cmDireccion, cmCP, cmViviendas, cmCodigo;
+
 
     public ComunidadAdapter(@NonNull FirebaseRecyclerOptions<Comunidad> options, DatabaseReference dbRef, FirebaseUser user, Context context) {
         super(options);
@@ -55,9 +57,9 @@ public class ComunidadAdapter extends FirebaseRecyclerAdapter<Comunidad, Comunid
         return new CommunityViewHolder(view);
     }
 
-    public static class CommunityViewHolder extends RecyclerView.ViewHolder {
+    public  class CommunityViewHolder extends RecyclerView.ViewHolder {
 
-
+        private  TextView cmNombre, cmDireccion, cmCP, cmViviendas, cmCodigo;
 
         public CommunityViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -81,13 +83,6 @@ public class ComunidadAdapter extends FirebaseRecyclerAdapter<Comunidad, Comunid
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
         builder.setTitle("Selecciona una opción:");
 
-        builder.setPositiveButton("Editar", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                //Código para editar la comunidad
-            }
-        });
-
         builder.setPositiveButton("Gestionar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -95,7 +90,7 @@ public class ComunidadAdapter extends FirebaseRecyclerAdapter<Comunidad, Comunid
                     Intent intent = new Intent(context, MainUserActivity.class);
                     intent.putExtra("user", user);
                     intent.putExtra("uid", user.getUid());
-                    intent.putExtra("comunidad", cmCodigo.getText().toString());
+                    intent.putExtra("comunidad", comunidad.getCodigoComunidad());
                     context.startActivity(intent);
                 } else {
                 }

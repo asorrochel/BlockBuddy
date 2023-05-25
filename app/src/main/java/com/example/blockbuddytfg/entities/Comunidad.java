@@ -1,8 +1,9 @@
 package com.example.blockbuddytfg.entities;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Comunidad {
+public class Comunidad  {
     private String nombre, direccion, codigoComunidad, viviendas, codigoPostal,administrador;
     private ArrayList<String> incidencias, contactos,reuniones,documentos,anuncios;
 

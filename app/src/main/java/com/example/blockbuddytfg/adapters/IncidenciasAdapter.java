@@ -65,7 +65,7 @@ public class IncidenciasAdapter extends FirebaseRecyclerAdapter<Incidencia, Inci
                     }
                     else {
                         holder.bind(model);
-                        holder.itemView.setOnClickListener(view -> mostrarDialogValidadas(model, position));
+                        holder.itemView.setOnClickListener(view -> mostrarDialogValidadasAdmin(model, position));
                     }
                 }
                 else {
@@ -178,6 +178,38 @@ public class IncidenciasAdapter extends FirebaseRecyclerAdapter<Incidencia, Inci
             public void onClick(DialogInterface dialogInterface, int i) {
                 // Eliminar incidencia de la base de datos
                 FirebaseDatabase.getInstance().getReference().child("Incidencias").child(getRef(position).getKey()).removeValue();
+            }
+        });
+        builder.show();
+    }
+
+    public void mostrarDialogValidadasAdmin(Incidencia incidencia, int position){
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
+        builder.setTitle("Gestionar Incidencia");
+        builder.setPositiveButton("Editar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                // Editar incidencia
+                Intent intent = new Intent(context, RegistrarIncidenciaActivity.class);
+                intent.putExtra("editar", true);
+                intent.putExtra("incidencia", incidencia);
+                context.startActivity(intent);
+            }
+        });
+        builder.setNegativeButton("Borrar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                // Eliminar incidencia de la base de datos
+                FirebaseDatabase.getInstance().getReference().child("Incidencias").child(getRef(position).getKey()).removeValue();
+            }
+        });
+        builder.setNeutralButton("Terminar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                // Cambiar estado de terminada a true en la base de datos
+                FirebaseDatabase.getInstance().getReference().child("Incidencias").child(getRef(position).getKey()).child("cod_estado").setValue(incidencia.getCodComunidad()+"_terminada");
+                FirebaseDatabase.getInstance().getReference().child("Incidencias").child(getRef(position).getKey()).child("estado").setValue("Terminada");
+                FirebaseDatabase.getInstance().getReference().child("Incidencias").child(getRef(position).getKey()).child("cod_validada_estado").setValue(incidencia.getCodComunidad()+"_terminada_true");
             }
         });
         builder.show();

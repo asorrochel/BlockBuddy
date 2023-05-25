@@ -22,6 +22,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.example.blockbuddytfg.entities.Administrador;
 import com.example.blockbuddytfg.entities.Comunidad;
+import com.example.blockbuddytfg.entities.Contacto;
 import com.example.blockbuddytfg.entities.Usuario;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -74,86 +75,87 @@ public class RegisterComunidadActivity extends AppCompatActivity {
         cambiarEstadoBoton(btnRegistrar,false);
         validarCamposRegistro();
 
+
         //Boton de registro donde escribimos la comunidad en la base de datos
         btnRegistrar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                progressDialog.show();
-                progressDialog.setMessage("Registrando comunidad...");
+                @Override
+                public void onClick(View v) {
+                    progressDialog.show();
+                    progressDialog.setMessage("Registrando comunidad...");
 
-                String codigoComunidad = etCodCom.getText().toString();
+                    String codigoComunidad = etCodCom.getText().toString();
 
-                // Verificar que el código de la comunidad no se haya utilizado previamente
-                mDatabase.child("Comunidades").orderByChild("codigoComunidad").equalTo(codigoComunidad).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.exists()) {
-                            // El código de la comunidad ya se encuentra registrado
-                            progressDialog.hide();
-                            Toast.makeText(RegisterComunidadActivity.this, "El código de la comunidad ya se encuentra registrado", Toast.LENGTH_SHORT).show();
-                        } else {
-                            // El código de la comunidad es válido, se puede registrar la comunidad
-                            Comunidad comunidad = new Comunidad(
-                                    etNombre.getText().toString(),
-                                    etDireccion.getText().toString(),
-                                    codigoComunidad,
-                                    etViviendas.getText().toString(),
-                                    etCodPostal.getText().toString(),
-                                    firebaseUser.getUid(),
-                                    incidencias,
-                                    contactos,
-                                    reuniones,
-                                    documentos,
-                                    anuncios
-                                    );
-                            mDatabase.child("Comunidades").child(codigoComunidad).setValue(comunidad).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    progressDialog.hide();
-                                    if (task.isSuccessful()) {
-                                        //añade esa comunidad al arrayList del administrador
-                                        mDatabase.child("Administradores").child(firebaseUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                ArrayList<String> comunidades;
-                                                Administrador administrador = snapshot.getValue(Administrador.class);
-                                                if(administrador.getComunidades() == null){
-                                                    comunidades = new ArrayList<>();
-                                                    comunidades.add(comunidad.getCodigoComunidad());
-                                                } else {
-                                                    comunidades = administrador.getComunidades();
-                                                    comunidades.add(comunidad.getCodigoComunidad());
+                    // Verificar que el código de la comunidad no se haya utilizado previamente
+                    mDatabase.child("Comunidades").orderByChild("codigoComunidad").equalTo(codigoComunidad).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if (snapshot.exists()) {
+                                // El código de la comunidad ya se encuentra registrado
+                                progressDialog.hide();
+                                Toast.makeText(RegisterComunidadActivity.this, "El código de la comunidad ya se encuentra registrado", Toast.LENGTH_SHORT).show();
+                            } else {
+                                // El código de la comunidad es válido, se puede registrar la comunidad
+                                Comunidad comunidad = new Comunidad(
+                                        etNombre.getText().toString(),
+                                        etDireccion.getText().toString(),
+                                        codigoComunidad,
+                                        etViviendas.getText().toString(),
+                                        etCodPostal.getText().toString(),
+                                        firebaseUser.getUid(),
+                                        incidencias,
+                                        contactos,
+                                        reuniones,
+                                        documentos,
+                                        anuncios
+                                );
+                                mDatabase.child("Comunidades").child(codigoComunidad).setValue(comunidad).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        progressDialog.hide();
+                                        if (task.isSuccessful()) {
+                                            //añade esa comunidad al arrayList del administrador
+                                            mDatabase.child("Administradores").child(firebaseUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                    ArrayList<String> comunidades;
+                                                    Administrador administrador = snapshot.getValue(Administrador.class);
+                                                    if(administrador.getComunidades() == null){
+                                                        comunidades = new ArrayList<>();
+                                                        comunidades.add(comunidad.getCodigoComunidad());
+                                                    } else {
+                                                        comunidades = administrador.getComunidades();
+                                                        comunidades.add(comunidad.getCodigoComunidad());
+                                                    }
+                                                    administrador.setComunidades(comunidades);
+                                                    mDatabase.child("Administradores").child(firebaseUser.getUid()).setValue(administrador);
                                                 }
-                                                administrador.setComunidades(comunidades);
-                                                mDatabase.child("Administradores").child(firebaseUser.getUid()).setValue(administrador);
-                                            }
-                                            @Override
-                                            public void onCancelled(@NonNull DatabaseError error) {
-                                                progressDialog.hide();
-                                                Toast.makeText(RegisterComunidadActivity.this, "Error al realizar el registro", Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
-                                        Toast.makeText(RegisterComunidadActivity.this, "Registro Completado", Toast.LENGTH_LONG).show();
-                                        Intent intent = new Intent(RegisterComunidadActivity.this, MainAdministradorActivity.class);
-                                        startActivity(intent);
-                                        finish();
-                                    } else {
-                                        Toast.makeText(RegisterComunidadActivity.this, "Error al realizar el registro", Toast.LENGTH_SHORT).show();
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError error) {
+                                                    progressDialog.hide();
+                                                    Toast.makeText(RegisterComunidadActivity.this, "Error al realizar el registro", Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                            Toast.makeText(RegisterComunidadActivity.this, "Registro Completado", Toast.LENGTH_LONG).show();
+                                            Intent intent = new Intent(RegisterComunidadActivity.this, MainAdministradorActivity.class);
+                                            startActivity(intent);
+                                            finish();
+                                        } else {
+                                            Toast.makeText(RegisterComunidadActivity.this, "Error al realizar el registro", Toast.LENGTH_SHORT).show();
+                                        }
                                     }
-                                }
-                            });
+                                });
 
 
+                            }
                         }
-                    }
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        progressDialog.hide();
-                        Toast.makeText(RegisterComunidadActivity.this, "Error al realizar el registro", Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-        });
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            progressDialog.hide();
+                            Toast.makeText(RegisterComunidadActivity.this, "Error al realizar el registro", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            });
 
     };
 
