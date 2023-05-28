@@ -58,6 +58,8 @@ import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Random;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -68,10 +70,11 @@ public class AjustesPerfilAdmin extends AppCompatActivity {
     MaterialButton r_btnupdate;
     EditText etNombre, etTelefono, etEmail;
     TextInputLayout  tilNombre, tilTelefono, tilEmail;
+    TextView eliminarAdminBtn;
     String puerta, codComunidad, piso, categoria, imagen, uid;
     ArrayList<String> comunidades;
     FirebaseUser user;
-    DatabaseReference ref;
+    DatabaseReference ref, dref,drefCom;
     ProgressDialog progressDialog;
     FirebaseAuth mAuth;
     StorageReference mStorageRef;
@@ -92,14 +95,23 @@ public class AjustesPerfilAdmin extends AppCompatActivity {
         actualizarDatos(ref);
         cambiarContraseña();
         cambiarImagenPerfil();
+        eliminarCuentaAdmin();
 
     }
-
     private void cambiarImagenPerfil(){
         ajustes_imagen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showImageSourceSelection();
+            }
+        });
+    }
+
+    private void eliminarCuentaAdmin(){
+        eliminarAdminBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                eliminarAdmin();
             }
         });
     }
@@ -551,10 +563,71 @@ public class AjustesPerfilAdmin extends AppCompatActivity {
 
         user = getIntent().getParcelableExtra("user");
         uid = user.getUid();
+        dref = FirebaseDatabase.getInstance().getReference("Administradores");
+        drefCom = FirebaseDatabase.getInstance().getReference("Comunidades");
         ref = FirebaseDatabase.getInstance().getReference("Administradores").child(uid);
         mAuth = FirebaseAuth.getInstance();
         mStorageRef = FirebaseStorage.getInstance().getReference("uploads");
+        eliminarAdminBtn = findViewById(R.id.ajustes_admin_borrar_usuario);
 
+    }
+
+    private void eliminarAdmin() {
+        final String userKey = user.getUid();
+        dref.child(userKey).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                user.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        adminAleatorioAndUpdateComunidades(userKey);
+                    }
+                });
+            }
+        });
+    }
+
+    private void adminAleatorioAndUpdateComunidades(final String userKey) {
+        final String adminActivo = userKey;
+
+        dref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<String> adminKeys = new ArrayList<>();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    String adminKey = dataSnapshot.getKey();
+                    if (!adminKey.equals(adminActivo)) {
+                        adminKeys.add(adminKey);
+                    }
+                }
+                Random random = new Random();
+                if (!adminKeys.isEmpty()) {
+                    String adminAleatorio = adminKeys.get(random.nextInt(adminKeys.size()));
+                    actualizarComunidadesConNuevoAdmin(userKey, adminAleatorio);
+                    Intent intent = new Intent()
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+    }
+
+    private void actualizarComunidadesConNuevoAdmin(final String userKey, final String adminAleatorio) {
+        drefCom.orderByChild("administrador").equalTo(userKey).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    String comunidadKey = dataSnapshot.getKey();
+                    drefCom.child(comunidadKey).child("administrador").setValue(adminAleatorio);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
     }
 
 }

@@ -29,6 +29,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 public class AdministradorAdapter extends FirebaseRecyclerAdapter<Administrador, AdministradorAdapter.AdministradorViewHolder> {
 
     private DatabaseReference dbRef;
@@ -45,7 +49,7 @@ public class AdministradorAdapter extends FirebaseRecyclerAdapter<Administrador,
     @Override
     protected void onBindViewHolder(@NonNull AdministradorViewHolder holder, int position, @NonNull Administrador model) {
         holder.bind(model);
-        holder.itemView.setOnClickListener(view -> mostrarDialogo(model));
+       
     }
 
     @NonNull
@@ -54,6 +58,7 @@ public class AdministradorAdapter extends FirebaseRecyclerAdapter<Administrador,
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.admincard, parent, false);
         return new AdministradorViewHolder(view);
     }
+
     public static class AdministradorViewHolder extends RecyclerView.ViewHolder {
 
         private TextView cmNombre, cmTelefono;
@@ -72,83 +77,6 @@ public class AdministradorAdapter extends FirebaseRecyclerAdapter<Administrador,
             Glide.with(itemView.getContext()).load(admin.getImagen()).into(cmImagen);
         }
     }
-
-    private void mostrarDialogo(Administrador admin) {
-        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
-        builder.setTitle("Quieres borrar el administrador:");
-        builder.setNegativeButton("Borrar", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                //eliminarAdmin();
-            }
-        });
-        builder.setNeutralButton("Cancelar", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        builder.show();
-    }
-/*
-    private void eliminarAdmin() {
-
-        //obtener el usuario que coincide con el adminUID
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Administradores");
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    Administrador admin = snapshot.getValue(Administrador.class);
-                    if (admin != null && admin.getUid().equals(adminUID)) {
-                        // Eliminar cuenta
-                        user.delete(admin).addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                // Eliminar datos de la base de datos
-                                String uidUsuario = user.getUid();
-                                dbRef.child(user.getUid()).removeValue();
-                                //actualizar el usuarNombre en las incidencias del usuario
-                                DatabaseReference refIncidencias = FirebaseDatabase.getInstance().getReference("Comunidades");
-                                refIncidencias.addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                            DataSnapshot usuarioNombreSnapshot = snapshot.child("administrador");
-                                            String usuarioUid = snapshot.child("administrador").getValue(String.class);
-
-                                            if (usuarioUid != null && usuarioUid.equals(uidUsuario)) {
-                                                //poner el id de otro admin aleatorio
-                                                for (DataSnapshot snapshot2 : dataSnapshot.getChildren()) {
-                                                    String usuarioUid2 = snapshot2.child("administrador").getValue(String.class);
-                                                    if (usuarioUid2 != null && !usuarioUid2.equals(uidUsuario)) {
-                                                        refIncidencias.child(snapshot.getKey()).child("administrador").setValue(usuarioUid2);
-                                                        break;
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
-                                        // Manejar el error de cancelación, si es necesario
-                                    }
-                                });
-                            }
-                        });
-                    }
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
-                FirebaseAuth.getInstance().signOut();
-                context.getSharedPreferences("MyPrefs", context.MODE_PRIVATE).edit().clear().apply();
-                Intent intent = new Intent(context, LoginRegisterActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                context.startActivity(intent);
-            }
-            */
 }
+
+

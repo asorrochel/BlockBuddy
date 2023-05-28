@@ -21,12 +21,18 @@ import com.example.blockbuddytfg.RegisterDocumentosActivity;
 import com.example.blockbuddytfg.entities.Documento;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
+
+import java.util.concurrent.ExecutionException;
 
 public class DocumentoAdapter extends FirebaseRecyclerAdapter<Documento, DocumentoAdapter.DocumentoViewHolder> {
 
@@ -77,45 +83,54 @@ public class DocumentoAdapter extends FirebaseRecyclerAdapter<Documento, Documen
         }
     }
 
-private void mostrarDialogoUsuario(Documento documento) {
-    MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
-    builder.setTitle("Selecciona una opción:");
-    builder.setPositiveButton("Descargar", new DialogInterface.OnClickListener() {
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
-            // Descargar el documento
-            StorageReference storageRef = FirebaseStorage.getInstance().getReference("documents").child(documento.getUrl());
-            storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
-                    DownloadManager.Request request = new DownloadManager.Request(uri);
+    private void mostrarDialogoUsuario(Documento documento) {
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
+        builder.setTitle("Selecciona una opción:");
+        builder.setPositiveButton("Descargar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Descargar el documento
+                StorageReference storageRef = FirebaseStorage.getInstance().getReference("documents").child(documento.getUrl());
+                storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        storageRef.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
+                            @Override
+                            public void onSuccess(StorageMetadata storageMetadata) {
+                                DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+                                DownloadManager.Request request = new DownloadManager.Request(uri);
 
-                    String fileExtension = getFileExtension(documento.getUrl());
-                    String mimeType = getMimeTypeFromExtension(fileExtension);
-                    String fileName = documento.getTitulo() + fileExtension;
+                                String mimeType = storageMetadata.getContentType();
+                                String fileExtension = MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType);
 
-                    request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
-                            .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
-                            .setMimeType(mimeType)
-                            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-                            .setAllowedOverRoaming(false)
-                            .setTitle(documento.getTitulo());
-                    downloadManager.enqueue(request);
-                }
-            });
-        }
-    });
-    builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
-            dialog.dismiss();
-        }
-    });
-    builder.show();
-}
+                                String fileName = documento.getTitulo() + "." + fileExtension;
 
-private void mostrarDialogo(Documento documento) {
+                                request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
+                                        .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
+                                        .setMimeType(mimeType)
+                                        .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                                        .setAllowedOverRoaming(false)
+                                        .setTitle(documento.getTitulo());
+                                downloadManager.enqueue(request);
+                            }
+                        });
+                    }
+                });
+
+            }
+        });
+
+        builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.show();
+    }
+
+
+    private void mostrarDialogo(Documento documento) {
     MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context);
     builder.setTitle("Selecciona una opción:");
     builder.setPositiveButton("Descargar", new DialogInterface.OnClickListener() {
@@ -158,19 +173,6 @@ private void mostrarDialogo(Documento documento) {
 
     builder.show();
 }
-
-    private String getFileExtension(String url) {
-        int lastDotPosition = url.lastIndexOf(".");
-        if (lastDotPosition != -1) {
-            return url.substring(lastDotPosition);
-        }
-        return "";
-    }
-
-    private String getMimeTypeFromExtension(String fileExtension) {
-        return MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileExtension.toLowerCase());
-    }
-
 
     private void eliminarDocumento(Documento documento) {
         dbRef.child(codComunidad+"_documento_"+ documento.getFecha().replaceAll("[-:.]", "")).removeValue();
