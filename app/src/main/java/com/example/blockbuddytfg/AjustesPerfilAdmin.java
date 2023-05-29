@@ -604,7 +604,9 @@ public class AjustesPerfilAdmin extends AppCompatActivity {
                 if (!adminKeys.isEmpty()) {
                     String adminAleatorio = adminKeys.get(random.nextInt(adminKeys.size()));
                     actualizarComunidadesConNuevoAdmin(userKey, adminAleatorio);
-                    Intent intent = new Intent()
+                    Intent intent = new Intent(AjustesPerfilAdmin.this, LoginRegisterActivity.class);
+                    startActivity(intent);
+                    finish();
                 }
             }
 

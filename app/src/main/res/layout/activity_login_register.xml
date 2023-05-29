@@ -8,45 +8,45 @@
 
     <ImageView
         android:id="@+id/shape"
-        android:layout_width="411dp"
-        android:layout_height="345dp"
-        android:layout_marginTop="387dp"
-        android:layout_marginBottom="-1dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:contentDescription="@string/cd_shape"
+        android:scaleType="fitEnd"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="H,1:1"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/ic_circleshape"
-        android:contentDescription="@string/cd_shape"/>
+        app:srcCompat="@drawable/ic_circleshape" />
 
     <ImageView
         android:id="@+id/logo"
         android:layout_width="412dp"
         android:layout_height="259dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="80dp"
+        android:contentDescription="@string/cd_logo"
         android:transitionName="logo_image"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/logo"
-        android:contentDescription="@string/cd_logo"/>
+        app:srcCompat="@drawable/logo" />
 
     <TextView
         android:id="@+id/welcome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="35dp"
-        android:layout_marginTop="435dp"
+        android:layout_marginTop="110dp"
         android:fontFamily="@font/hai"
         android:text="@string/lr_bienvenidoTexto"
         android:textColor="@color/white"
         android:textSize="30sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/shape" />
 
     <TextView
         android:id="@+id/textoWelcome"
-        android:layout_width="321dp"
-        android:layout_height="53dp"
+        android:layout_width="325dp"
+        android:layout_height="66dp"
         android:layout_marginStart="35dp"
         android:layout_marginTop="25dp"
         android:fontFamily="@font/hai"
@@ -59,33 +59,33 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/lr_btnRegister"
-        android:layout_width="150dp"
+        android:layout_width="wrap_content"
         android:layout_height="48dp"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="25dp"
         android:layout_marginBottom="60dp"
         android:backgroundTint="@color/white"
         android:clickable="true"
         android:fontFamily="@font/hai"
         android:text="@string/lr_btn_registro"
         android:textColor="#DD2C00"
-        android:textSize="14sp"
+        android:textSize="13sp"
         app:cornerRadius="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/lr_btnLogin"
-        android:layout_width="150dp"
+        android:layout_width="wrap_content"
         android:layout_height="48dp"
-        android:layout_marginStart="212dp"
+        android:layout_marginEnd="25dp"
         android:layout_marginBottom="60dp"
         android:backgroundTint="@color/white"
         android:clickable="true"
         android:fontFamily="@font/hai"
         android:text="@string/lr_btn_iniciosesion"
         android:textColor="#DD2C00"
-        android:textSize="14sp"
+        android:textSize="12sp"
         app:cornerRadius="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

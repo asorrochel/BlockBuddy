@@ -36,7 +36,7 @@
         android:id="@+id/imageView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="13dp"
+        android:layout_marginTop="11dp"
         android:contentDescription="@string/cd_shape"
         android:rotation="180"
         app:layout_constraintStart_toStartOf="parent"
@@ -46,12 +46,13 @@
     <!-- LOGIN - CORREO -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/r_btnupdate"
-        android:layout_width="150dp"
+        android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:layout_marginStart="128dp"
-        android:layout_marginBottom="5dp"
-        android:backgroundTint="@color/white"
+        android:layout_marginEnd="133dp"
+        android:layout_marginBottom="20dp"
 
+        android:backgroundTint="@color/white"
         android:clickable="true"
         android:fontFamily="@font/hai"
         android:text="@string/ajustes_btnupdate"
@@ -59,6 +60,7 @@
         android:textSize="14sp"
         app:cornerRadius="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
@@ -80,27 +82,27 @@
         android:id="@+id/ajustes_nombre_titulo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="228dp"
-        android:layout_marginTop="96dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
         android:fontFamily="@font/hai"
         android:text="ADRIÁN"
         android:textColor="@color/orange2"
-        android:textSize="35sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textSize="30sp"
+        app:layout_constraintStart_toEndOf="@+id/ajustes_foto_perfil"
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
 
     <TextView
         android:id="@+id/ajustes_apellido"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="228dp"
-        android:layout_marginTop="135dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="5dp"
         android:fontFamily="@font/hai"
         android:text="SORROCHE"
         android:textColor="@color/orange"
         android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toEndOf="@+id/ajustes_foto_perfil"
+        app:layout_constraintTop_toBottomOf="@+id/ajustes_nombre_titulo" />
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/ajustes_foto_perfil"
@@ -108,19 +110,19 @@
         android:layout_height="121dp"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center|center_horizontal"
-        android:layout_marginTop="70dp"
-        android:layout_marginEnd="15dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="20dp"
         app:civ_border_color="@color/orange"
         app:civ_border_overlay="true"
         app:civ_border_width="2dp"
-        app:layout_constraintEnd_toStartOf="@+id/ajustes_nombre_titulo"
-        app:layout_constraintTop_toTopOf="@+id/appBarLayout" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/ajustes_const_nombre"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="100dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/imageView4">
         <!-- TextInputEditText Correo -->
@@ -129,7 +131,7 @@
             android:layout_width="297dp"
             android:layout_height="21dp"
             android:layout_marginStart="37dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="10dp"
             android:fontFamily="@font/hai"
             android:text="@string/r_textoNombre"
             android:textColor="@color/white"
@@ -233,9 +235,9 @@
         android:id="@+id/ajustes_const_correo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="130dp"
+        android:layout_marginTop="15dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/imageView4">
+        app:layout_constraintTop_toBottomOf="@+id/ajustes_const_nombre">
         <!-- TextInputEditText Correo -->
 
         <TextView
@@ -243,7 +245,7 @@
             android:layout_width="297dp"
             android:layout_height="21dp"
             android:layout_marginStart="37dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="10dp"
             android:fontFamily="@font/hai"
             android:text="@string/r_textoCorreo"
             android:textColor="@color/white"
@@ -289,10 +291,10 @@
 
     <TextView
         android:id="@+id/ajustes_contraseña_olvidada"
-        android:layout_width="219dp"
+        android:layout_width="wrap_content"
         android:layout_height="23dp"
         android:layout_marginStart="37dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="25dp"
         android:alpha="1"
         android:clickable="true"
         android:fontFamily="@font/hai"
@@ -307,7 +309,7 @@
         android:id="@+id/ajustes_borrar_usuario"
         android:layout_width="wrap_content"
         android:layout_height="23dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="25dp"
         android:layout_marginEnd="42dp"
         android:alpha="1"
         android:clickable="true"

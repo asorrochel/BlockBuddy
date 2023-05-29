@@ -33,20 +33,21 @@
                 android:id="@+id/incidencia_fecha"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
                 android:fontFamily="@font/hai"
                 android:text="17/04/2023"
-                android:layout_marginLeft="5dp"
                 android:textColor="@color/orangeClaro"
-                android:textSize="10sp" />
+                android:textSize="8sp" />
+
             <TextView
                 android:id="@+id/incidencia_creador"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
                 android:fontFamily="@font/hai"
                 android:text="Adrian - 3D"
-                android:layout_marginLeft="5dp"
                 android:textColor="@color/orangeClaro"
-                android:textSize="10sp" />
+                android:textSize="5sp" />
         </LinearLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -63,7 +64,7 @@
                 android:fontFamily="@font/hai"
                 android:text="BOMBILLA ROTA"
                 android:textColor="@color/orange3"
-                android:textSize="18sp"
+                android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -77,7 +78,7 @@
                 android:fontFamily="@font/hai"
                 android:text="la bombilla del rellano del segundo piso ha sido encontrada rota"
                 android:textColor="@color/orangeClaro"
-                android:textSize="14sp"
+                android:textSize="8sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/incidencia_nombre" />
         </androidx.constraintlayout.widget.ConstraintLayout>

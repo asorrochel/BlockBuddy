@@ -10,25 +10,21 @@
         android:id="@+id/shape"
         android:layout_width="411dp"
         android:layout_height="345dp"
-        android:layout_marginTop="387dp"
-        android:layout_marginBottom="-1dp"
+        android:contentDescription="@string/cd_shape"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/ic_circleshape"
-        android:contentDescription="@string/cd_shape"/>
+        app:srcCompat="@drawable/ic_circleshape" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
-        android:layout_marginEnd="132dp"
         android:fontFamily="@font/hai"
         android:text="MENU ADMIN"
         android:textColor="@color/orange"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -36,18 +32,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="28dp"
-        android:layout_marginTop="92dp"
+        android:layout_marginTop="110dp"
         android:layout_marginEnd="28dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnRegistrarAdmin"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
-        android:layout_marginTop="608dp"
-        android:layout_marginEnd="124dp"
+        android:layout_marginBottom="75dp"
         android:backgroundTint="@color/white"
         android:clickable="true"
         android:fontFamily="@font/hai"
@@ -55,7 +50,8 @@
         android:textColor="#DD2C00"
         android:textSize="14sp"
         app:cornerRadius="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

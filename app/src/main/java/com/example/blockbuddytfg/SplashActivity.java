@@ -96,6 +96,7 @@ public class SplashActivity extends AppCompatActivity {
                                                 intent.putExtra("imagen", usuario.getImagen());
 
                                                 startActivity(intent);
+                                                finish();
                                             }
                                             @Override
                                             public void onCancelled(@NonNull DatabaseError error) {

@@ -8,6 +8,7 @@
     tools:context=".LoginActivity">
 
     <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
@@ -40,7 +41,7 @@
                     android:fontFamily="@font/hai"
                     android:text="@string/lr_btn_iniciosesion"
                     android:textColor="@color/orange"
-                    android:textSize="12sp"
+                    android:textSize="10sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:ignore="TouchTargetSizeCheck,TextContrastCheck" />
@@ -53,7 +54,7 @@
         android:id="@+id/login_const_nombre"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="45dp"
+        android:layout_marginTop="55dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/imageView4">
         <!-- TextInputEditText Correo -->
@@ -109,7 +110,7 @@
         android:id="@+id/login_const_correo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="140dp"
+        android:layout_marginTop="150dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/imageView4">
         <!-- TextInputEditText Correo -->
@@ -281,7 +282,7 @@
         android:id="@+id/login_const_telefono"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="15dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/login_const_contraseña">
         <!-- TextInputEditText Correo -->
@@ -450,7 +451,7 @@
         android:id="@+id/imageView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="11dp"
         android:contentDescription="@string/cd_shape"
         android:rotation="180"
         app:layout_constraintStart_toStartOf="parent"
@@ -461,12 +462,13 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/r_btnregistro"
-        android:layout_width="150dp"
+        android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:layout_marginStart="128dp"
+        android:layout_marginEnd="115dp"
         android:layout_marginBottom="16dp"
-        android:backgroundTint="@color/white"
 
+        android:backgroundTint="@color/white"
         android:clickable="true"
         android:fontFamily="@font/hai"
         android:text="@string/lr_btn_registro"
@@ -474,6 +476,7 @@
         android:textSize="14sp"
         app:cornerRadius="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
@@ -493,14 +496,13 @@
         android:id="@+id/login_iniciar_sesion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="152dp"
-        android:layout_marginTop="50dp"
         android:fontFamily="@font/hai"
         android:text="@string/r_textoRegistro"
         android:textColor="@color/orange"
         android:textSize="25sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout3" />
 
     <!-- Login CONTRASEÑA-->
 

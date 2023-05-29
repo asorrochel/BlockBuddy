@@ -37,12 +37,12 @@
 
                 <TextView
                     android:id="@+id/comunidad_nombre"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/hai"
                     android:text="Comunidad Montepinar"
                     android:textColor="@color/orange3"
-                    android:textSize="18sp"
+                    android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -54,7 +54,7 @@
                     android:fontFamily="@font/hai"
                     android:text="C/ Aguacate 12"
                     android:textColor="@color/orangeClaro"
-                    android:textSize="14sp"
+                    android:textSize="10sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/comunidad_nombre" />
 
@@ -65,7 +65,7 @@
                     android:fontFamily="@font/hai"
                     android:text="26006"
                     android:textColor="@color/orangeClaro"
-                    android:textSize="14sp"
+                    android:textSize="10sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.774"
                     app:layout_constraintStart_toEndOf="@+id/comunidad_direccion"
@@ -78,7 +78,7 @@
                     android:fontFamily="@font/hai"
                     android:text="Viviendas -  "
                     android:textColor="@color/orangeClaro"
-                    android:textSize="14sp"
+                    android:textSize="10sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/comunidad_direccion" />
 
@@ -90,7 +90,7 @@
                     android:fontFamily="@font/hai"
                     android:text="C - 12345A  "
                     android:textColor="@color/orangeClaro"
-                    android:textSize="14sp"
+                    android:textSize="10sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/comunidad_direccion" />
 

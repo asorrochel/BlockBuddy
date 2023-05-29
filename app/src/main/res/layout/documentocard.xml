@@ -42,7 +42,7 @@
                     android:fontFamily="@font/hai"
                     android:text="TITULO"
                     android:textColor="@color/orange3"
-                    android:textSize="18sp"
+                    android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.495"
                     app:layout_constraintStart_toStartOf="parent"
@@ -53,11 +53,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:gravity="center"
                     android:fontFamily="@font/hai"
+                    android:gravity="center"
                     android:text="Junta para tratar temas relacionados con la limpieza de la piscina"
                     android:textColor="@color/orangeClaro"
-                    android:textSize="12sp"
+                    android:textSize="10sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/doc_titulo" />
 

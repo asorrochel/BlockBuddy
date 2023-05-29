@@ -36,7 +36,7 @@
                     android:fontFamily="@font/hai"
                     android:text="Adrian Sorroche"
                     android:textColor="@color/orange3"
-                    android:textSize="18sp"
+                    android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />

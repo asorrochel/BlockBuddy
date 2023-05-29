@@ -301,22 +301,23 @@
 
         </com.google.android.material.textfield.TextInputLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
+
     <ImageView
         android:id="@+id/imageView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="11dp"
         android:contentDescription="@string/cd_shape"
         android:rotation="180"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView6"
         app:srcCompat="@drawable/ic_wave1" />
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/register_com_btnregistro2"
-        android:layout_width="150dp"
+        android:layout_width="wrap_content"
         android:layout_height="48dp"
-        android:layout_marginStart="128dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="20dp"
         android:backgroundTint="@color/white"
 
         android:clickable="true"
@@ -326,6 +327,7 @@
         android:textSize="14sp"
         app:cornerRadius="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
     <ImageView
         android:id="@+id/imageView6"
@@ -339,16 +341,17 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_rectangle"
         tools:ignore="ImageContrastCheck" />
+
     <TextView
         android:id="@+id/register_com_iniciar_sesion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="100dp"
         android:layout_marginTop="50dp"
         android:fontFamily="@font/hai"
         android:text="@string/adminCrearComunidad_title"
         android:textColor="@color/orange"
         android:textSize="25sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

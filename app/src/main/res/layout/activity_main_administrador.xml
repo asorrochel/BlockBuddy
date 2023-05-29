@@ -11,33 +11,34 @@
         android:layout_width="369dp"
         android:layout_height="699dp"
         android:layout_marginStart="-13dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginBottom="-30dp"
         android:src="@drawable/ic_vectorback"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/admin_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="28dp"
-        android:layout_marginTop="92dp"
+        android:layout_marginTop="110dp"
         android:layout_marginEnd="28dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
     </androidx.recyclerview.widget.RecyclerView>
+
     <ImageButton
         android:id="@+id/admin_btn_añadirComunidad"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="584dp"
-        android:layout_marginEnd="28dp"
+        android:layout_marginEnd="36dp"
+        android:layout_marginBottom="40dp"
         android:background="@color/white"
         android:src="@drawable/ic_pluscircle"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/mainUsuario_Welcome"
@@ -64,14 +65,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="5dp"
             android:clickable="true"
             android:fontFamily="@font/hai"
             android:text="ADRIAN SORROCHE"
             android:textColor="@color/orange3"
             android:textSize="9dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/mainAdminstrador_textView_Welcome1" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
