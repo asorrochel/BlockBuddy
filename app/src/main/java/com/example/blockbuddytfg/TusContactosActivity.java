@@ -2,6 +2,7 @@ package com.example.blockbuddytfg;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -31,6 +32,7 @@ public class TusContactosActivity extends AppCompatActivity {
     private LinearLayoutManager layoutManager;
     private DatabaseReference contactosRef, refuser;
     private RecyclerView recyclerView;
+    Toolbar toolbar;
     private String codComunidad,codComAdmin,filtro;
     private ImageButton addCon;
 
@@ -41,6 +43,7 @@ public class TusContactosActivity extends AppCompatActivity {
         setContentView(R.layout.activity_tus_contactos);
 
         inicializarHooks();
+        setToolbar(toolbar);
 
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
@@ -56,6 +59,7 @@ public class TusContactosActivity extends AppCompatActivity {
         user = FirebaseAuth.getInstance().getCurrentUser();
         refuser = FirebaseDatabase.getInstance().getReference("Usuarios").child(user.getUid());
         codComAdmin = getIntent().getStringExtra("codCom");
+        toolbar = findViewById(R.id.tucon_toolbar);
     }
 
     private void recogerDatosUsuarioAdmin(DatabaseReference refuser){
@@ -110,6 +114,26 @@ public class TusContactosActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+    /**
+     * Método que añade a la activity un Toolbar.
+     * @param toolbar - ToolBar que queremos añadir a la activity.
+     */
+    private void setToolbar(Toolbar toolbar) {
+        setSupportActionBar(toolbar);
+        // Añadimos la flecha de retroceso.
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+    }
+
+    /**
+     * Método que añade la funcionalidad de la flecha de retroceso.
+     * @return - True, si se ha pulsado la flecha de retroceso, False si no se ha pulsado.
+     */
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 
 

@@ -2,6 +2,7 @@ package com.example.blockbuddytfg;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -31,6 +32,7 @@ public class TusAnunciosActivity extends AppCompatActivity {
     private LinearLayoutManager layoutManager;
     private DatabaseReference anunciosRef, refuser, mAdmin;;
     private RecyclerView recyclerView;
+    Toolbar toolbar;
     private String codComunidad,codComAdmin,filtro = "admin";
     private ImageButton addAnun;
 
@@ -41,6 +43,7 @@ public class TusAnunciosActivity extends AppCompatActivity {
         setContentView(R.layout.activity_tus_anuncios);
 
         inicializarHooks();
+        setToolbar(toolbar);
 
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
@@ -57,6 +60,7 @@ public class TusAnunciosActivity extends AppCompatActivity {
         refuser = FirebaseDatabase.getInstance().getReference("Usuarios").child(user.getUid());
         mAdmin = FirebaseDatabase.getInstance().getReference().child("Administradores").child(user.getUid());
         codComAdmin = getIntent().getStringExtra("codCom");
+        toolbar = findViewById(R.id.tuanun_toolbar);
     }
 
     private void recogerDatosUsuarioAdmin(DatabaseReference refuser){
@@ -158,6 +162,27 @@ public class TusAnunciosActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         anuncioAdapter.stopListening();
+    }
+
+    /**
+     * Método que añade a la activity un Toolbar.
+     * @param toolbar - ToolBar que queremos añadir a la activity.
+     */
+    private void setToolbar(Toolbar toolbar) {
+        setSupportActionBar(toolbar);
+        // Añadimos la flecha de retroceso.
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+    }
+
+    /**
+     * Método que añade la funcionalidad de la flecha de retroceso.
+     * @return - True, si se ha pulsado la flecha de retroceso, False si no se ha pulsado.
+     */
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 
 

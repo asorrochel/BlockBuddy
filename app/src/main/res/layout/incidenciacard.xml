@@ -37,7 +37,7 @@
                 android:fontFamily="@font/hai"
                 android:text="17/04/2023"
                 android:textColor="@color/orangeClaro"
-                android:textSize="8sp" />
+                android:textSize="10sp" />
 
             <TextView
                 android:id="@+id/incidencia_creador"
@@ -47,7 +47,7 @@
                 android:fontFamily="@font/hai"
                 android:text="Adrian - 3D"
                 android:textColor="@color/orangeClaro"
-                android:textSize="5sp" />
+                android:textSize="10sp" />
         </LinearLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -78,7 +78,7 @@
                 android:fontFamily="@font/hai"
                 android:text="la bombilla del rellano del segundo piso ha sido encontrada rota"
                 android:textColor="@color/orangeClaro"
-                android:textSize="8sp"
+                android:textSize="12sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/incidencia_nombre" />
         </androidx.constraintlayout.widget.ConstraintLayout>

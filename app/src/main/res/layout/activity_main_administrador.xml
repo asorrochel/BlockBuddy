@@ -70,7 +70,7 @@
             android:fontFamily="@font/hai"
             android:text="ADRIAN SORROCHE"
             android:textColor="@color/orange3"
-            android:textSize="9dp"
+            android:textSize="10sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/mainAdminstrador_textView_Welcome1" />
 

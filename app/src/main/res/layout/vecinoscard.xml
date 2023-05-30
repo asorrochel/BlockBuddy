@@ -57,7 +57,7 @@ android:layout_height="wrap_content">
                 android:fontFamily="@font/hai"
                 android:text="123 456 799"
                 android:textColor="@color/orangeClaro"
-                android:textSize="10sp"
+                android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/vecino_nombre" />
 
@@ -70,7 +70,7 @@ android:layout_height="wrap_content">
                 android:fontFamily="@font/hai"
                 android:text="PISO: 3 D"
                 android:textColor="@color/orangeClaro"
-                android:textSize="10sp"
+                android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/vecino_nombre" />
         </androidx.constraintlayout.widget.ConstraintLayout>

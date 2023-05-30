@@ -5,20 +5,39 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     tools:context=".TusContactosActivity">
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/tucon_bar"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:outlineAmbientShadowColor="@color/white"
+        android:outlineSpotShadowColor="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/tucon_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:theme="@style/ToolbarColoredBackArrow2"
+            app:titleTextAppearance="@style/ToolbarTheme"
+            app:titleTextColor="@color/white">
+        </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
 
     <TextView
         android:id="@+id/titulo_incidencias"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
         android:fontFamily="@font/hai"
         android:gravity="center"
         android:text="CONTACTOS"
         android:textColor="@color/orange"
         android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/tucon_bar" />
 
     <ImageView
         android:id="@+id/imageView2"

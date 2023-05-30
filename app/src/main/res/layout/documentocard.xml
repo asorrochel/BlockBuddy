@@ -57,7 +57,7 @@
                     android:gravity="center"
                     android:text="Junta para tratar temas relacionados con la limpieza de la piscina"
                     android:textColor="@color/orangeClaro"
-                    android:textSize="10sp"
+                    android:textSize="12sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/doc_titulo" />
 
